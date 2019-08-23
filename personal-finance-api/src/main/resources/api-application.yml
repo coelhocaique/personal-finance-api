@@ -1,0 +1,16 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: personal-finance-api
+  jackson:
+    default-property-inclusion: non-null
+    property-naming-strategy: SNAKE_CASE
+    serialization:
+      write-dates-as-timestamps: false
+      indent-output: false
+      write-enums-using-to-string: false
+    deserialization:
+      read-enums-using-to-string: false
+
