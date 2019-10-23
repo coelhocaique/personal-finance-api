@@ -10,7 +10,7 @@ import org.springframework.context.annotation.PropertySource
 @SpringBootApplication
 @ComponentScan(basePackageClasses = [PersonalFinanceApiApplication::class])
 @Import(PersonalFinanceCore::class)
-@PropertySource("classpath:api-application.yml")
+@PropertySource("classpath:application.yml")
 class PersonalFinanceApiApplication
 
 fun main(args: Array<String>) {

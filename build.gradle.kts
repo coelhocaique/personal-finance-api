@@ -1,10 +1,8 @@
-import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
-	id("org.springframework.boot") version "2.1.7.RELEASE" apply false
-	id("io.spring.dependency-management") version "1.0.8.RELEASE"
+    id("org.springframework.boot") version "2.1.7.RELEASE" apply false
+    id("org.sonarqube") version "2.7.1"
     id("org.jetbrains.kotlin.plugin.spring") version "1.3.41"
     kotlin("jvm") version "1.3.41"
 }
@@ -14,10 +12,9 @@ repositories {
 }
 
 subprojects{
-    apply(plugin="java")
-    apply(plugin="kotlin")
-    apply(plugin="org.jetbrains.kotlin.plugin.spring")
-    apply(plugin="io.spring.dependency-management")
+    apply(plugin = "java")
+    apply(plugin = "kotlin")
+    apply(plugin = "org.jetbrains.kotlin.plugin.spring")
 
     group = "com.coelhocaique"
     version = "0.0.1-SNAPSHOT"
@@ -39,52 +36,29 @@ subprojects{
     }
 
     dependencies {
-        implementation("org.jetbrains.kotlin:kotlin-reflect")
-        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.0-RC2")
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.3.0-RC2")
-        developmentOnly("org.springframework.boot:spring-boot-devtools")
-        testImplementation("org.springframework.boot:spring-boot-starter-test")
-        testImplementation("io.projectreactor:reactor-test")
+
+        implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.41")
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.41")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.1")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.3.1")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.3.1")
+        implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.0.pr3")
+        implementation("com.fasterxml.jackson.module:jackson-module-parameter-names:2.10.0.pr3")
+        implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.10.0.pr3")
+        implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.0.pr3")
+
+        testImplementation("org.junit.jupiter:junit-jupiter:5.5.1")
+        testImplementation("io.mockk:mockk:1.9.3")
+        testImplementation("io.projectreactor:reactor-test:3.2.11.RELEASE")
     }
+
+    java.sourceCompatibility = JavaVersion.VERSION_11
+    java.targetCompatibility = JavaVersion.VERSION_11
 
     tasks.withType<KotlinCompile> {
         kotlinOptions {
             freeCompilerArgs = listOf("-Xjsr305=strict")
-            jvmTarget = "1.8"
+            jvmTarget = "11"
         }
-    }
-
-    the<DependencyManagementExtension>().apply {
-        imports {
-            mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES){
-                bomProperty("kotlin.version", "1.3.41")
-            }
-        }
-    }
-}
-
-project(":personal-finance-core"){
-    dependencies {
-        implementation("org.springframework.boot:spring-boot")
-        implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
-        testImplementation("org.springframework.boot:spring-boot-starter-test")
-    }
-}
-
-project(":personal-finance-api"){
-    apply(plugin = "org.springframework.boot")
-
-    tasks.getByName<BootRun>("bootRun"){
-        main = "com.coelhocaique.finance.api.PersonalFinanceApiApplicationKt"
-    }
-
-    dependencies {
-        compile(project(":personal-finance-core"))
-        implementation("io.springfox:springfox-swagger2:2.9.2")
-        implementation("io.springfox:springfox-swagger-ui:2.9.2")
-        implementation("org.springframework.boot:spring-boot-starter-hateoas")
-        implementation("org.springframework.boot:spring-boot-starter-webflux")
-        implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     }
 }

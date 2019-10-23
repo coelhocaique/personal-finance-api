@@ -8,6 +8,6 @@ import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRep
 
 @Configuration
 @ComponentScan(basePackageClasses = [PersonalFinanceCore::class])
-@PropertySource("classpath:core-application.yml")
+@PropertySource("classpath:application.yml")
 @EnableReactiveMongoRepositories(basePackageClasses = [IncomeRepository::class])
 class PersonalFinanceCore
