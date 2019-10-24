@@ -6,13 +6,13 @@ import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.router
 
 @Component
-class IncomeRouter {
+class ApiRouting {
 
     @Bean
     fun incomeRoutes(handler: IncomeHandler) = router {
-        GET("/income", handler::findById)
+        GET("/income/{id}", handler::findById)
         POST("/income", handler::create)
-        DELETE("/income", handler::find)
+        DELETE("/income/{id}", handler::delete)
     }
 
 }

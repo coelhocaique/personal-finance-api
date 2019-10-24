@@ -12,22 +12,16 @@ apply(plugin = "org.springframework.boot")
 apply(plugin = "application")
 
 tasks.getByName<BootRun>("bootRun") {
-    main = "com.coelhocaique.finance.api.PersonalFinanceApiApplication.kt"
+    main = "com.coelhocaique.finance.api.PersonalFinanceApiApplicationKt"
     systemProperties(System.getProperties().mapKeys { it.key as String })
 }
 
 application{
-    mainClassName = "ps.chargeback.paymentsearch.api.PaymentSearchApplicationKt"
-}
-
-tasks.register<Copy>("copyFiles"){
-    from(file("../docker/scripts"))
-    into("${project.buildDir}/docker/scripts")
+    mainClassName = "com.coelhocaique.finance.api.PersonalFinanceApiApplicationKt"
 }
 
 tasks.getByName<Zip>("distZip").enabled = false
 tasks.getByName<Tar>("distTar").enabled = false
-tasks.getByName("bootDistZip").dependsOn(tasks.getByName("copyFiles"))
 
 dependencies {
     compile(project(":personal-finance-core"))

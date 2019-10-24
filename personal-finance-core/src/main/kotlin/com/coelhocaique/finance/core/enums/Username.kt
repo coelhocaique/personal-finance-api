@@ -1,3 +1,3 @@
 package com.coelhocaique.finance.core.enums
 
-enum class Owner { CAIQUE }
+enum class Username { COELHOCAIQUE }

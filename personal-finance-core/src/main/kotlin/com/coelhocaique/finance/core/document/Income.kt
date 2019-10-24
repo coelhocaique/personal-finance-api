@@ -1,23 +1,27 @@
 package com.coelhocaique.finance.core.document
 
+import com.coelhocaique.finance.core.enums.Username
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.math.BigDecimal
+import java.math.BigDecimal.ZERO
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.*
 
 @Document("income")
 data class Income (
-        @Id val id: String? = null,
+        @Id val id: UUID = UUID.randomUUID(),
         val grossAmount: BigDecimal,
         val netAmount: BigDecimal,
-        val discountAmount: BigDecimal,
-        val extraAmount: BigDecimal,
         val description: String,
-        val date: LocalDate,
-        val referenceMonth: Int,
-        val referenceYear: Int,
-        val owner: String,
-        val companyName: String,
-        val creationDate: LocalDateTime
+        val receiptDate: LocalDate,
+        val referenceDate: String,
+        val sourceName: String,
+        val username: Username,
+        val additionalAmount: BigDecimal? = null,
+        val discountAmount: BigDecimal? = null,
+        val discounts: List<Discount> = emptyList(),
+        val additions: List<Addition> = emptyList(),
+        val creationDate: LocalDateTime = LocalDateTime.now()
 )

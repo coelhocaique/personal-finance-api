@@ -4,7 +4,5 @@ import java.math.BigDecimal
 
 data class DiscountDTO (
         val amount: BigDecimal,
-        val description: String,
-        val id: String? = null,
-        val incomeId: String? = null
+        val description: String
 )
