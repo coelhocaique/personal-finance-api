@@ -9,16 +9,16 @@ import reactor.core.publisher.Mono
 import java.math.BigDecimal
 
 @Service
-class IncomeService(private val incomeRepository: IncomeRepository) {
+class IncomeService(private val repository: IncomeRepository) {
 
     fun create(incomeDTO: Mono<IncomeDTO>): Mono<IncomeDTO> {
         return incomeDTO.map(::calculateIncome)
-                .flatMap { incomeRepository.save(toDocument(it)) }
+                .flatMap { repository.insert(toDocument(it)) }
                 .flatMap { toDTO(it) }
     }
 
     fun findById(id: String): Mono<IncomeDTO> {
-        return incomeRepository.findById(id).flatMap { toDTO(it) }
+        return repository.findById(id).flatMap { toDTO(it) }
     }
 
     private fun calculateIncome(incomeDTO: IncomeDTO): IncomeDTO {

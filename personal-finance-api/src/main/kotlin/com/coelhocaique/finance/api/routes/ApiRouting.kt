@@ -1,5 +1,6 @@
 package com.coelhocaique.finance.api.routes
 
+import com.coelhocaique.finance.api.handler.DebtHandler
 import com.coelhocaique.finance.api.handler.IncomeHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Component
@@ -15,4 +16,8 @@ class ApiRouting {
         DELETE("/income/{id}", handler::delete)
     }
 
+    @Bean
+    fun debtRoutes(handler: DebtHandler) = router {
+        POST("/debt", handler::create)
+    }
 }

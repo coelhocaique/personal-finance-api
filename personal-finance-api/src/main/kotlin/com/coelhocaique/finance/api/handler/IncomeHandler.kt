@@ -1,7 +1,8 @@
 package com.coelhocaique.finance.api.handler
 
 import com.coelhocaique.finance.api.dto.IncomeRequestDTO
-import com.coelhocaique.finance.api.mapper.IncomeMapper
+import com.coelhocaique.finance.api.helper.ObjectMapper
+import com.coelhocaique.finance.api.helper.ResponseHandler.generateResponse
 import com.coelhocaique.finance.core.service.IncomeService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -11,30 +12,21 @@ import org.springframework.web.reactive.function.server.ServerResponse
 import reactor.core.publisher.Mono
 
 @Component
-class IncomeHandler (private val incomeService: IncomeService) {
-
-    val log = LoggerFactory.getLogger(IncomeHandler::class.java)
+class IncomeHandler (private val service: IncomeService) {
 
     fun create(req: ServerRequest): Mono<ServerResponse> =
             req.bodyToMono(IncomeRequestDTO::class.java)
-                .flatMap { incomeService.create(IncomeMapper.toIncomeDTO(it)) }
+                .flatMap { service.create(ObjectMapper.toIncomeDTO(it)) }
                 .flatMap { generateResponse(it) }
 
 
     fun findById(req: ServerRequest): Mono<ServerResponse> =
             Mono.just(req.pathVariable("id"))
-                    .flatMap { incomeService.findById(it) }
+                    .flatMap { service.findById(it) }
                     .flatMap { generateResponse(it) }
 
     fun delete(req: ServerRequest): Mono<ServerResponse> =
             Mono.just(req.pathVariable("id"))
-                    .flatMap { incomeService.findById(it) }
+                    .flatMap { service.findById(it) }
                     .flatMap { generateResponse(it) }
-
-    internal fun <T> generateResponse(body: T) =
-        ServerResponse.ok().body(BodyInserters.fromObject(body))
-                .onErrorResume(Throwable::class.java) {
-                    log.error("fodeu", it)
-                    ServerResponse.status(500).body(BodyInserters.fromObject(it))
-                }
 }
