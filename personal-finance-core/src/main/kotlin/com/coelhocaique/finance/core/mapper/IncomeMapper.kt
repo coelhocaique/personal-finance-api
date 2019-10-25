@@ -8,6 +8,7 @@ import com.coelhocaique.finance.core.dto.DiscountDTO
 import com.coelhocaique.finance.core.dto.IncomeDTO
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.just
+import java.util.*
 
 object IncomeMapper {
 
@@ -19,14 +20,14 @@ object IncomeMapper {
                 username = incomeDTO.username,
                 receiptDate = incomeDTO.receiptDate,
                 referenceDate = incomeDTO.referenceDate,
-                sourceName = incomeDTO.sourceName,
+                sourceName = incomeDTO.sourceName.toUpperCase(),
                 discountAmount = incomeDTO.discountAmount,
                 discounts = incomeDTO.discounts.map(::toDocument),
                 additions = incomeDTO.additions.map(::toDocument))
 
     fun toDTO(income: Income): Mono<IncomeDTO> =
         just (  IncomeDTO(
-                        incomeId = income.id,
+                        incomeId = UUID.fromString(income.id),
                         grossAmount = income.grossAmount,
                         netAmount = income.netAmount,
                         additionalAmount = income.additionalAmount,

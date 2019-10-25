@@ -4,7 +4,7 @@ import com.coelhocaique.finance.core.enums.Username
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 data class IncomeDTO (
         val incomeId: UUID? = null,

@@ -11,7 +11,7 @@ import java.util.*
 
 @Document("income")
 data class Income (
-        @Id val id: UUID = UUID.randomUUID(),
+        @Id val id: String = UUID.randomUUID().toString(),
         val grossAmount: BigDecimal,
         val netAmount: BigDecimal,
         val description: String,

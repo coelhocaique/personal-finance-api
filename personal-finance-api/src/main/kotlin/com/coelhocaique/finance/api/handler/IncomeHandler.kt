@@ -15,18 +15,18 @@ class IncomeHandler (private val incomeService: IncomeService) {
 
     val log = LoggerFactory.getLogger(IncomeHandler::class.java)
 
-    fun create(req: ServerRequest): Mono<ServerResponse> {
-        return req.bodyToMono(IncomeRequestDTO::class.java)
+    fun create(req: ServerRequest): Mono<ServerResponse> =
+            req.bodyToMono(IncomeRequestDTO::class.java)
                 .flatMap { incomeService.create(IncomeMapper.toIncomeDTO(it)) }
                 .flatMap { generateResponse(it) }
-    }
 
-    fun findById(req: ServerRequest) =
+
+    fun findById(req: ServerRequest): Mono<ServerResponse> =
             Mono.just(req.pathVariable("id"))
                     .flatMap { incomeService.findById(it) }
                     .flatMap { generateResponse(it) }
 
-    fun delete(req: ServerRequest) =
+    fun delete(req: ServerRequest): Mono<ServerResponse> =
             Mono.just(req.pathVariable("id"))
                     .flatMap { incomeService.findById(it) }
                     .flatMap { generateResponse(it) }
