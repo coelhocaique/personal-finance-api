@@ -1,10 +1,9 @@
-package com.coelhocaique.finance.core.document
+package com.coelhocaique.finance.core.domain
 
-import com.coelhocaique.finance.core.enums.Username
+import com.coelhocaique.finance.core.domain.enums.Username
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.math.BigDecimal
-import java.math.BigDecimal.ZERO
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*

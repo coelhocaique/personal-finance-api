@@ -1,8 +1,8 @@
-package com.coelhocaique.finance.core.dto
+package com.coelhocaique.finance.core.domain
 
 import java.math.BigDecimal
 
-data class DiscountDTO (
+data class Addition (
         val amount: BigDecimal,
         val description: String
 )

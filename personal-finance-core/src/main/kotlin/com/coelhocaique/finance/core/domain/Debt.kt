@@ -1,6 +1,6 @@
-package com.coelhocaique.finance.core.document
+package com.coelhocaique.finance.core.domain
 
-import com.coelhocaique.finance.core.enums.Username
+import com.coelhocaique.finance.core.domain.enums.Username
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.math.BigDecimal
@@ -14,7 +14,7 @@ data class Debt (
         val amount: BigDecimal,
         val description: String,
         val debtDate: LocalDate,
-        val referenceCode: UUID,
+        val referenceCode: String,
         val installmentNumber: Int,
         val referenceDate: String,
         val type: String,

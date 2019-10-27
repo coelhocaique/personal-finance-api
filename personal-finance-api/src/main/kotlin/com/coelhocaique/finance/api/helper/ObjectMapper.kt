@@ -2,8 +2,8 @@ package com.coelhocaique.finance.api.helper
 
 import com.coelhocaique.finance.api.dto.DebtRequestDTO
 import com.coelhocaique.finance.api.dto.IncomeRequestDTO
-import com.coelhocaique.finance.core.dto.DebtDTO
-import com.coelhocaique.finance.core.dto.IncomeDTO
+import com.coelhocaique.finance.core.domain.dto.DebtDTO
+import com.coelhocaique.finance.core.domain.dto.IncomeDTO
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.just
 

@@ -1,6 +1,6 @@
-package com.coelhocaique.finance.core.dto
+package com.coelhocaique.finance.core.domain.dto
 
-import com.coelhocaique.finance.core.enums.Username
+import com.coelhocaique.finance.core.domain.enums.Username
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime

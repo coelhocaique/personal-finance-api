@@ -1,9 +1,9 @@
 package com.coelhocaique.finance.core.service
 
-import com.coelhocaique.finance.core.dto.IncomeDTO
-import com.coelhocaique.finance.core.mapper.IncomeMapper.toDTO
-import com.coelhocaique.finance.core.mapper.IncomeMapper.toDocument
-import com.coelhocaique.finance.core.repository.IncomeRepository
+import com.coelhocaique.finance.core.domain.dto.IncomeDTO
+import com.coelhocaique.finance.core.domain.mapper.IncomeMapper.toDTO
+import com.coelhocaique.finance.core.domain.mapper.IncomeMapper.toDocument
+import com.coelhocaique.finance.core.persistance.IncomeRepository
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 import java.math.BigDecimal

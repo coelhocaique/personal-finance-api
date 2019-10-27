@@ -1,8 +1,8 @@
 package com.coelhocaique.finance.api.dto
 
-import com.coelhocaique.finance.core.dto.AdditionDTO
-import com.coelhocaique.finance.core.dto.DiscountDTO
-import com.coelhocaique.finance.core.enums.Username
+import com.coelhocaique.finance.core.domain.dto.AdditionDTO
+import com.coelhocaique.finance.core.domain.dto.DiscountDTO
+import com.coelhocaique.finance.core.domain.enums.Username
 import java.math.BigDecimal
 import java.time.LocalDate
 

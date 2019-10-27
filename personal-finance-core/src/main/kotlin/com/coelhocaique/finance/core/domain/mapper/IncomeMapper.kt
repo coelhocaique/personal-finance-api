@@ -1,11 +1,11 @@
-package com.coelhocaique.finance.core.mapper
+package com.coelhocaique.finance.core.domain.mapper
 
-import com.coelhocaique.finance.core.document.Addition
-import com.coelhocaique.finance.core.document.Discount
-import com.coelhocaique.finance.core.document.Income
-import com.coelhocaique.finance.core.dto.AdditionDTO
-import com.coelhocaique.finance.core.dto.DiscountDTO
-import com.coelhocaique.finance.core.dto.IncomeDTO
+import com.coelhocaique.finance.core.domain.Addition
+import com.coelhocaique.finance.core.domain.Discount
+import com.coelhocaique.finance.core.domain.Income
+import com.coelhocaique.finance.core.domain.dto.AdditionDTO
+import com.coelhocaique.finance.core.domain.dto.DiscountDTO
+import com.coelhocaique.finance.core.domain.dto.IncomeDTO
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.just
 import java.util.*

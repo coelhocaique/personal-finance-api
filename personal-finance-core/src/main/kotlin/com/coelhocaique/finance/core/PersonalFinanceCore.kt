@@ -1,6 +1,6 @@
 package com.coelhocaique.finance.core
 
-import com.coelhocaique.finance.core.repository.IncomeRepository
+import com.coelhocaique.finance.core.persistance.IncomeRepository
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.PropertySource

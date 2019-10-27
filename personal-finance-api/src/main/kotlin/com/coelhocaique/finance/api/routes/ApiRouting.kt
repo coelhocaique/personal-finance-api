@@ -11,13 +11,15 @@ class ApiRouting {
 
     @Bean
     fun incomeRoutes(handler: IncomeHandler) = router {
-        GET("/income/{id}", handler::findById)
-        POST("/income", handler::create)
-        DELETE("/income/{id}", handler::delete)
+        GET("/v1/income/{id}", handler::findById)
+        POST("/v1/income", handler::create)
+        DELETE("/v1/income/{id}", handler::delete)
     }
 
     @Bean
     fun debtRoutes(handler: DebtHandler) = router {
-        POST("/debt", handler::create)
+        POST("/v1/debt", handler::create)
+        GET("/v1/debt/{id}", handler::findById)
+        GET("/v1/debt", handler::fetchDebts)
     }
 }
