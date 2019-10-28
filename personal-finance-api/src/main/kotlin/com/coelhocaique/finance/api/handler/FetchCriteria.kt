@@ -1,6 +1,6 @@
 package com.coelhocaique.finance.api.handler
 
-data class FetchDebtCriteria (
+data class FetchCriteria (
         val referenceCode: String? = null,
         val referenceDate: String? = null,
         val dateFrom: String? = null,
@@ -9,11 +9,10 @@ data class FetchDebtCriteria (
     enum class SearchType{
         REFERENCE_CODE,
         REFERENCE_DATE,
-        RANGE_DATE,
-        INVALID
+        RANGE_DATE
     }
 
-    fun searchType(): SearchType {
+    fun searchType(): SearchType? {
         if (referenceCode != null)
             return SearchType.REFERENCE_CODE
 
@@ -23,7 +22,7 @@ data class FetchDebtCriteria (
         if (dateFrom != null && dateTo != null)
             return SearchType.RANGE_DATE
 
-        return SearchType.INVALID
+        return null
     }
 
 }

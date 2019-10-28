@@ -2,14 +2,14 @@ package com.coelhocaique.finance.api.handler
 
 import org.springframework.web.reactive.function.server.ServerRequest
 
-object DebtParameterHandler {
+object ParameterHandler {
 
-    fun retrieveParameters(req: ServerRequest): FetchDebtCriteria {
+    fun retrieveParameters(req: ServerRequest): FetchCriteria {
         val referenceCode = retrieveReferenceCode(req)
         val referenceDate = retrieveReferenceDate(req)
         val referenceDateFrom = retrieveDateFrom(req)
         val referenceDateTo = retrieveDateTo(req)
-        return FetchDebtCriteria(referenceCode, referenceDate, referenceDateFrom, referenceDateTo)
+        return FetchCriteria(referenceCode, referenceDate, referenceDateFrom, referenceDateTo)
     }
 
     fun retrieveId(req: ServerRequest): String{

@@ -25,8 +25,8 @@ object IncomeMapper {
                 discounts = incomeDTO.discounts.map(::toDocument),
                 additions = incomeDTO.additions.map(::toDocument))
 
-    fun toDTO(income: Income): Mono<IncomeDTO> =
-        just (  IncomeDTO(
+    fun toDTO(income: Income): IncomeDTO =
+                IncomeDTO(
                         incomeId = UUID.fromString(income.id),
                         grossAmount = income.grossAmount,
                         netAmount = income.netAmount,
@@ -39,8 +39,9 @@ object IncomeMapper {
                         discountAmount = income.discountAmount,
                         discounts = income.discounts.map(::toDTO),
                         additions = income.additions.map(::toDTO),
-                        creationDate = income.creationDate) )
+                        creationDate = income.creationDate)
 
+    fun toMonoDTO(income: Income): Mono<IncomeDTO> = just(toDTO(income))
 
     private fun toDTO(addition: Addition): AdditionDTO = AdditionDTO(addition.amount, addition.description)
 

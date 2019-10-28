@@ -1,11 +1,15 @@
 package com.coelhocaique.finance.api.handler
 
 import com.coelhocaique.finance.api.dto.DebtRequestDTO
-import com.coelhocaique.finance.api.handler.DebtParameterHandler.retrieveId
-import com.coelhocaique.finance.api.handler.DebtParameterHandler.retrieveParameters
-import com.coelhocaique.finance.api.handler.FetchDebtCriteria.SearchType.*
+import com.coelhocaique.finance.api.handler.FetchCriteria.SearchType.*
+import com.coelhocaique.finance.api.handler.ParameterHandler.retrieveId
+import com.coelhocaique.finance.api.handler.ParameterHandler.retrieveParameters
+import com.coelhocaique.finance.api.helper.LinkBuilder.buildForDebt
+import com.coelhocaique.finance.api.helper.LinkBuilder.buildForDebts
 import com.coelhocaique.finance.api.helper.ObjectMapper.toDebtDTO
 import com.coelhocaique.finance.api.helper.ResponseHandler.generateResponse
+import com.coelhocaique.finance.api.helper.exception.ApiException.ApiExceptionHelper.business
+import com.coelhocaique.finance.core.domain.dto.DebtDTO
 import com.coelhocaique.finance.core.service.DebtService
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
@@ -17,37 +21,43 @@ import reactor.core.publisher.Mono.just
 @Component
 class DebtHandler (private val service: DebtService) {
 
-    fun create(req: ServerRequest): Mono<ServerResponse> =
-            req.bodyToMono(DebtRequestDTO::class.java)
-                    .flatMap { service.create(toDebtDTO(it)) }
-                    .flatMap { generateResponse(it) }
+    fun create(req: ServerRequest): Mono<ServerResponse> {
+        val response = req.bodyToMono(DebtRequestDTO::class.java)
+                .flatMap { service.create(toDebtDTO(it)) }
+                .flatMap { buildForDebts(req.uri().toString(), it) }
 
-    fun findById(req: ServerRequest): Mono<ServerResponse> =
-            just(retrieveId(req))
-                    .flatMap { service.findById(it) }
-                    .flatMap { generateResponse(it) }
-
-    fun fetchDebts(req: ServerRequest): Mono<ServerResponse> {
-        val criteria = retrieveParameters(req)
-
-        return when (criteria.searchType()) {
-            REFERENCE_CODE -> findByReferenceCode(criteria.referenceCode!!)
-            REFERENCE_DATE -> findByReferenceDate(criteria.referenceDate!!)
-            RANGE_DATE -> findByRangeDate(criteria.dateFrom!!, criteria.dateTo!!)
-            else -> error(IllegalArgumentException())
-        }
+        return generateResponse(response,201)
     }
 
-    private fun findByReferenceCode(referenceCode: String): Mono<ServerResponse> =
+    fun findById(req: ServerRequest): Mono<ServerResponse> {
+        val response = just(retrieveId(req))
+                .flatMap { service.findById(it) }
+                .flatMap { just(buildForDebt(req.uri().toString(), it)) }
+
+        return generateResponse(response)
+    }
+
+    fun fetchDebts(req: ServerRequest): Mono<ServerResponse> {
+        val response = just(retrieveParameters(req))
+                .flatMap {
+                    when (it.searchType()) {
+                        REFERENCE_CODE -> findByReferenceCode(it.referenceCode!!)
+                        REFERENCE_DATE -> findByReferenceDate(it.referenceDate!!)
+                        RANGE_DATE -> findByRangeDate(it.dateFrom!!, it.dateTo!!)
+                        else -> error(business("No parameters informed."))
+                    }
+                }
+                .flatMap { buildForDebts(req.uri().toString(), it) }
+        return generateResponse(response)
+    }
+
+    private fun findByReferenceCode(referenceCode: String): Mono<List<DebtDTO>> =
             service.findByReferenceCode(referenceCode)
-                    .flatMap { generateResponse(it) }
 
-    private fun findByReferenceDate(referenceDate: String): Mono<ServerResponse> =
+    private fun findByReferenceDate(referenceDate: String): Mono<List<DebtDTO>> =
             service.findByReferenceDate(referenceDate)
-                    .flatMap { generateResponse(it) }
 
-    private fun findByRangeDate(dateFrom: String, dateTo: String): Mono<ServerResponse> =
+    private fun findByRangeDate(dateFrom: String, dateTo: String): Mono<List<DebtDTO>> =
             service.findByReferenceDateBetween(dateFrom, dateTo)
-                    .flatMap { generateResponse(it) }
 
 }
