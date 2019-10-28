@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  mongo:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME:
+      MONGO_INITDB_ROOT_PASSWORD:
+    hostname: "personal-finance.mongodb.local"
+    ports:
+      - "27017:27017"
+    volumes:
+      - /opt:/data/db
+    networks:
+      - mongo-compose-network
+
+
+networks:
+  mongo-compose-network:
+    driver: bridge
