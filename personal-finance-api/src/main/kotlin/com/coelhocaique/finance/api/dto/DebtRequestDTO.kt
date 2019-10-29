@@ -1,6 +1,5 @@
 package com.coelhocaique.finance.api.dto
 
-import com.coelhocaique.finance.core.domain.enums.Username
 import java.math.BigDecimal
 import java.time.LocalDate
 
@@ -12,5 +11,5 @@ data class DebtRequestDTO (
         val type: String? = null,
         val tag: String? = null,
         val nextMonth: Boolean = false,
-        val username: Username = Username.COELHOCAIQUE
+        val username: String = "COELHOCAIQUE"
 )

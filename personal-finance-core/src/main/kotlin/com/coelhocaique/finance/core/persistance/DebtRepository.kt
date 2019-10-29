@@ -1,18 +1,16 @@
 package com.coelhocaique.finance.core.persistance
 
 import com.coelhocaique.finance.core.domain.Debt
-import org.springframework.data.mongodb.repository.Query
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository
-import reactor.core.publisher.Flux
-import reactor.core.publisher.Mono
+import org.socialsignin.spring.data.dynamodb.repository.DynamoDBCrudRepository
+import org.socialsignin.spring.data.dynamodb.repository.EnableScan
 
-interface DebtRepository: ReactiveMongoRepository<Debt, String> {
+@EnableScan
+interface DebtRepository: DynamoDBCrudRepository<Debt, String> {
 
-    fun findByReferenceCode(referenceCode: String): Flux<Debt>
+    fun findByReferenceCode(referenceCode: String): List<Debt>
 
-    @Query("{ \$and:[ {'referenceDate': { \$gte:?0 , \$lte:?1 } }]}")
-    fun findByReferenceDateRange(from: String, to: String): Flux<Debt>
+    fun findByReferenceDateBetween(from: String, to: String): List<Debt>
 
-    fun findByReferenceDate(referenceDate: String): Flux<Debt>
+    fun findByReferenceDate(referenceDate: String): List<Debt>
 
 }

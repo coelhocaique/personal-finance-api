@@ -1,10 +1,9 @@
 package com.coelhocaique.finance.core.domain.dto
 
-import com.coelhocaique.finance.core.domain.enums.Username
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 data class DebtDTO (
         val debtId: UUID? = null,
@@ -19,7 +18,7 @@ data class DebtDTO (
         val referenceDate: String? = null,
         val nextMonth: Boolean? = null,
         val totalAmount: BigDecimal? = null,
-        val username: Username = Username.COELHOCAIQUE,
+        val username: String,
         val creationDate: LocalDateTime? = null,
         val links: List<Map<String, String>>? = null
 )

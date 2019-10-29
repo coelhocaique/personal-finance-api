@@ -10,17 +10,17 @@ object IncomeHelper {
     fun calculateIncome(incomeDTO: IncomeDTO): IncomeDTO {
         val discountAmount = calculateDiscountAmount(incomeDTO.discounts)
         val additionalAmount = calculateAdditionalAmount(incomeDTO.additions)
-        val netAmount = calculateNetAmount(incomeDTO.grossAmount, additionalAmount, discountAmount)
+        val netAmount = calculateNetAmount(incomeDTO.grossAmount, additionalAmount!!, discountAmount!!)
         return incomeDTO.copy(netAmount = netAmount,
                 additionalAmount = additionalAmount,
                 discountAmount = discountAmount)
     }
 
-    private fun calculateDiscountAmount(discounts: List<DiscountDTO>) =
-            discounts.fold(BigDecimal.ZERO) { x, it -> x.add(it.amount) }
+    private fun calculateDiscountAmount(discounts: List<DiscountDTO>?) =
+            discounts?.fold(BigDecimal.ZERO) { x, it -> x.add(it.amount) }
 
-    private fun calculateAdditionalAmount(additions: List<AdditionDTO>) =
-            additions.fold(BigDecimal.ZERO) { x, it -> x.add(it.amount) }
+    private fun calculateAdditionalAmount(additions: List<AdditionDTO>?) =
+            additions?.fold(BigDecimal.ZERO) { x, it -> x.add(it.amount) }
 
     private fun calculateNetAmount(grossAmount: BigDecimal, additionalAmount: BigDecimal,
                                    discountAmount: BigDecimal): BigDecimal =

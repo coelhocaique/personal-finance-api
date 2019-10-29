@@ -2,7 +2,6 @@ package com.coelhocaique.finance.api.dto
 
 import com.coelhocaique.finance.core.domain.dto.AdditionDTO
 import com.coelhocaique.finance.core.domain.dto.DiscountDTO
-import com.coelhocaique.finance.core.domain.enums.Username
 import java.math.BigDecimal
 import java.time.LocalDate
 
@@ -12,7 +11,7 @@ data class IncomeRequestDTO (
         val receiptDate: LocalDate? = null,
         val referenceDate: String? = null,
         val sourceName: String? = null,
-        val username: Username = Username.COELHOCAIQUE,
+        val username: String = "COELHOCAIQUE",
         val discounts: List<DiscountDTO> = emptyList(),
         val additions: List<AdditionDTO> = emptyList()
 )

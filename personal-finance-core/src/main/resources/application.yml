@@ -1,6 +1,0 @@
-spring:
-  application:
-    name: personal-finance-core
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/personalFinance
