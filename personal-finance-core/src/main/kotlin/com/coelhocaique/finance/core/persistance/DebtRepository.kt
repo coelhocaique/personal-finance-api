@@ -12,5 +12,4 @@ interface DebtRepository: DynamoDBCrudRepository<Debt, String> {
     fun findByReferenceDateBetween(from: String, to: String): List<Debt>
 
     fun findByReferenceDate(referenceDate: String): List<Debt>
-
 }

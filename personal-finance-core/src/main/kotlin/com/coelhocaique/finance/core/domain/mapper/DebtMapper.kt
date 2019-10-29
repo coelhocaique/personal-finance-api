@@ -10,7 +10,7 @@ import java.util.*
 object DebtMapper {
 
     fun toDocument(dto: DebtDTO): Debt =
-            Debt(   id = UUID.randomUUID().toString(),
+            Debt(id = UUID.randomUUID().toString(),
                     amount = dto.amount.toString(),
                     description = dto.description,
                     debtDate = dto.debtDate,
@@ -25,8 +25,7 @@ object DebtMapper {
                     creationDate = LocalDateTime.now())
 
     fun toDTO(debt: Debt): DebtDTO =
-            DebtDTO(
-                    debtId = UUID.fromString(debt.id),
+            DebtDTO(debtId = UUID.fromString(debt.id),
                     amount = debt.amount?.toBigDecimal()!!,
                     description = debt.description!!,
                     debtDate = debt.debtDate!!,
