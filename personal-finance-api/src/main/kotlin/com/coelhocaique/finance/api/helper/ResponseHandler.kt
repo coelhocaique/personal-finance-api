@@ -1,7 +1,7 @@
 package com.coelhocaique.finance.api.helper
 
 import com.coelhocaique.finance.api.helper.exception.ApiException
-import org.slf4j.LoggerFactory
+import com.coelhocaique.finance.core.util.logger
 import org.springframework.web.reactive.function.BodyInserters.fromObject
 import org.springframework.web.reactive.function.server.ServerResponse
 import reactor.core.publisher.Mono
@@ -10,8 +10,6 @@ import reactor.core.publisher.switchIfEmpty
 object ResponseHandler {
 
     private const val DEFAULT_ERROR_MESSAGE = "Internal error, please try again."
-
-    val logger = LoggerFactory.getLogger(ResponseHandler::class.java)
 
     data class ErrorResponse(val errors: List<String>)
 
@@ -28,14 +26,14 @@ object ResponseHandler {
     }
 
     private fun mapException(it: Throwable): Mono<ServerResponse> {
-        logger.error(it.message, it)
+        logger().error(it.message, it)
         return ServerResponse
                 .status(500)
                 .body(fromObject(buildErrorResponse(it.message)))
     }
 
     private fun mapApiException(it: ApiException): Mono<ServerResponse> {
-        logger.error(it.message, it)
+        logger().error(it.message, it)
         return ServerResponse
                 .status(it.type.status)
                 .body(fromObject(buildErrorResponse(it.messages)))

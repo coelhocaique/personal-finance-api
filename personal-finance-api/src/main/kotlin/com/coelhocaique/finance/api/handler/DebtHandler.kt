@@ -7,6 +7,7 @@ import com.coelhocaique.finance.api.handler.ParameterHandler.retrieveParameters
 import com.coelhocaique.finance.api.helper.LinkBuilder.buildForDebt
 import com.coelhocaique.finance.api.helper.LinkBuilder.buildForDebts
 import com.coelhocaique.finance.api.helper.ObjectMapper.toDebtDTO
+import com.coelhocaique.finance.api.helper.RequestValidator
 import com.coelhocaique.finance.api.helper.ResponseHandler.generateResponse
 import com.coelhocaique.finance.api.helper.exception.ApiException.ApiExceptionHelper.business
 import com.coelhocaique.finance.core.domain.dto.DebtDTO
@@ -23,6 +24,8 @@ class DebtHandler (private val service: DebtService) {
 
     fun create(req: ServerRequest): Mono<ServerResponse> {
         val response = req.bodyToMono(DebtRequestDTO::class.java)
+                .flatMap { RequestValidator.validate(it) }
+                .onErrorMap { it }
                 .flatMap { service.create(toDebtDTO(it)) }
                 .flatMap { buildForDebts(req.uri().toString(), it) }
 
