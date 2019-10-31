@@ -2,6 +2,7 @@ package com.coelhocaique.finance.api.routes
 
 import com.coelhocaique.finance.api.handler.DebtHandler
 import com.coelhocaique.finance.api.handler.IncomeHandler
+import com.coelhocaique.finance.api.handler.ParameterHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.router
@@ -22,5 +23,11 @@ class ApiRouting {
         POST("/v1/debt", handler::create)
         GET("/v1/debt", handler::fetchDebts)
         GET("/v1/debt/{id}", handler::findById)
+    }
+
+    @Bean
+    fun parameterRoutes(handler: ParameterHandler) = router {
+        POST("/v1/parameter", handler::create)
+        GET("/v1/parameter/{id}", handler::findById)
     }
 }

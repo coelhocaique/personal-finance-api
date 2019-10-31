@@ -25,3 +25,14 @@ resource "aws_dynamodb_table" "personal-finance-debt" {
     type = "S"
   }
 }
+resource "aws_dynamodb_table" "personal-finance-parameter" {
+  name = "parameter"
+  read_capacity = "10"
+  write_capacity = "10"
+  hash_key = "parameter_id"
+
+  attribute {
+    name = "parameter_id"
+    type = "S"
+  }
+}

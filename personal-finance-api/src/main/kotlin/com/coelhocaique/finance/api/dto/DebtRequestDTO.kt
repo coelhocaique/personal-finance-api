@@ -4,12 +4,12 @@ import java.math.BigDecimal
 import java.time.LocalDate
 
 data class DebtRequestDTO (
-        val amount: BigDecimal? = null,
-        val description: String? = null,
-        val debtDate: LocalDate? = null,
-        val installments: Int? = null,
-        val type: String? = null,
-        val tag: String? = null,
+        val amount: BigDecimal,
+        val description: String,
+        val debtDate: LocalDate,
+        val installments: Int,
+        val type: String,
+        val tag: String,
         val nextMonth: Boolean = false,
         val username: String = "COELHOCAIQUE"
 )

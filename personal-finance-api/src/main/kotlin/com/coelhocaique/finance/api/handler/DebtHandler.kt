@@ -2,8 +2,8 @@ package com.coelhocaique.finance.api.handler
 
 import com.coelhocaique.finance.api.dto.DebtRequestDTO
 import com.coelhocaique.finance.api.handler.FetchCriteria.SearchType.*
-import com.coelhocaique.finance.api.handler.ParameterHandler.retrieveId
-import com.coelhocaique.finance.api.handler.ParameterHandler.retrieveParameters
+import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrieveId
+import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrieveParameters
 import com.coelhocaique.finance.api.helper.LinkBuilder.buildForDebt
 import com.coelhocaique.finance.api.helper.LinkBuilder.buildForDebts
 import com.coelhocaique.finance.api.helper.ObjectMapper.toDebtDTO

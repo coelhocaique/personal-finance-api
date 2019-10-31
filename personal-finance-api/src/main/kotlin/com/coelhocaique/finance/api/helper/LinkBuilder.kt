@@ -2,6 +2,7 @@ package com.coelhocaique.finance.api.helper
 
 import com.coelhocaique.finance.core.domain.dto.DebtDTO
 import com.coelhocaique.finance.core.domain.dto.IncomeDTO
+import com.coelhocaique.finance.core.domain.dto.ParameterDTO
 import reactor.core.publisher.Mono
 import java.util.stream.Collectors
 
@@ -36,6 +37,21 @@ object LinkBuilder {
         )
 
         return debtDTO.copy(links = links)
+    }
+
+    fun buildForParameters(uri: String, parameterDTOs: List<ParameterDTO>): Mono<List<ParameterDTO>> {
+        return Mono.just(parameterDTOs.stream().map { buildForParameter(uri, it) }.collect(Collectors.toList()))
+    }
+
+    fun buildForParameter(uri: String, parameterDTO: ParameterDTO): ParameterDTO {
+        val baseUri = uri.substringBefore("v1")
+        val links = listOf(
+                mapLink("GET", baseUri.plus("v1/parameter/".plus(parameterDTO.parameterId))),
+                mapLink("GET", baseUri.plus("v1/parameter")),
+                mapLink("DELETE",baseUri.plus("v1/parameter/".plus(parameterDTO.parameterId)))
+        )
+
+        return parameterDTO.copy(links = links)
     }
 
     private fun mapLink(method: String, href: String) = mapOf("method" to method, "href" to href)

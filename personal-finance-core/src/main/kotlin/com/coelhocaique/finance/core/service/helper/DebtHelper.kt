@@ -3,6 +3,7 @@ package com.coelhocaique.finance.core.service.helper
 import com.coelhocaique.finance.core.domain.Debt
 import com.coelhocaique.finance.core.domain.dto.DebtDTO
 import com.coelhocaique.finance.core.domain.mapper.DebtMapper
+import com.coelhocaique.finance.core.util.generateReferenceDate
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDate
@@ -58,9 +59,4 @@ object DebtHelper {
                 remainingAmount.subtract(installmentAmount),
                 debtDates.drop(1), debts + newDebt)
     }
-
-    private fun generateReferenceDate(date: LocalDate) = date.toString()
-            .replace("-", "")
-            .substring(0, 6)
-
 }

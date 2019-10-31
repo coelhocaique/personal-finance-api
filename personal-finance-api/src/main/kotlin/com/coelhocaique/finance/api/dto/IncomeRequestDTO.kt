@@ -6,11 +6,11 @@ import java.math.BigDecimal
 import java.time.LocalDate
 
 data class IncomeRequestDTO (
-        val grossAmount: BigDecimal? = null,
-        val description: String? = null,
-        val receiptDate: LocalDate? = null,
-        val referenceDate: String? = null,
-        val sourceName: String? = null,
+        val grossAmount: BigDecimal,
+        val description: String,
+        val receiptDate: LocalDate,
+        val referenceDate: String,
+        val sourceName: String,
         val username: String = "COELHOCAIQUE",
         val discounts: List<DiscountDTO> = emptyList(),
         val additions: List<AdditionDTO> = emptyList()

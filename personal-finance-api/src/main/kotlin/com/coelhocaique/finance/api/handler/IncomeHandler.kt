@@ -3,8 +3,8 @@ package com.coelhocaique.finance.api.handler
 import com.coelhocaique.finance.api.dto.IncomeRequestDTO
 import com.coelhocaique.finance.api.handler.FetchCriteria.SearchType.RANGE_DATE
 import com.coelhocaique.finance.api.handler.FetchCriteria.SearchType.REFERENCE_DATE
-import com.coelhocaique.finance.api.handler.ParameterHandler.retrieveId
-import com.coelhocaique.finance.api.handler.ParameterHandler.retrieveParameters
+import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrieveId
+import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrieveParameters
 import com.coelhocaique.finance.api.helper.LinkBuilder.buildForIncome
 import com.coelhocaique.finance.api.helper.LinkBuilder.buildForIncomes
 import com.coelhocaique.finance.api.helper.ObjectMapper
