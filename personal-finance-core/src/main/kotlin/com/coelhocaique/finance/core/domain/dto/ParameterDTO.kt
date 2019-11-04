@@ -7,8 +7,8 @@ data class ParameterDTO (
         val parameterId: UUID? = null,
         val name: String,
         val value: String,
-        val startDate: String,
-        val endDate: String? = null,
+        val referenceDate: String,
+        val userId: String,
         val creationDate: LocalDateTime? = null,
         val links: List<Map<String, String>>? = null
 )

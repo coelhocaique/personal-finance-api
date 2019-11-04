@@ -20,17 +20,17 @@ class IncomeService(private val repository: IncomeRepository) {
                 .flatMap { toMonoDTO(it) }
     }
 
-    fun findById(id: String): Mono<IncomeDTO> {
-        return repository.findById(id).map { toMonoDTO(it) }.orElse(empty())
+    fun findById(userId: String, id: String): Mono<IncomeDTO> {
+        return repository.findByIdAndUserId(id, userId).map { toMonoDTO(it) }.orElse(empty())
     }
 
-    fun findByReferenceDate(referenceDate: String): Mono<List<IncomeDTO>> {
-        return just(repository.findByReferenceDate(referenceDate))
+    fun findByReferenceDate(userId: String, referenceDate: String): Mono<List<IncomeDTO>> {
+        return just(repository.findByReferenceDateAndUserId(referenceDate, userId))
                 .map { it.map { itt -> toDTO(itt) }}
     }
 
-    fun findByReferenceDateRange(dateFrom: String, dateTo: String): Mono<List<IncomeDTO>> {
-        return just(repository.findByReferenceDateBetween(dateFrom, dateFrom))
+    fun findByReferenceDateRange(userId: String, dateFrom: String, dateTo: String): Mono<List<IncomeDTO>> {
+        return just(repository.findByReferenceDateBetweenAndUserId(dateFrom, dateFrom, userId))
                 .map { it.map { itt -> toDTO(itt) }}
     }
 }

@@ -56,8 +56,8 @@ data class Debt (
         var totalAmount: String?,
 
         @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
-        @get:DynamoDBAttribute(attributeName = "username")
-        var username: String?,
+        @get:DynamoDBAttribute(attributeName = "user_id")
+        var userId: String?,
 
         @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
         @get:DynamoDBAttribute(attributeName = "creation_date")

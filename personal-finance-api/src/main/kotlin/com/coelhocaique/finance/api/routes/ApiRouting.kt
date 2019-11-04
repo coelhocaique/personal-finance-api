@@ -29,5 +29,6 @@ class ApiRouting {
     fun parameterRoutes(handler: ParameterHandler) = router {
         POST("/v1/parameter", handler::create)
         GET("/v1/parameter/{id}", handler::findById)
+        GET("/v1/parameter", handler::fetchParameters)
     }
 }

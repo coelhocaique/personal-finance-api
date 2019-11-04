@@ -3,8 +3,8 @@ package com.coelhocaique.finance.api.handler
 import com.coelhocaique.finance.api.dto.IncomeRequestDTO
 import com.coelhocaique.finance.api.handler.FetchCriteria.SearchType.RANGE_DATE
 import com.coelhocaique.finance.api.handler.FetchCriteria.SearchType.REFERENCE_DATE
-import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrieveId
 import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrieveParameters
+import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrievePath
 import com.coelhocaique.finance.api.helper.LinkBuilder.buildForIncome
 import com.coelhocaique.finance.api.helper.LinkBuilder.buildForIncomes
 import com.coelhocaique.finance.api.helper.ObjectMapper
@@ -35,18 +35,20 @@ class IncomeHandler (private val service: IncomeService) {
     }
 
     fun findById(req: ServerRequest): Mono<ServerResponse> {
-        val response = just(retrieveId(req))
-                .flatMap { service.findById(it) }
+        val response = just(retrievePath(req))
+                .flatMap { service.findById(it.userId, it.id!!) }
+                .onErrorMap { it }
                 .flatMap { just(buildForIncome(req.uri().toString(), it)) }
         return generateResponse(response)
     }
 
     fun fetchIncomes(req: ServerRequest): Mono<ServerResponse> {
         val response = just(retrieveParameters(req))
+                .onErrorMap { it }
                 .flatMap {
                     when (it.searchType()) {
-                        REFERENCE_DATE -> findByReferenceDate(it.referenceDate!!)
-                        RANGE_DATE -> findByReferenceDateRange(it.dateFrom!!, it.dateTo!!)
+                        REFERENCE_DATE -> findByReferenceDate(it)
+                        RANGE_DATE -> findByReferenceDateRange(it)
                         else -> error(business("No parameters informed."))
                     }
                 }
@@ -56,16 +58,16 @@ class IncomeHandler (private val service: IncomeService) {
     }
 
     fun delete(req: ServerRequest): Mono<ServerResponse> {
-        val response = just(retrieveId(req))
-                .flatMap { service.findById(it) }
+        val response = just(retrievePath(req))
+                .flatMap { service.findById(it.userId, it.id!!) }
 
         return generateResponse(response)
     }
 
-    private fun findByReferenceDate(referenceDate: String): Mono<List<IncomeDTO>> =
-            service.findByReferenceDate(referenceDate)
+    private fun findByReferenceDate(it: FetchCriteria): Mono<List<IncomeDTO>> =
+            service.findByReferenceDate(it.userId, it.referenceDate!!)
 
 
-    private fun findByReferenceDateRange(dateFrom: String, dateTo: String): Mono<List<IncomeDTO>> =
-            service.findByReferenceDateRange(dateFrom, dateTo)
+    private fun findByReferenceDateRange(it: FetchCriteria): Mono<List<IncomeDTO>> =
+            service.findByReferenceDateRange(it.userId, it.dateFrom!!, it.dateTo!!)
 }

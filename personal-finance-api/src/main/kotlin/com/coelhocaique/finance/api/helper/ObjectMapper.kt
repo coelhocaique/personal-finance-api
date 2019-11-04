@@ -16,7 +16,7 @@ object ObjectMapper {
             just( IncomeDTO(
                     grossAmount = dto.grossAmount,
                     description = dto.description,
-                    username = dto.username,
+                    userId = dto.userId,
                     referenceDate = dto.referenceDate,
                     receiptDate = dto.receiptDate,
                     sourceName = dto.sourceName,
@@ -33,14 +33,14 @@ object ObjectMapper {
                     installments = dto.installments,
                     nextMonth = dto.nextMonth,
                     description = dto.description,
-                    username = dto.username
+                    userId = dto.userId
             ) )
 
     fun toParameterDTO(dto: ParameterRequestDTO): Mono<ParameterDTO> =
             just( ParameterDTO(
                     name = dto.name,
                     value = dto.value,
-                    startDate = generateReferenceDate(dto.startDate),
-                    endDate = dto.endDate?.let { generateReferenceDate(it)}
+                    referenceDate = generateReferenceDate(dto.referenceDate),
+                    userId = dto.userId
             ) )
 }

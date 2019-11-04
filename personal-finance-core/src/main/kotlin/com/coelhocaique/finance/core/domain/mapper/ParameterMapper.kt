@@ -12,18 +12,18 @@ object ParameterMapper {
             Parameter(id = UUID.randomUUID().toString(),
                     name = dto.name,
                     value = dto.value,
-                    startDate = dto.startDate,
-                    endDate = dto.endDate,
-                    creationDate = dto.creationDate)
+                    referenceDate = dto.referenceDate,
+                    creationDate = dto.creationDate,
+                    userId = dto.userId)
 
     fun toDTO(parameter: Parameter): ParameterDTO =
             ParameterDTO(
                     parameterId= UUID.fromString(parameter.id),
                     name = parameter.name!!,
                     value = parameter.value!!,
-                    startDate = parameter.startDate!!,
-                    endDate = parameter.endDate,
-                    creationDate = parameter.creationDate)
+                    referenceDate = parameter.referenceDate!!,
+                    creationDate = parameter.creationDate,
+                    userId = parameter.userId!!)
 
     fun toMonoDTO(parameter: Parameter): Mono<ParameterDTO> = just(toDTO(parameter))
 

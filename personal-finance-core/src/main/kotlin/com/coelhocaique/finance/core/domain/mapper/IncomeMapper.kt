@@ -13,14 +13,14 @@ import java.util.*
 object IncomeMapper {
 
     fun toDocument(incomeDTO: IncomeDTO): Income =
-        Income( incomeId = UUID.randomUUID().toString(),
+        Income( id = UUID.randomUUID().toString(),
                 grossAmount = incomeDTO.grossAmount.toString(),
                 netAmount = incomeDTO.netAmount!!.toString(),
                 additionalAmount = incomeDTO.additionalAmount.toString(),
                 receiptDate = incomeDTO.receiptDate,
                 referenceDate = incomeDTO.referenceDate,
                 description = incomeDTO.description,
-                username = incomeDTO.username,
+                userId = incomeDTO.userId,
                 sourceName = incomeDTO.sourceName.toUpperCase(),
                 discountAmount = incomeDTO.discountAmount.toString(),
                 discounts = incomeDTO.discounts?.map{ toDocument(it)},
@@ -29,12 +29,12 @@ object IncomeMapper {
 
     fun toDTO(income: Income): IncomeDTO =
                 IncomeDTO(
-                        incomeId = UUID.fromString(income.incomeId),
+                        incomeId = UUID.fromString(income.id),
                         grossAmount = income.grossAmount!!.toBigDecimal(),
                         netAmount = income.netAmount!!.toBigDecimal(),
                         additionalAmount = income.additionalAmount?.toBigDecimal(),
                         description = income.description!!,
-                        username = income.username!!,
+                        userId = income.userId!!,
                         receiptDate = income.receiptDate!!,
                         referenceDate = income.referenceDate!!,
                         sourceName = income.sourceName!!,

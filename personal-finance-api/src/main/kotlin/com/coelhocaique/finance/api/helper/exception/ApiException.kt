@@ -8,11 +8,14 @@ data class ApiException(val type: ExceptionType,
 
     enum class ExceptionType(val status: Int){
         BUSINESS_EXCEPTION(400),
+        UNAUTHORIZED_EXCEPTION(401),
         SERVER_EXCEPTION(500)
     }
 
 
     companion object ApiExceptionHelper {
         fun business(message: String) = ApiException(ExceptionType.BUSINESS_EXCEPTION, listOf(message))
+
+        fun unauthorized(message: String) = ApiException(ExceptionType.UNAUTHORIZED_EXCEPTION, listOf(message))
     }
 }

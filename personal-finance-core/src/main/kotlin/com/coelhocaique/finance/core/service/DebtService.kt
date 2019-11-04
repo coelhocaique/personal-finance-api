@@ -23,22 +23,22 @@ class DebtService(private val repository: DebtRepository) {
                 .map { it.map { itt -> toDTO(itt) } }
     }
 
-    fun findById(debtId: String): Mono<DebtDTO> {
-        return repository.findById(debtId).map(::toMonoDTO).orElse(empty())
+    fun findById(userId: String, id: String): Mono<DebtDTO> {
+        return repository.findByIdAndUserId(id, userId).map(::toMonoDTO).orElse(empty())
     }
 
-    fun findByReferenceCode(referenceCode: String): Mono<List<DebtDTO>> {
-        return just(repository.findByReferenceCode(referenceCode))
+    fun findByReferenceCode(userId: String, referenceCode: String): Mono<List<DebtDTO>> {
+        return just(repository.findByReferenceCodeAndUserId(referenceCode, userId))
                         .map { it.map { itt -> toDTO(itt) }}
     }
 
-    fun findByReferenceDate(referenceDate: String): Mono<List<DebtDTO>> {
-        return just(repository.findByReferenceDate(referenceDate))
+    fun findByReferenceDate(userId: String, referenceDate: String): Mono<List<DebtDTO>> {
+        return just(repository.findByReferenceDateAndUserId(referenceDate, userId))
                 .map { it.map { itt -> toDTO(itt) }}
     }
 
-    fun findByReferenceDateBetween(referenceFrom: String, referenceTo: String): Mono<List<DebtDTO>> {
-        return just(repository.findByReferenceDateBetween(referenceFrom, referenceTo))
+    fun findByReferenceDateBetween(userId: String, referenceFrom: String, referenceTo: String): Mono<List<DebtDTO>> {
+        return just(repository.findByReferenceDateBetweenAndUserId(referenceFrom, referenceTo, userId))
                 .map { it.map { itt -> toDTO(itt) }}
     }
 }

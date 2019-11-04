@@ -1,6 +1,7 @@
 package com.coelhocaique.finance.core.service
 
 import com.coelhocaique.finance.core.domain.dto.ParameterDTO
+import com.coelhocaique.finance.core.domain.mapper.ParameterMapper.toDTO
 import com.coelhocaique.finance.core.domain.mapper.ParameterMapper.toDocument
 import com.coelhocaique.finance.core.domain.mapper.ParameterMapper.toMonoDTO
 import com.coelhocaique.finance.core.persistance.ParameterRepository
@@ -17,8 +18,12 @@ class ParameterService(private val repository: ParameterRepository) {
                 .flatMap { toMonoDTO(it) }
     }
 
-    fun findById(id: String): Mono<ParameterDTO> {
-        return repository.findById(id).map { toMonoDTO(it) }.orElse(empty())
+    fun findById(userId: String, id: String): Mono<ParameterDTO> {
+        return repository.findByIdAndUserId(id, userId).map { toMonoDTO(it) }.orElse(empty())
     }
 
+    fun findByReferenceDate(userId: String, referenceDate: String): Mono<List<ParameterDTO>> {
+        return just(repository.findByReferenceDateAndUserId(referenceDate,  userId))
+                .map { it.map { itt -> toDTO(itt) }}
+    }
 }

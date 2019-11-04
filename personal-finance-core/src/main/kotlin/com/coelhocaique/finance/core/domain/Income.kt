@@ -12,7 +12,7 @@ data class Income (
 
         @Id @DynamoDBHashKey(attributeName = "income_id")
         @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
-        var incomeId: String?,
+        var id: String?,
 
         @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
         @get:DynamoDBAttribute(attributeName = "gross_amount")
@@ -56,8 +56,8 @@ data class Income (
         var additions: List<Map<String, String>>?,
 
         @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
-        @get:DynamoDBAttribute(attributeName = "username")
-        var username: String?,
+        @get:DynamoDBAttribute(attributeName = "user_id")
+        var userId: String?,
 
         @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
         @get:DynamoDBAttribute(attributeName = "creation_date")

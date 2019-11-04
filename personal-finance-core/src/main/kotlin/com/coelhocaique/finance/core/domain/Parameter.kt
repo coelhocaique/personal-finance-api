@@ -21,12 +21,12 @@ data class Parameter (
         var value: String?,
 
         @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
-        @get:DynamoDBAttribute(attributeName = "start_date")
-        var startDate: String?,
+        @get:DynamoDBAttribute(attributeName = "reference_date")
+        var referenceDate: String?,
 
         @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
-        @get:DynamoDBAttribute(attributeName = "end_date")
-        var endDate: String?,
+        @get:DynamoDBAttribute(attributeName = "user_id")
+        var userId: String?,
 
         @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
         @get:DynamoDBAttribute(attributeName = "creation_date")

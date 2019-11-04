@@ -2,8 +2,8 @@ package com.coelhocaique.finance.api.handler
 
 import com.coelhocaique.finance.api.dto.DebtRequestDTO
 import com.coelhocaique.finance.api.handler.FetchCriteria.SearchType.*
-import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrieveId
 import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrieveParameters
+import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrievePath
 import com.coelhocaique.finance.api.helper.LinkBuilder.buildForDebt
 import com.coelhocaique.finance.api.helper.LinkBuilder.buildForDebts
 import com.coelhocaique.finance.api.helper.ObjectMapper.toDebtDTO
@@ -33,8 +33,9 @@ class DebtHandler (private val service: DebtService) {
     }
 
     fun findById(req: ServerRequest): Mono<ServerResponse> {
-        val response = just(retrieveId(req))
-                .flatMap { service.findById(it) }
+        val response = just(retrievePath(req))
+                .onErrorMap { it }
+                .flatMap { service.findById(it.userId, it.id!!) }
                 .flatMap { just(buildForDebt(req.uri().toString(), it)) }
 
         return generateResponse(response)
@@ -42,11 +43,12 @@ class DebtHandler (private val service: DebtService) {
 
     fun fetchDebts(req: ServerRequest): Mono<ServerResponse> {
         val response = just(retrieveParameters(req))
+                .onErrorMap { it }
                 .flatMap {
                     when (it.searchType()) {
-                        REFERENCE_CODE -> findByReferenceCode(it.referenceCode!!)
-                        REFERENCE_DATE -> findByReferenceDate(it.referenceDate!!)
-                        RANGE_DATE -> findByRangeDate(it.dateFrom!!, it.dateTo!!)
+                        REFERENCE_CODE -> findByReferenceCode(it)
+                        REFERENCE_DATE -> findByReferenceDate(it)
+                        RANGE_DATE -> findByRangeDate(it)
                         else -> error(business("No parameters informed."))
                     }
                 }
@@ -54,13 +56,13 @@ class DebtHandler (private val service: DebtService) {
         return generateResponse(response)
     }
 
-    private fun findByReferenceCode(referenceCode: String): Mono<List<DebtDTO>> =
-            service.findByReferenceCode(referenceCode)
+    private fun findByReferenceCode(it: FetchCriteria): Mono<List<DebtDTO>> =
+            service.findByReferenceCode(it.userId, it.referenceCode!!)
 
-    private fun findByReferenceDate(referenceDate: String): Mono<List<DebtDTO>> =
-            service.findByReferenceDate(referenceDate)
+    private fun findByReferenceDate(it: FetchCriteria): Mono<List<DebtDTO>> =
+            service.findByReferenceDate(it.userId, it.referenceDate!!)
 
-    private fun findByRangeDate(dateFrom: String, dateTo: String): Mono<List<DebtDTO>> =
-            service.findByReferenceDateBetween(dateFrom, dateTo)
+    private fun findByRangeDate(it: FetchCriteria): Mono<List<DebtDTO>> =
+            service.findByReferenceDateBetween(it.userId, it.dateFrom!!, it.dateTo!!)
 
 }
