@@ -49,9 +49,9 @@ object IncomeMapper {
 
     private fun toDiscountDTO(discount: Map<String, String>) = DiscountDTO(extractAmount(discount), extractDescription(discount))
 
-    private fun toDocument(addition: AdditionDTO): Map<String, String> = convertToMap(addition.amount, addition.description)
+    private fun toDocument(addition: AdditionDTO): Map<String, String> = convertToMap(addition.amount!!, addition.description!!)
 
-    private fun toDocument(discount: DiscountDTO): Map<String, String> = convertToMap(discount.amount, discount.description)
+    private fun toDocument(discount: DiscountDTO): Map<String, String> = convertToMap(discount.amount!!, discount.description!!)
 
     private fun extractAmount(map: Map<String, String>) = map["amount"]?.toBigDecimal()!!
 

@@ -14,33 +14,33 @@ object ObjectMapper {
 
     fun toIncomeDTO(dto: IncomeRequestDTO): Mono<IncomeDTO> =
             just( IncomeDTO(
-                    grossAmount = dto.grossAmount,
-                    description = dto.description,
+                    grossAmount = dto.grossAmount!!,
+                    description = dto.description!!,
                     userId = dto.userId,
-                    referenceDate = dto.referenceDate,
-                    receiptDate = dto.receiptDate,
-                    sourceName = dto.sourceName,
+                    referenceDate = dto.referenceDate!!,
+                    receiptDate = dto.receiptDate!!,
+                    sourceName = dto.sourceName!!,
                     discounts = dto.discounts,
                     additions = dto.additions
             ) )
 
     fun toDebtDTO(dto: DebtRequestDTO): Mono<DebtDTO> =
             just( DebtDTO(
-                    amount = dto.amount,
-                    debtDate = dto.debtDate,
-                    tag = dto.tag,
-                    type = dto.type,
-                    installments = dto.installments,
+                    amount = dto.amount!!,
+                    debtDate = dto.debtDate!!,
+                    tag = dto.tag!!,
+                    type = dto.type!!,
+                    installments = dto.installments!!,
                     nextMonth = dto.nextMonth,
-                    description = dto.description,
+                    description = dto.description!!,
                     userId = dto.userId
             ) )
 
     fun toParameterDTO(dto: ParameterRequestDTO): Mono<ParameterDTO> =
             just( ParameterDTO(
-                    name = dto.name,
-                    value = dto.value,
-                    referenceDate = generateReferenceDate(dto.referenceDate),
+                    name = dto.name!!,
+                    value = dto.value!!,
+                    referenceDate = generateReferenceDate(dto.referenceDate!!),
                     userId = dto.userId
             ) )
 }

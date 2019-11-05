@@ -7,7 +7,10 @@ import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrievePara
 import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrievePath
 import com.coelhocaique.finance.api.helper.LinkBuilder.buildForIncome
 import com.coelhocaique.finance.api.helper.LinkBuilder.buildForIncomes
+import com.coelhocaique.finance.api.helper.Messages
+import com.coelhocaique.finance.api.helper.Messages.NO_PARAMETERS
 import com.coelhocaique.finance.api.helper.ObjectMapper
+import com.coelhocaique.finance.api.helper.ObjectMapper.toIncomeDTO
 import com.coelhocaique.finance.api.helper.RequestValidator
 import com.coelhocaique.finance.api.helper.ResponseHandler.generateResponse
 import com.coelhocaique.finance.api.helper.exception.ApiException.ApiExceptionHelper.business
@@ -27,29 +30,27 @@ class IncomeHandler (private val service: IncomeService) {
     fun create(req: ServerRequest): Mono<ServerResponse> {
         val response = req.bodyToMono(IncomeRequestDTO::class.java)
                 .flatMap { RequestValidator.validate(it) }
-                .onErrorMap { it }
-                .flatMap { service.create(ObjectMapper.toIncomeDTO(it)) }
+                .flatMap { service.create(toIncomeDTO(it)) }
                 .flatMap { just(buildForIncome(req.uri().toString(), it)) }
 
         return generateResponse(response, HttpStatus.CREATED.value())
     }
 
     fun findById(req: ServerRequest): Mono<ServerResponse> {
-        val response = just(retrievePath(req))
+        val response = retrievePath(req)
                 .flatMap { service.findById(it.userId, it.id!!) }
-                .onErrorMap { it }
                 .flatMap { just(buildForIncome(req.uri().toString(), it)) }
+
         return generateResponse(response)
     }
 
     fun fetchIncomes(req: ServerRequest): Mono<ServerResponse> {
-        val response = just(retrieveParameters(req))
-                .onErrorMap { it }
+        val response = retrieveParameters(req)
                 .flatMap {
                     when (it.searchType()) {
                         REFERENCE_DATE -> findByReferenceDate(it)
                         RANGE_DATE -> findByReferenceDateRange(it)
-                        else -> error(business("No parameters informed."))
+                        else -> error(business(NO_PARAMETERS))
                     }
                 }
                 .flatMap { buildForIncomes(req.uri().toString(), it) }
@@ -58,7 +59,7 @@ class IncomeHandler (private val service: IncomeService) {
     }
 
     fun delete(req: ServerRequest): Mono<ServerResponse> {
-        val response = just(retrievePath(req))
+        val response = retrievePath(req)
                 .flatMap { service.findById(it.userId, it.id!!) }
 
         return generateResponse(response)

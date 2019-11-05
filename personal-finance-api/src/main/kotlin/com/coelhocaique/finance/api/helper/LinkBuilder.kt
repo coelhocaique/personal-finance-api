@@ -4,6 +4,7 @@ import com.coelhocaique.finance.core.domain.dto.DebtDTO
 import com.coelhocaique.finance.core.domain.dto.IncomeDTO
 import com.coelhocaique.finance.core.domain.dto.ParameterDTO
 import reactor.core.publisher.Mono
+import reactor.core.publisher.Mono.just
 import java.util.stream.Collectors
 
 object LinkBuilder {
@@ -20,11 +21,11 @@ object LinkBuilder {
     }
 
     fun buildForIncomes(uri: String, incomeDTOs: List<IncomeDTO>): Mono<List<IncomeDTO>> {
-        return Mono.just(incomeDTOs.stream().map { buildForIncome(uri, it) }.collect(Collectors.toList()))
+        return just(incomeDTOs.stream().map { buildForIncome(uri, it) }.collect(Collectors.toList()))
     }
 
     fun buildForDebts(uri: String, debtDTOs: List<DebtDTO>): Mono<List<DebtDTO>> {
-        return Mono.just(debtDTOs.stream().map { buildForDebt(uri, it) }.collect(Collectors.toList()))
+        return just(debtDTOs.stream().map { buildForDebt(uri, it) }.collect(Collectors.toList()))
     }
 
     fun buildForDebt(uri: String, debtDTO: DebtDTO): DebtDTO {
@@ -40,7 +41,7 @@ object LinkBuilder {
     }
 
     fun buildForParameters(uri: String, parameterDTOs: List<ParameterDTO>): Mono<List<ParameterDTO>> {
-        return Mono.just(parameterDTOs.stream().map { buildForParameter(uri, it) }.collect(Collectors.toList()))
+        return just(parameterDTOs.stream().map { buildForParameter(uri, it) }.collect(Collectors.toList()))
     }
 
     fun buildForParameter(uri: String, parameterDTO: ParameterDTO): ParameterDTO {

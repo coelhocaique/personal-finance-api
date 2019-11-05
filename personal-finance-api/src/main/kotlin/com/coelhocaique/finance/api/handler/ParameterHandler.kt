@@ -6,6 +6,8 @@ import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrievePara
 import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrievePath
 import com.coelhocaique.finance.api.helper.LinkBuilder.buildForParameter
 import com.coelhocaique.finance.api.helper.LinkBuilder.buildForParameters
+import com.coelhocaique.finance.api.helper.Messages
+import com.coelhocaique.finance.api.helper.Messages.NO_PARAMETERS
 import com.coelhocaique.finance.api.helper.ObjectMapper
 import com.coelhocaique.finance.api.helper.RequestValidator
 import com.coelhocaique.finance.api.helper.ResponseHandler.generateResponse
@@ -25,7 +27,6 @@ class ParameterHandler (private val service: ParameterService) {
     fun create(req: ServerRequest): Mono<ServerResponse> {
         val response = req.bodyToMono(ParameterRequestDTO::class.java)
                 .flatMap { RequestValidator.validate(it) }
-                .onErrorMap { it }
                 .flatMap { service.create(ObjectMapper.toParameterDTO(it)) }
                 .flatMap { just(buildForParameter(req.uri().toString(), it)) }
 
@@ -33,8 +34,7 @@ class ParameterHandler (private val service: ParameterService) {
     }
 
     fun findById(req: ServerRequest): Mono<ServerResponse> {
-        val response = just(retrievePath(req))
-                .onErrorMap { it }
+        val response = retrievePath(req)
                 .flatMap { service.findById(it.userId, it.id!!) }
                 .flatMap { just(buildForParameter(req.uri().toString(), it)) }
 
@@ -42,12 +42,12 @@ class ParameterHandler (private val service: ParameterService) {
     }
 
     fun fetchParameters(req: ServerRequest): Mono<ServerResponse> {
-        val response = just(retrieveParameters(req))
+        val response = retrieveParameters(req)
                 .onErrorMap { it }
                 .flatMap {
                     when (it.searchType()) {
                         REFERENCE_DATE -> findByReferenceDate(it)
-                        else -> error(business("No parameters informed."))
+                        else -> error(business(NO_PARAMETERS))
                     }
                 }
                 .flatMap { buildForParameters(req.uri().toString(), it) }

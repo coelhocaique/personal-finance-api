@@ -6,6 +6,7 @@ import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrievePara
 import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrievePath
 import com.coelhocaique.finance.api.helper.LinkBuilder.buildForDebt
 import com.coelhocaique.finance.api.helper.LinkBuilder.buildForDebts
+import com.coelhocaique.finance.api.helper.Messages.NO_PARAMETERS
 import com.coelhocaique.finance.api.helper.ObjectMapper.toDebtDTO
 import com.coelhocaique.finance.api.helper.RequestValidator
 import com.coelhocaique.finance.api.helper.ResponseHandler.generateResponse
@@ -25,7 +26,6 @@ class DebtHandler (private val service: DebtService) {
     fun create(req: ServerRequest): Mono<ServerResponse> {
         val response = req.bodyToMono(DebtRequestDTO::class.java)
                 .flatMap { RequestValidator.validate(it) }
-                .onErrorMap { it }
                 .flatMap { service.create(toDebtDTO(it)) }
                 .flatMap { buildForDebts(req.uri().toString(), it) }
 
@@ -33,8 +33,7 @@ class DebtHandler (private val service: DebtService) {
     }
 
     fun findById(req: ServerRequest): Mono<ServerResponse> {
-        val response = just(retrievePath(req))
-                .onErrorMap { it }
+        val response = retrievePath(req)
                 .flatMap { service.findById(it.userId, it.id!!) }
                 .flatMap { just(buildForDebt(req.uri().toString(), it)) }
 
@@ -42,17 +41,17 @@ class DebtHandler (private val service: DebtService) {
     }
 
     fun fetchDebts(req: ServerRequest): Mono<ServerResponse> {
-        val response = just(retrieveParameters(req))
-                .onErrorMap { it }
+        val response = retrieveParameters(req)
                 .flatMap {
                     when (it.searchType()) {
                         REFERENCE_CODE -> findByReferenceCode(it)
                         REFERENCE_DATE -> findByReferenceDate(it)
                         RANGE_DATE -> findByRangeDate(it)
-                        else -> error(business("No parameters informed."))
+                        else -> error(business(NO_PARAMETERS))
                     }
                 }
                 .flatMap { buildForDebts(req.uri().toString(), it) }
+
         return generateResponse(response)
     }
 

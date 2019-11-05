@@ -17,6 +17,7 @@ class RoutesLoggingFilter() : WebFilter {
         val sw = StopWatch()
         sw.start(requestId)
         logRequest(exchange)
+
         exchange.response.beforeCommit {
             sw.stop()
             logResponse(exchange, sw.lastTaskTimeMillis)

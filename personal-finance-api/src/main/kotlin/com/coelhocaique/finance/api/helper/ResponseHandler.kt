@@ -1,5 +1,6 @@
 package com.coelhocaique.finance.api.helper
 
+import com.coelhocaique.finance.api.helper.Messages.DEFAULT_ERROR_MESSAGE
 import com.coelhocaique.finance.api.helper.exception.ApiException
 import com.coelhocaique.finance.core.util.logger
 import org.springframework.web.reactive.function.BodyInserters.fromObject
@@ -9,9 +10,7 @@ import reactor.core.publisher.switchIfEmpty
 
 object ResponseHandler {
 
-    private const val DEFAULT_ERROR_MESSAGE = "Internal error, please try again."
-
-    data class ErrorResponse(val errors: List<String>)
+     data class ErrorResponse(val errors: List<String>)
 
     fun <T> generateResponse(body: Mono<T>, status: Int = 200): Mono<ServerResponse> {
         return body.onErrorMap { it }
@@ -26,14 +25,16 @@ object ResponseHandler {
     }
 
     private fun mapException(it: Throwable): Mono<ServerResponse> {
-        logger().error(it.message, it)
+        logger().error("error=".plus(it.message), it)
         return ServerResponse
                 .status(500)
                 .body(fromObject(buildErrorResponse(it.message)))
     }
 
     private fun mapApiException(it: ApiException): Mono<ServerResponse> {
-        logger().error(it.message, it)
+        logger().error("error=".plus(it.type.toString())
+                .plus(", cause=")
+                .plus(it.messages.joinToString { it }) , it)
         return ServerResponse
                 .status(it.type.status)
                 .body(fromObject(buildErrorResponse(it.messages)))
