@@ -8,7 +8,11 @@ import java.util.Optional
 @EnableScan
 interface ParameterRepository: DynamoDBCrudRepository<Parameter, String> {
 
+    fun findByReferenceDateBetweenAndUserId(dateFrom: String, dateTo: String, userId: String): List<Parameter>
+
     fun findByReferenceDateAndUserId(referenceDate: String, userId: String): List<Parameter>
 
     fun findByIdAndUserId(id: String, userId: String): Optional<Parameter>
+
+    fun deleteByIdAndUserId(id: String, userId: String)
 }

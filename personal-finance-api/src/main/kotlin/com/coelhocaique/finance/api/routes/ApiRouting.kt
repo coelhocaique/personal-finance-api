@@ -15,7 +15,7 @@ class ApiRouting {
         POST("/v1/income", handler::create)
         GET("/v1/income", handler::fetchIncomes)
         GET("/v1/income/{id}", handler::findById)
-        DELETE("/v1/income/{id}", handler::delete)
+        DELETE("/v1/income/{id}", handler::deleteById)
     }
 
     @Bean
@@ -23,6 +23,8 @@ class ApiRouting {
         POST("/v1/debt", handler::create)
         GET("/v1/debt", handler::fetchDebts)
         GET("/v1/debt/{id}", handler::findById)
+        DELETE("/v1/debt/{id}", handler::deleteById)
+        DELETE("/v1/debt", handler::delete)
     }
 
     @Bean
@@ -30,5 +32,6 @@ class ApiRouting {
         POST("/v1/parameter", handler::create)
         GET("/v1/parameter/{id}", handler::findById)
         GET("/v1/parameter", handler::fetchParameters)
+        DELETE("/v1/parameter/{id}", handler::deleteById)
     }
 }

@@ -34,7 +34,8 @@ object LinkBuilder {
                 mapLink("GET", baseUri.plus("v1/debt/".plus(debtDTO.debtId))),
                 mapLink("GET", baseUri.plus("v1/debt?reference_date=".plus(debtDTO.referenceDate))),
                 mapLink("GET", baseUri.plus("v1/debt?reference_code=".plus(debtDTO.referenceCode))),
-                mapLink("DELETE",baseUri.plus("v1/debt/".plus(debtDTO.debtId)))
+                mapLink("DELETE",baseUri.plus("v1/debt/".plus(debtDTO.debtId))),
+                mapLink("DELETE", baseUri.plus("v1/debt?reference_code=".plus(debtDTO.referenceCode)))
         )
 
         return debtDTO.copy(links = links)

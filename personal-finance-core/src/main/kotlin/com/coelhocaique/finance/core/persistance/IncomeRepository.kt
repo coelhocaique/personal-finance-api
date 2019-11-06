@@ -13,4 +13,6 @@ interface IncomeRepository: DynamoDBCrudRepository<Income, String> {
     fun findByReferenceDateAndUserId(referenceDate: String, userId: String): List<Income>
 
     fun findByIdAndUserId(id: String, userId: String): Optional<Income>
+
+    fun deleteByIdAndUserId(id: String, userId: String)
 }

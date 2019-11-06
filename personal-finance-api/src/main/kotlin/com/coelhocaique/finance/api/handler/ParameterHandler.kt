@@ -1,15 +1,17 @@
 package com.coelhocaique.finance.api.handler
 
 import com.coelhocaique.finance.api.dto.ParameterRequestDTO
+import com.coelhocaique.finance.api.handler.FetchCriteria.SearchType.RANGE_DATE
 import com.coelhocaique.finance.api.handler.FetchCriteria.SearchType.REFERENCE_DATE
+import com.coelhocaique.finance.api.handler.RequestParameterHandler.extractBody
 import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrieveParameters
 import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrievePath
+import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrieveUserId
 import com.coelhocaique.finance.api.helper.LinkBuilder.buildForParameter
 import com.coelhocaique.finance.api.helper.LinkBuilder.buildForParameters
-import com.coelhocaique.finance.api.helper.Messages
 import com.coelhocaique.finance.api.helper.Messages.NO_PARAMETERS
-import com.coelhocaique.finance.api.helper.ObjectMapper
-import com.coelhocaique.finance.api.helper.RequestValidator
+import com.coelhocaique.finance.api.helper.ObjectMapper.toParameterDTO
+import com.coelhocaique.finance.api.helper.RequestValidator.validate
 import com.coelhocaique.finance.api.helper.ResponseHandler.generateResponse
 import com.coelhocaique.finance.api.helper.exception.ApiException.ApiExceptionHelper.business
 import com.coelhocaique.finance.core.service.ParameterService
@@ -25,9 +27,10 @@ import reactor.core.publisher.Mono.just
 class ParameterHandler (private val service: ParameterService) {
 
     fun create(req: ServerRequest): Mono<ServerResponse> {
-        val response = req.bodyToMono(ParameterRequestDTO::class.java)
-                .flatMap { RequestValidator.validate(it) }
-                .flatMap { service.create(ObjectMapper.toParameterDTO(it)) }
+        val response = retrieveUserId(req)
+                .flatMap { extractBody<ParameterRequestDTO>(req).map { itt -> itt.copy(userId = it) } }
+                .flatMap { validate(it) }
+                .flatMap { service.create(toParameterDTO(it)) }
                 .flatMap { just(buildForParameter(req.uri().toString(), it)) }
 
         return generateResponse(response, HttpStatus.CREATED.value())
@@ -47,6 +50,7 @@ class ParameterHandler (private val service: ParameterService) {
                 .flatMap {
                     when (it.searchType()) {
                         REFERENCE_DATE -> findByReferenceDate(it)
+                        RANGE_DATE -> findByReferenceDateRange(it)
                         else -> error(business(NO_PARAMETERS))
                     }
                 }
@@ -55,6 +59,18 @@ class ParameterHandler (private val service: ParameterService) {
         return generateResponse(response)
     }
 
+    fun deleteById(req: ServerRequest): Mono<ServerResponse> {
+        val response = retrievePath(req)
+                .flatMap { service.deleteById(it.userId, it.id!!) }
+
+        return generateResponse(response, 204)
+    }
+
     private fun findByReferenceDate(it: FetchCriteria) =
             service.findByReferenceDate(it.userId, it.referenceDate!!)
+
+    private fun findByReferenceDateRange(it: FetchCriteria) =
+            service.findByReferenceDateRange(it.userId, it.dateFrom!!, it.dateTo!!)
+
+
 }

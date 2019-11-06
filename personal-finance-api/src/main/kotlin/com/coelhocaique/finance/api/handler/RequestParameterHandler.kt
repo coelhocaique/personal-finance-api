@@ -6,7 +6,9 @@ import com.coelhocaique.finance.api.helper.Fields.ID
 import com.coelhocaique.finance.api.helper.Fields.REF_CODE
 import com.coelhocaique.finance.api.helper.Fields.REF_DATE
 import com.coelhocaique.finance.api.helper.Fields.USER_ID
+import com.coelhocaique.finance.api.helper.Messages.INVALID_REQUEST
 import com.coelhocaique.finance.api.helper.Messages.MISSING_HEADERS
+import com.coelhocaique.finance.api.helper.exception.ApiException.ApiExceptionHelper.business
 import com.coelhocaique.finance.api.helper.exception.ApiException.ApiExceptionHelper.unauthorized
 import org.springframework.web.reactive.function.server.ServerRequest
 import reactor.core.publisher.Mono
@@ -30,16 +32,21 @@ object RequestParameterHandler {
                 .map { FetchCriteria(userId = it, id = retrieveId(req)) }
     }
 
-    private fun retrieveId(req: ServerRequest): String {
-        return req.pathVariable(ID)
-    }
-
-    private fun retrieveUserId(req: ServerRequest): Mono<String> {
+    fun retrieveUserId(req: ServerRequest): Mono<String> {
         val user = req.headers().header(USER_ID)
         return if (user.size > 0)
             just(user[0])
         else
             error { unauthorized(MISSING_HEADERS) }
+    }
+
+    inline fun <reified T> extractBody(req: ServerRequest): Mono<T> {
+        return req.bodyToMono(T::class.java)
+                .onErrorMap { business(INVALID_REQUEST, it) }
+    }
+
+    private fun retrieveId(req: ServerRequest): String {
+        return req.pathVariable(ID)
     }
 
     private fun retrieveReferenceCode(req: ServerRequest): String? {

@@ -5,6 +5,7 @@ object Messages {
     const val NO_PARAMETERS = "No parameters informed."
     const val MISSING_HEADERS = "Missing request headers."
     const val NOT_NULL = "%s must not be null."
+    const val INVALID_REQUEST = "Invalid request body ."
 }
 
 object Fields {

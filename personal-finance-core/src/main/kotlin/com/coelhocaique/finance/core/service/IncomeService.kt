@@ -30,7 +30,15 @@ class IncomeService(private val repository: IncomeRepository) {
     }
 
     fun findByReferenceDateRange(userId: String, dateFrom: String, dateTo: String): Mono<List<IncomeDTO>> {
-        return just(repository.findByReferenceDateBetweenAndUserId(dateFrom, dateFrom, userId))
+        return just(repository.findByReferenceDateBetweenAndUserId(dateFrom, dateTo, userId))
                 .map { it.map { itt -> toDTO(itt) }}
+    }
+
+    fun deleteById(userId: String, id: String): Mono<IncomeDTO> {
+        return findById(userId, id)
+                .map {
+                    repository.deleteByIdAndUserId(it.incomeId.toString(), it.userId)
+                    it
+                }
     }
 }
