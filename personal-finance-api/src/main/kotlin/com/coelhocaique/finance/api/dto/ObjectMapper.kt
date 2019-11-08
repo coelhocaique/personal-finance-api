@@ -1,8 +1,6 @@
-package com.coelhocaique.finance.api.helper
+package com.coelhocaique.finance.api.dto
 
-import com.coelhocaique.finance.api.dto.DebtRequestDTO
-import com.coelhocaique.finance.api.dto.IncomeRequestDTO
-import com.coelhocaique.finance.api.dto.ParameterRequestDTO
+import com.coelhocaique.finance.core.domain.dto.CustomAttributeDTO
 import com.coelhocaique.finance.core.domain.dto.DebtDTO
 import com.coelhocaique.finance.core.domain.dto.IncomeDTO
 import com.coelhocaique.finance.core.domain.dto.ParameterDTO
@@ -16,7 +14,7 @@ object ObjectMapper {
             just( IncomeDTO(
                     grossAmount = dto.grossAmount!!,
                     description = dto.description!!,
-                    userId = dto.userId,
+                    accountId = dto.accountId,
                     referenceDate = dto.referenceDate!!,
                     receiptDate = dto.receiptDate!!,
                     sourceName = dto.sourceName!!,
@@ -33,7 +31,7 @@ object ObjectMapper {
                     installments = dto.installments!!,
                     nextMonth = dto.nextMonth,
                     description = dto.description!!,
-                    userId = dto.userId
+                    accountId = dto.accountId
             ) )
 
     fun toParameterDTO(dto: ParameterRequestDTO): Mono<ParameterDTO> =
@@ -41,6 +39,14 @@ object ObjectMapper {
                     name = dto.name!!,
                     value = dto.value!!,
                     referenceDate = generateReferenceDate(dto.referenceDate!!),
-                    userId = dto.userId
+                    accountId = dto.accountId
+            ) )
+
+
+    fun toCustomAttributeDTO(dto: CustomAttributeRequestDTO): Mono<CustomAttributeDTO> =
+            just( CustomAttributeDTO(
+                    propertyName = dto.propertyName!!,
+                    value = dto.value!!,
+                    accountId = dto.accountId
             ) )
 }

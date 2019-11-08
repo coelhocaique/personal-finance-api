@@ -11,5 +11,5 @@ data class DebtRequestDTO (
         val type: String?,
         val tag: String?,
         val nextMonth: Boolean = false,
-        val userId: String = "44df25d4-08a4-4e3e-9a3b-8b1e39483380"
+        val accountId: String?
 )

@@ -6,13 +6,15 @@ data class FetchCriteria (
         val dateFrom: String? = null,
         val dateTo: String? = null,
         val id: String? = null,
-        val userId: String
+        val propertyName: String? = null,
+        val accountId: String
 ){
     enum class SearchType {
         BY_ID,
         REFERENCE_CODE,
         REFERENCE_DATE,
-        RANGE_DATE
+        RANGE_DATE,
+        PROPERTY_NAME
     }
 
     fun searchType(): SearchType? {
@@ -27,6 +29,9 @@ data class FetchCriteria (
 
         if (dateFrom != null && dateTo != null)
             return SearchType.RANGE_DATE
+
+        if (propertyName != null)
+            return SearchType.PROPERTY_NAME
 
         return null
     }

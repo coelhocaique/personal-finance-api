@@ -5,24 +5,20 @@ import com.coelhocaique.finance.core.domain.converters.LocalDateTimeConverter
 import org.springframework.data.annotation.Id
 import java.time.LocalDateTime
 
-@DynamoDBTable(tableName = "parameter")
-data class Parameter (
+@DynamoDBTable(tableName = "custom_attribute")
+data class CustomAttribute (
 
         @Id 
-        @DynamoDBHashKey(attributeName = "parameter_id")
+        @DynamoDBHashKey(attributeName = "custom_attribute_id")
         var id: String?,
 
         @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
-        @get:DynamoDBAttribute(attributeName = "name")
-        var name: String?,
+        @get:DynamoDBAttribute(attributeName = "property_name")
+        var propertyName: String?,
 
         @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
         @get:DynamoDBAttribute(attributeName = "value")
         var value: String?,
-
-        @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
-        @get:DynamoDBAttribute(attributeName = "reference_date")
-        var referenceDate: String?,
 
         @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
         @get:DynamoDBAttribute(attributeName = "account_id")
@@ -33,5 +29,5 @@ data class Parameter (
         @DynamoDBTypeConverted(converter = LocalDateTimeConverter::class)
         var creationDate: LocalDateTime?
 ){
-        constructor() : this(null, null, null, null, null, null)
+        constructor() : this(null, null, null, null, null)
 }

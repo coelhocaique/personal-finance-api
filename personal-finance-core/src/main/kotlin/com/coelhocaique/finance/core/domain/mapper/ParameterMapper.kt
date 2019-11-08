@@ -4,6 +4,7 @@ import com.coelhocaique.finance.core.domain.Parameter
 import com.coelhocaique.finance.core.domain.dto.ParameterDTO
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.just
+import java.time.LocalDateTime
 import java.util.*
 
 object ParameterMapper {
@@ -13,8 +14,8 @@ object ParameterMapper {
                     name = dto.name,
                     value = dto.value,
                     referenceDate = dto.referenceDate,
-                    creationDate = dto.creationDate,
-                    userId = dto.userId)
+                    accountId = dto.accountId,
+                    creationDate = LocalDateTime.now())
 
     fun toDTO(parameter: Parameter): ParameterDTO =
             ParameterDTO(
@@ -22,8 +23,7 @@ object ParameterMapper {
                     name = parameter.name!!,
                     value = parameter.value!!,
                     referenceDate = parameter.referenceDate!!,
-                    creationDate = parameter.creationDate,
-                    userId = parameter.userId!!)
+                    creationDate = parameter.creationDate)
 
     fun toMonoDTO(parameter: Parameter): Mono<ParameterDTO> = just(toDTO(parameter))
 

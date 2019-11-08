@@ -1,5 +1,6 @@
 package com.coelhocaique.finance.api.helper
 
+import com.coelhocaique.finance.api.dto.CustomAttributeRequestDTO
 import com.coelhocaique.finance.api.dto.DebtRequestDTO
 import com.coelhocaique.finance.api.dto.IncomeRequestDTO
 import com.coelhocaique.finance.api.dto.ParameterRequestDTO
@@ -9,6 +10,7 @@ import com.coelhocaique.finance.api.helper.Fields.DESCRIPTION
 import com.coelhocaique.finance.api.helper.Fields.GROSS_AMOUNT
 import com.coelhocaique.finance.api.helper.Fields.INSTALLMENTS
 import com.coelhocaique.finance.api.helper.Fields.NAME
+import com.coelhocaique.finance.api.helper.Fields.PROPERTY_NAME
 import com.coelhocaique.finance.api.helper.Fields.RECEIPT_DATE
 import com.coelhocaique.finance.api.helper.Fields.REF_DATE
 import com.coelhocaique.finance.api.helper.Fields.SOURCE_NAME
@@ -18,6 +20,7 @@ import com.coelhocaique.finance.api.helper.Fields.VALUE
 import com.coelhocaique.finance.api.helper.Messages.NOT_NULL
 import com.coelhocaique.finance.api.helper.exception.ApiException
 import com.coelhocaique.finance.api.helper.exception.ApiException.ApiExceptionHelper.business
+import com.coelhocaique.finance.core.domain.CustomAttribute
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.error
 import reactor.core.publisher.Mono.just
@@ -66,6 +69,16 @@ object RequestValidator {
             nonNull(dto.name, NAME)
             nonNull(dto.value, VALUE)
             nonNull(dto.referenceDate, REF_DATE)
+            just(dto)
+        } catch (e: IllegalArgumentException){
+            error(business(e.message!!))
+        }
+    }
+
+    fun validate(dto: CustomAttributeRequestDTO): Mono<CustomAttributeRequestDTO> {
+        return try {
+            nonNull(dto.propertyName, PROPERTY_NAME)
+            nonNull(dto.value, VALUE)
             just(dto)
         } catch (e: IllegalArgumentException){
             error(business(e.message!!))

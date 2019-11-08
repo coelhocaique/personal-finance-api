@@ -5,11 +5,11 @@ import com.coelhocaique.finance.api.handler.FetchCriteria.SearchType.*
 import com.coelhocaique.finance.api.handler.RequestParameterHandler.extractBody
 import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrieveParameters
 import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrievePath
-import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrieveUserId
+import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrieveAccountId
 import com.coelhocaique.finance.api.helper.LinkBuilder.buildForDebt
 import com.coelhocaique.finance.api.helper.LinkBuilder.buildForDebts
 import com.coelhocaique.finance.api.helper.Messages.NO_PARAMETERS
-import com.coelhocaique.finance.api.helper.ObjectMapper.toDebtDTO
+import com.coelhocaique.finance.api.dto.ObjectMapper.toDebtDTO
 import com.coelhocaique.finance.api.helper.RequestValidator.validate
 import com.coelhocaique.finance.api.helper.ResponseHandler.generateResponse
 import com.coelhocaique.finance.api.helper.exception.ApiException.ApiExceptionHelper.business
@@ -26,8 +26,8 @@ import reactor.core.publisher.Mono.just
 class DebtHandler (private val service: DebtService) {
 
     fun create(req: ServerRequest): Mono<ServerResponse> {
-        val response = retrieveUserId(req)
-                .flatMap { extractBody<DebtRequestDTO>(req).map { itt -> itt.copy(userId = it) } }
+        val response = retrieveAccountId(req)
+                .flatMap { extractBody<DebtRequestDTO>(req).map { itt -> itt.copy(accountId = it) } }
                 .flatMap { validate(it) }
                 .flatMap { service.create(toDebtDTO(it)) }
                 .flatMap { buildForDebts(req.uri().toString(), it) }
@@ -37,7 +37,7 @@ class DebtHandler (private val service: DebtService) {
 
     fun findById(req: ServerRequest): Mono<ServerResponse> {
         val response = retrievePath(req)
-                .flatMap { service.findById(it.userId, it.id!!) }
+                .flatMap { service.findById(it.accountId, it.id!!) }
                 .flatMap { just(buildForDebt(req.uri().toString(), it)) }
 
         return generateResponse(response)
@@ -60,7 +60,7 @@ class DebtHandler (private val service: DebtService) {
 
     fun deleteById(req: ServerRequest): Mono<ServerResponse> {
         val response = retrievePath(req)
-                .flatMap { service.deleteById(it.userId, it.id!!) }
+                .flatMap { service.deleteById(it.accountId, it.id!!) }
 
         return generateResponse(response, 204)
     }
@@ -78,15 +78,15 @@ class DebtHandler (private val service: DebtService) {
     }
 
     private fun findByReferenceCode(it: FetchCriteria): Mono<List<DebtDTO>> =
-            service.findByReferenceCode(it.userId, it.referenceCode!!)
+            service.findByReferenceCode(it.accountId, it.referenceCode!!)
 
     private fun findByReferenceDate(it: FetchCriteria): Mono<List<DebtDTO>> =
-            service.findByReferenceDate(it.userId, it.referenceDate!!)
+            service.findByReferenceDate(it.accountId, it.referenceDate!!)
 
     private fun findByReferenceDateRange(it: FetchCriteria): Mono<List<DebtDTO>> =
-            service.findByReferenceDateRange(it.userId, it.dateFrom!!, it.dateTo!!)
+            service.findByReferenceDateRange(it.accountId, it.dateFrom!!, it.dateTo!!)
 
     private fun deleteByReferenceCode(it: FetchCriteria): Mono<List<DebtDTO>> =
-            service.deleteByReferenceCode(it.userId, it.referenceCode!!)
+            service.deleteByReferenceCode(it.accountId, it.referenceCode!!)
 
 }

@@ -21,7 +21,7 @@ object DebtMapper {
                     tag = dto.tag,
                     installments = dto.installments.toString(),
                     totalAmount = dto.totalAmount!!.toString(),
-                    userId = dto.userId,
+                    accountId = dto.accountId,
                     creationDate = LocalDateTime.now())
 
     fun toDTO(debt: Debt): DebtDTO =
@@ -36,7 +36,6 @@ object DebtMapper {
                     tag = debt.tag!!,
                     installments = debt.installments?.toInt()!!,
                     totalAmount = debt.totalAmount?.toBigDecimal()!!,
-                    userId = debt.userId!!,
                     creationDate = debt.creationDate)
 
     fun toMonoDTO(debt: Debt): Mono<DebtDTO> = just(toDTO(debt))

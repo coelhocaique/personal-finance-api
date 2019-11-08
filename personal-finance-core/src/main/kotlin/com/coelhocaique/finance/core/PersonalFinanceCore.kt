@@ -8,6 +8,6 @@ import org.springframework.context.annotation.PropertySource
 
 @Configuration
 @ComponentScan(basePackageClasses = [PersonalFinanceCore::class])
-@PropertySource("classpath:application.properties")
+@PropertySource(value=["classpath:core-application.properties"])
 @EnableDynamoDBRepositories(basePackageClasses = [IncomeRepository::class])
 class PersonalFinanceCore

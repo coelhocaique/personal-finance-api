@@ -6,11 +6,11 @@ import com.coelhocaique.finance.api.handler.FetchCriteria.SearchType.REFERENCE_D
 import com.coelhocaique.finance.api.handler.RequestParameterHandler.extractBody
 import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrieveParameters
 import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrievePath
-import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrieveUserId
+import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrieveAccountId
 import com.coelhocaique.finance.api.helper.LinkBuilder.buildForIncome
 import com.coelhocaique.finance.api.helper.LinkBuilder.buildForIncomes
 import com.coelhocaique.finance.api.helper.Messages.NO_PARAMETERS
-import com.coelhocaique.finance.api.helper.ObjectMapper.toIncomeDTO
+import com.coelhocaique.finance.api.dto.ObjectMapper.toIncomeDTO
 import com.coelhocaique.finance.api.helper.RequestValidator.validate
 import com.coelhocaique.finance.api.helper.ResponseHandler.generateResponse
 import com.coelhocaique.finance.api.helper.exception.ApiException.ApiExceptionHelper.business
@@ -28,8 +28,8 @@ import reactor.core.publisher.Mono.just
 class IncomeHandler (private val service: IncomeService) {
 
     fun create(req: ServerRequest): Mono<ServerResponse> {
-        val response = retrieveUserId(req)
-                .flatMap { extractBody<IncomeRequestDTO>(req).map { itt -> itt.copy(userId = it) } }
+        val response = retrieveAccountId(req)
+                .flatMap { extractBody<IncomeRequestDTO>(req).map { itt -> itt.copy(accountId = it) } }
                 .flatMap { validate(it) }
                 .flatMap { service.create(toIncomeDTO(it)) }
                 .flatMap { just(buildForIncome(req.uri().toString(), it)) }
@@ -39,7 +39,7 @@ class IncomeHandler (private val service: IncomeService) {
 
     fun findById(req: ServerRequest): Mono<ServerResponse> {
         val response = retrievePath(req)
-                .flatMap { service.findById(it.userId, it.id!!) }
+                .flatMap { service.findById(it.accountId, it.id!!) }
                 .flatMap { just(buildForIncome(req.uri().toString(), it)) }
 
         return generateResponse(response)
@@ -61,15 +61,15 @@ class IncomeHandler (private val service: IncomeService) {
 
     fun deleteById(req: ServerRequest): Mono<ServerResponse> {
         val response = retrievePath(req)
-                .flatMap { service.deleteById(it.userId, it.id!!) }
+                .flatMap { service.deleteById(it.accountId, it.id!!) }
 
         return generateResponse(response, 204)
     }
 
     private fun findByReferenceDate(it: FetchCriteria): Mono<List<IncomeDTO>> =
-            service.findByReferenceDate(it.userId, it.referenceDate!!)
+            service.findByReferenceDate(it.accountId, it.referenceDate!!)
 
 
     private fun findByReferenceDateRange(it: FetchCriteria): Mono<List<IncomeDTO>> =
-            service.findByReferenceDateRange(it.userId, it.dateFrom!!, it.dateTo!!)
+            service.findByReferenceDateRange(it.accountId, it.dateFrom!!, it.dateTo!!)
 }

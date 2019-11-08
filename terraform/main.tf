@@ -36,3 +36,14 @@ resource "aws_dynamodb_table" "personal-finance-parameter" {
     type = "S"
   }
 }
+resource "aws_dynamodb_table" "personal-finance-custom-attribute" {
+  name = "custom_attribute"
+  read_capacity = "10"
+  write_capacity = "10"
+  hash_key = "custom_attribute_id"
+
+  attribute {
+    name = "custom_attribute_id"
+    type = "S"
+  }
+}

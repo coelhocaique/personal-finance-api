@@ -8,15 +8,15 @@ import java.util.Optional
 @EnableScan
 interface DebtRepository: DynamoDBCrudRepository<Debt, String> {
 
-    fun findByReferenceCodeAndUserId(referenceCode: String, userId: String): List<Debt>
+    fun findByReferenceCodeAndAccountId(referenceCode: String, accountId: String): List<Debt>
 
-    fun findByReferenceDateBetweenAndUserId(dateFrom: String, dateTo: String, userId: String): List<Debt>
+    fun findByReferenceDateBetweenAndAccountId(dateFrom: String, dateTo: String, accountId: String): List<Debt>
 
-    fun findByReferenceDateAndUserId(referenceDate: String, userId: String): List<Debt>
+    fun findByReferenceDateAndAccountId(referenceDate: String, accountId: String): List<Debt>
 
-    fun findByIdAndUserId(id: String, userId: String): Optional<Debt>
+    fun findByIdAndAccountId(id: String, accountId: String): Optional<Debt>
 
-    fun deleteByReferenceCodeAndUserId(referenceCode: String, userId: String)
+    fun deleteByReferenceCodeAndAccountId(referenceCode: String, accountId: String)
 
-    fun deleteByIdAndUserId(id: String, userId: String)
+    fun deleteByIdAndAccountId(id: String, accountId: String)
 }

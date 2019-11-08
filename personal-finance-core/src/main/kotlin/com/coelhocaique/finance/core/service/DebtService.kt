@@ -19,35 +19,35 @@ class DebtService(private val repository: DebtRepository) {
                 .map { it.map { itt -> toDTO(itt) } }
     }
 
-    fun findById(userId: String, id: String): Mono<DebtDTO> {
-        return repository.findByIdAndUserId(id, userId).map(::toMonoDTO).orElse(empty())
+    fun findById(accountId: String, id: String): Mono<DebtDTO> {
+        return repository.findByIdAndAccountId(id, accountId).map(::toMonoDTO).orElse(empty())
     }
 
-    fun findByReferenceCode(userId: String, referenceCode: String): Mono<List<DebtDTO>> {
-        return just(repository.findByReferenceCodeAndUserId(referenceCode, userId))
+    fun findByReferenceCode(accountId: String, referenceCode: String): Mono<List<DebtDTO>> {
+        return just(repository.findByReferenceCodeAndAccountId(referenceCode, accountId))
                         .map { it.map { itt -> toDTO(itt) }}
     }
 
-    fun findByReferenceDate(userId: String, referenceDate: String): Mono<List<DebtDTO>> {
-        return just(repository.findByReferenceDateAndUserId(referenceDate, userId))
+    fun findByReferenceDate(accountId: String, referenceDate: String): Mono<List<DebtDTO>> {
+        return just(repository.findByReferenceDateAndAccountId(referenceDate, accountId))
                 .map { it.map { itt -> toDTO(itt) }}
     }
 
-    fun findByReferenceDateRange(userId: String, dateFrom: String, dateTo: String): Mono<List<DebtDTO>> {
-        return just(repository.findByReferenceDateBetweenAndUserId(dateFrom, dateTo, userId))
+    fun findByReferenceDateRange(accountId: String, dateFrom: String, dateTo: String): Mono<List<DebtDTO>> {
+        return just(repository.findByReferenceDateBetweenAndAccountId(dateFrom, dateTo, accountId))
                 .map { it.map { itt -> toDTO(itt) }}
     }
 
-    fun deleteByReferenceCode(userId: String, referenceCode: String): Mono<List<DebtDTO>> {
-        return findByReferenceCode(userId, referenceCode)
-                .map {  repository.deleteByReferenceCodeAndUserId(referenceCode, userId)
+    fun deleteByReferenceCode(accountId: String, referenceCode: String): Mono<List<DebtDTO>> {
+        return findByReferenceCode(accountId, referenceCode)
+                .map {  repository.deleteByReferenceCodeAndAccountId(referenceCode, accountId)
                         it
                 }
     }
 
-    fun deleteById(userId: String, id: String): Mono<DebtDTO> {
-        return findById(userId, id)
-                .map {  repository.deleteByIdAndUserId(it.debtId.toString(), it.userId)
+    fun deleteById(accountId: String, id: String): Mono<DebtDTO> {
+        return findById(accountId, id)
+                .map {  repository.deleteByIdAndAccountId(it.debtId.toString(), it.accountId!!)
                     it
                 }
     }

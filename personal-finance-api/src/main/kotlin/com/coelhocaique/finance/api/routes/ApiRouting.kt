@@ -1,5 +1,6 @@
 package com.coelhocaique.finance.api.routes
 
+import com.coelhocaique.finance.api.handler.CustomAttributeHandler
 import com.coelhocaique.finance.api.handler.DebtHandler
 import com.coelhocaique.finance.api.handler.IncomeHandler
 import com.coelhocaique.finance.api.handler.ParameterHandler
@@ -34,4 +35,11 @@ class ApiRouting {
         GET("/v1/parameter", handler::fetchParameters)
         DELETE("/v1/parameter/{id}", handler::deleteById)
     }
+    @Bean
+    fun customAttributesRoutes(handler: CustomAttributeHandler) = router {
+        POST("/v1/custom-attribute", handler::create)
+        GET("/v1/custom-attribute", handler::fetchCustomAttributes)
+        DELETE("/v1/custom-attribute/{id}", handler::deleteById)
+    }
+
 }

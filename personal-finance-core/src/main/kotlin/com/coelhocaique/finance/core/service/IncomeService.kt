@@ -20,24 +20,24 @@ class IncomeService(private val repository: IncomeRepository) {
                 .flatMap { toMonoDTO(it) }
     }
 
-    fun findById(userId: String, id: String): Mono<IncomeDTO> {
-        return repository.findByIdAndUserId(id, userId).map { toMonoDTO(it) }.orElse(empty())
+    fun findById(accountId: String, id: String): Mono<IncomeDTO> {
+        return repository.findByIdAndAccountId(id, accountId).map { toMonoDTO(it) }.orElse(empty())
     }
 
-    fun findByReferenceDate(userId: String, referenceDate: String): Mono<List<IncomeDTO>> {
-        return just(repository.findByReferenceDateAndUserId(referenceDate, userId))
+    fun findByReferenceDate(accountId: String, referenceDate: String): Mono<List<IncomeDTO>> {
+        return just(repository.findByReferenceDateAndAccountId(referenceDate, accountId))
                 .map { it.map { itt -> toDTO(itt) }}
     }
 
-    fun findByReferenceDateRange(userId: String, dateFrom: String, dateTo: String): Mono<List<IncomeDTO>> {
-        return just(repository.findByReferenceDateBetweenAndUserId(dateFrom, dateTo, userId))
+    fun findByReferenceDateRange(accountId: String, dateFrom: String, dateTo: String): Mono<List<IncomeDTO>> {
+        return just(repository.findByReferenceDateBetweenAndAccountId(dateFrom, dateTo, accountId))
                 .map { it.map { itt -> toDTO(itt) }}
     }
 
-    fun deleteById(userId: String, id: String): Mono<IncomeDTO> {
-        return findById(userId, id)
+    fun deleteById(accountId: String, id: String): Mono<IncomeDTO> {
+        return findById(accountId, id)
                 .map {
-                    repository.deleteByIdAndUserId(it.incomeId.toString(), it.userId)
+                    repository.deleteByIdAndAccountId(it.incomeId.toString(), it.accountId!!)
                     it
                 }
     }

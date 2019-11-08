@@ -18,7 +18,7 @@ data class DebtDTO (
         val referenceDate: String? = null,
         val nextMonth: Boolean? = null,
         val totalAmount: BigDecimal? = null,
-        val userId: String,
+        val accountId: String? = null,
         val creationDate: LocalDateTime? = null,
         val links: List<Map<String, String>>? = null
 )

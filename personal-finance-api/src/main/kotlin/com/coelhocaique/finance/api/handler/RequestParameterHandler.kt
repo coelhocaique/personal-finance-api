@@ -5,7 +5,7 @@ import com.coelhocaique.finance.api.helper.Fields.DATE_TO
 import com.coelhocaique.finance.api.helper.Fields.ID
 import com.coelhocaique.finance.api.helper.Fields.REF_CODE
 import com.coelhocaique.finance.api.helper.Fields.REF_DATE
-import com.coelhocaique.finance.api.helper.Fields.USER_ID
+import com.coelhocaique.finance.api.helper.Fields.ACCOUNT_ID
 import com.coelhocaique.finance.api.helper.Messages.INVALID_REQUEST
 import com.coelhocaique.finance.api.helper.Messages.MISSING_HEADERS
 import com.coelhocaique.finance.api.helper.exception.ApiException.ApiExceptionHelper.business
@@ -18,8 +18,8 @@ import reactor.core.publisher.Mono.just
 object RequestParameterHandler {
 
     fun retrieveParameters(req: ServerRequest): Mono<FetchCriteria> {
-        return retrieveUserId(req)
-                    .map { FetchCriteria(userId = it,
+        return retrieveAccountId(req)
+                    .map { FetchCriteria(accountId = it,
                              referenceCode = retrieveReferenceCode(req),
                              referenceDate = retrieveReferenceDate(req),
                              dateFrom = retrieveDateFrom(req),
@@ -28,14 +28,14 @@ object RequestParameterHandler {
     }
 
     fun retrievePath(req: ServerRequest): Mono<FetchCriteria> {
-        return retrieveUserId(req)
-                .map { FetchCriteria(userId = it, id = retrieveId(req)) }
+        return retrieveAccountId(req)
+                .map { FetchCriteria(accountId = it, id = retrieveId(req)) }
     }
 
-    fun retrieveUserId(req: ServerRequest): Mono<String> {
-        val user = req.headers().header(USER_ID)
-        return if (user.size > 0)
-            just(user[0])
+    fun retrieveAccountId(req: ServerRequest): Mono<String> {
+        val account = req.headers().header(ACCOUNT_ID)
+        return if (account.size > 0)
+            just(account[0])
         else
             error { unauthorized(MISSING_HEADERS) }
     }

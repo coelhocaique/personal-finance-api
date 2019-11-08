@@ -56,8 +56,8 @@ data class Income (
         var additions: List<Map<String, String>>?,
 
         @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
-        @get:DynamoDBAttribute(attributeName = "user_id")
-        var userId: String?,
+        @get:DynamoDBAttribute(attributeName = "account_id")
+        var accountId: String?,
 
         @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
         @get:DynamoDBAttribute(attributeName = "creation_date")
