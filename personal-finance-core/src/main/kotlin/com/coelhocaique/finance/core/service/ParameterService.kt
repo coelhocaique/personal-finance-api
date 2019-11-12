@@ -30,7 +30,7 @@ class ParameterService(private val repository: ParameterRepository) {
     fun deleteById(accountId: String, id: String): Mono<ParameterDTO> {
         return findById(accountId, id)
                 .map {
-                    repository.deleteByIdAndAccountId(it.parameterId.toString(), it.accountId!!)
+                    repository.deleteByIdAndAccountId(id, accountId)
                     it
                 }
     }

@@ -30,9 +30,9 @@ class CustomAttributeService(private val repository: CustomAttributeRepository) 
     }
 
     fun deleteById(accountId: String, id: String): Mono<CustomAttributeDTO> {
-        return repository.findByIdAndAccountId(accountId, id)
+        return repository.findByIdAndAccountId(id, accountId)
                 .map {
-                    repository.deleteByIdAndAccountId(it.accountId.toString(), it.accountId!!)
+                    repository.deleteByIdAndAccountId(id, accountId)
                     toMonoDTO(it)
                 }.orElse(empty())
     }

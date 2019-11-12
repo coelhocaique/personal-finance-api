@@ -12,6 +12,7 @@ import com.coelhocaique.finance.api.helper.LinkBuilder.buildForCustomAttributes
 import com.coelhocaique.finance.api.helper.RequestValidator.validate
 import com.coelhocaique.finance.api.helper.ResponseHandler.generateResponse
 import com.coelhocaique.finance.core.service.CustomAttributeService
+import com.coelhocaique.finance.core.util.logger
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
@@ -36,6 +37,7 @@ class CustomAttributeHandler (private val service: CustomAttributeService) {
         val response = retrieveParameters(req)
                 .onErrorMap { it }
                 .flatMap {
+                    logger().info(it.toString())
                     when (it.searchType()) {
                         PROPERTY_NAME -> findByPropertyName(it)
                         else -> findByAll(it)

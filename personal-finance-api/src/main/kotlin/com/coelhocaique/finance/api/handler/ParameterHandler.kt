@@ -15,6 +15,7 @@ import com.coelhocaique.finance.api.helper.RequestValidator.validate
 import com.coelhocaique.finance.api.helper.ResponseHandler.generateResponse
 import com.coelhocaique.finance.api.helper.exception.ApiException.ApiExceptionHelper.business
 import com.coelhocaique.finance.core.service.ParameterService
+import com.coelhocaique.finance.core.util.logger
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
@@ -47,6 +48,7 @@ class ParameterHandler (private val service: ParameterService) {
     fun fetchParameters(req: ServerRequest): Mono<ServerResponse> {
         val response = retrieveParameters(req)
                 .flatMap {
+                    logger().info(it.toString())
                     when (it.searchType()) {
                         REFERENCE_DATE -> findByReferenceDate(it)
                         RANGE_DATE -> findByReferenceDateRange(it)

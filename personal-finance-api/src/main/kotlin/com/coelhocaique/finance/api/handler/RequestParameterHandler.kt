@@ -5,11 +5,13 @@ import com.coelhocaique.finance.api.helper.Fields.DATE_TO
 import com.coelhocaique.finance.api.helper.Fields.ID
 import com.coelhocaique.finance.api.helper.Fields.REF_CODE
 import com.coelhocaique.finance.api.helper.Fields.REF_DATE
-import com.coelhocaique.finance.api.helper.Fields.ACCOUNT_ID
+import com.coelhocaique.finance.api.helper.Fields.AUTHORIZATION
+import com.coelhocaique.finance.api.helper.Fields.PROPERTY_NAME
 import com.coelhocaique.finance.api.helper.Messages.INVALID_REQUEST
 import com.coelhocaique.finance.api.helper.Messages.MISSING_HEADERS
 import com.coelhocaique.finance.api.helper.exception.ApiException.ApiExceptionHelper.business
 import com.coelhocaique.finance.api.helper.exception.ApiException.ApiExceptionHelper.unauthorized
+import com.coelhocaique.finance.core.util.logger
 import org.springframework.web.reactive.function.server.ServerRequest
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.error
@@ -18,22 +20,25 @@ import reactor.core.publisher.Mono.just
 object RequestParameterHandler {
 
     fun retrieveParameters(req: ServerRequest): Mono<FetchCriteria> {
-        return retrieveAccountId(req)
+        val criteria = retrieveAccountId(req)
                     .map { FetchCriteria(accountId = it,
                              referenceCode = retrieveReferenceCode(req),
                              referenceDate = retrieveReferenceDate(req),
                              dateFrom = retrieveDateFrom(req),
-                             dateTo = retrieveDateTo(req)) }
-
+                             dateTo = retrieveDateTo(req),
+                             propertyName = retrievePropertyName(req)) }
+        return criteria
     }
 
     fun retrievePath(req: ServerRequest): Mono<FetchCriteria> {
-        return retrieveAccountId(req)
+        val criteria =  retrieveAccountId(req)
                 .map { FetchCriteria(accountId = it, id = retrieveId(req)) }
+        logger().info(criteria.toString())
+        return criteria
     }
 
     fun retrieveAccountId(req: ServerRequest): Mono<String> {
-        val account = req.headers().header(ACCOUNT_ID)
+        val account = req.headers().header(AUTHORIZATION)
         return if (account.size > 0)
             just(account[0])
         else
@@ -63,5 +68,9 @@ object RequestParameterHandler {
 
     private fun retrieveDateTo(req: ServerRequest): String? {
         return req.queryParam(DATE_TO).orElse(null)
+    }
+
+    private fun retrievePropertyName(req: ServerRequest): String? {
+        return req.queryParam(PROPERTY_NAME).orElse(null)
     }
 }

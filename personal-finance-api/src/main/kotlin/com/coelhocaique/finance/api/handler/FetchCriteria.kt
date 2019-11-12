@@ -36,4 +36,14 @@ data class FetchCriteria (
         return null
     }
 
+    override fun toString(): String =
+            "accountId=".plus(accountId)
+                    .plus(",searchType=").plus(searchType())
+                    .plus(",id=").plus(id)
+                    .plus(",referenceCode=").plus(referenceCode)
+                    .plus(",referenceDate=").plus(referenceDate)
+                    .plus(",dateFrom=").plus(dateFrom)
+                    .plus(",dateTo=").plus(dateTo)
+                    .plus(",propertyName=").plus(propertyName)
+
 }

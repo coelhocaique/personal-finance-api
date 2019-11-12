@@ -15,6 +15,7 @@ import com.coelhocaique.finance.api.helper.ResponseHandler.generateResponse
 import com.coelhocaique.finance.api.helper.exception.ApiException.ApiExceptionHelper.business
 import com.coelhocaique.finance.core.domain.dto.DebtDTO
 import com.coelhocaique.finance.core.service.DebtService
+import com.coelhocaique.finance.core.util.logger
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
@@ -46,6 +47,7 @@ class DebtHandler (private val service: DebtService) {
     fun fetchDebts(req: ServerRequest): Mono<ServerResponse> {
         val response = retrieveParameters(req)
                 .flatMap {
+                    logger().info(it.toString())
                     when (it.searchType()) {
                         REFERENCE_CODE -> findByReferenceCode(it)
                         REFERENCE_DATE -> findByReferenceDate(it)
@@ -68,6 +70,7 @@ class DebtHandler (private val service: DebtService) {
     fun delete(req: ServerRequest): Mono<ServerResponse> {
         val response = retrieveParameters(req)
                 .flatMap {
+                    logger().info(it.toString())
                     when (it.searchType()) {
                         REFERENCE_CODE -> deleteByReferenceCode(it)
                         else -> error(business(NO_PARAMETERS))

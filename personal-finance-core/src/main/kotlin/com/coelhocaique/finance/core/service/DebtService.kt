@@ -47,7 +47,7 @@ class DebtService(private val repository: DebtRepository) {
 
     fun deleteById(accountId: String, id: String): Mono<DebtDTO> {
         return findById(accountId, id)
-                .map {  repository.deleteByIdAndAccountId(it.debtId.toString(), it.accountId!!)
+                .map {  repository.deleteByIdAndAccountId(id, accountId)
                     it
                 }
     }

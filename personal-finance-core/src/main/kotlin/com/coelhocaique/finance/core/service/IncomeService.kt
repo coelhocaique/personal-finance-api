@@ -37,7 +37,7 @@ class IncomeService(private val repository: IncomeRepository) {
     fun deleteById(accountId: String, id: String): Mono<IncomeDTO> {
         return findById(accountId, id)
                 .map {
-                    repository.deleteByIdAndAccountId(it.incomeId.toString(), it.accountId!!)
+                    repository.deleteByIdAndAccountId(id, accountId)
                     it
                 }
     }

@@ -10,7 +10,7 @@ object Messages {
 
 object Fields {
     const val ID = "id"
-    const val ACCOUNT_ID = "account_id"
+    const val AUTHORIZATION = "Authorization"
     const val REF_DATE = "reference_date"
     const val REF_CODE = "reference_code"
     const val DATE_FROM = "date_from"
