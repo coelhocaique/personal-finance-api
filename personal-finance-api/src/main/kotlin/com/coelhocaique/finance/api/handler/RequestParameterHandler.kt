@@ -16,18 +16,19 @@ import org.springframework.web.reactive.function.server.ServerRequest
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.error
 import reactor.core.publisher.Mono.just
+import java.util.*
+import java.util.UUID.fromString
 
 object RequestParameterHandler {
 
     fun retrieveParameters(req: ServerRequest): Mono<FetchCriteria> {
-        val criteria = retrieveAccountId(req)
+        return retrieveAccountId(req)
                     .map { FetchCriteria(accountId = it,
                              referenceCode = retrieveReferenceCode(req),
                              referenceDate = retrieveReferenceDate(req),
                              dateFrom = retrieveDateFrom(req),
                              dateTo = retrieveDateTo(req),
                              propertyName = retrievePropertyName(req)) }
-        return criteria
     }
 
     fun retrievePath(req: ServerRequest): Mono<FetchCriteria> {
@@ -40,7 +41,7 @@ object RequestParameterHandler {
     fun retrieveAccountId(req: ServerRequest): Mono<String> {
         val account = req.headers().header(AUTHORIZATION)
         return if (account.size > 0)
-            just(account[0])
+            just(fromString(account[0]).toString())
         else
             error { unauthorized(MISSING_HEADERS) }
     }
@@ -51,11 +52,11 @@ object RequestParameterHandler {
     }
 
     private fun retrieveId(req: ServerRequest): String {
-        return req.pathVariable(ID)
+        return fromString(req.pathVariable(ID)).toString()
     }
 
     private fun retrieveReferenceCode(req: ServerRequest): String? {
-        return req.queryParam(REF_CODE).orElse(null)
+        return req.queryParam(REF_CODE).map { fromString(it).toString() }.orElse(null)
     }
 
     private fun retrieveReferenceDate(req: ServerRequest): String? {
