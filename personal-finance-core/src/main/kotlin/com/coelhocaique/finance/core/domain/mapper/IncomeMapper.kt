@@ -1,5 +1,7 @@
 package com.coelhocaique.finance.core.domain.mapper
 
+import com.coelhocaique.finance.core.domain.Addition
+import com.coelhocaique.finance.core.domain.Discount
 import com.coelhocaique.finance.core.domain.Income
 import com.coelhocaique.finance.core.domain.dto.AdditionDTO
 import com.coelhocaique.finance.core.domain.dto.DiscountDTO
@@ -13,49 +15,44 @@ import java.util.*
 object IncomeMapper {
 
     fun toDocument(incomeDTO: IncomeDTO): Income =
-        Income( id = UUID.randomUUID().toString(),
-                grossAmount = incomeDTO.grossAmount.toString(),
-                netAmount = incomeDTO.netAmount!!.toString(),
-                additionalAmount = incomeDTO.additionalAmount.toString(),
+        Income( incomeId = UUID.randomUUID(),
+                grossAmount = incomeDTO.grossAmount,
+                netAmount = incomeDTO.netAmount!!,
+                additionalAmount = incomeDTO.additionalAmount!!,
                 receiptDate = incomeDTO.receiptDate,
                 referenceDate = incomeDTO.referenceDate,
                 description = incomeDTO.description,
-                accountId = incomeDTO.accountId,
+                accountId = incomeDTO.accountId!!,
                 sourceName = incomeDTO.sourceName.toUpperCase(),
-                discountAmount = incomeDTO.discountAmount.toString(),
+                discountAmount = incomeDTO.discountAmount!!,
                 discounts = incomeDTO.discounts?.map{ toDocument(it)},
                 additions = incomeDTO.additions?.map{ toDocument(it)},
                 creationDate = LocalDateTime.now())
 
-    fun toDTO(income: Income): IncomeDTO =
+    fun toDTO(document: Income): IncomeDTO =
                 IncomeDTO(
-                        incomeId = UUID.fromString(income.id),
-                        grossAmount = income.grossAmount!!.toBigDecimal(),
-                        netAmount = income.netAmount!!.toBigDecimal(),
-                        additionalAmount = income.additionalAmount?.toBigDecimal(),
-                        description = income.description!!,
-                        receiptDate = income.receiptDate!!,
-                        referenceDate = income.referenceDate!!,
-                        sourceName = income.sourceName!!,
-                        discountAmount = income.discountAmount?.toBigDecimal(),
-                        discounts = income.discounts?.map(::toDiscountDTO),
-                        additions = income.additions?.map(::toAdditionDTO),
-                        creationDate = income.creationDate)
+                        incomeId = document.incomeId,
+                        grossAmount = document.grossAmount,
+                        netAmount = document.netAmount,
+                        additionalAmount = document.additionalAmount,
+                        description = document.description,
+                        receiptDate = document.receiptDate,
+                        referenceDate = document.referenceDate,
+                        sourceName = document.sourceName,
+                        discountAmount = document.discountAmount,
+                        discounts = document.discounts?.map(::toDiscountDTO),
+                        additions = document.additions?.map(::toAdditionDTO),
+                        creationDate = document.creationDate)
 
     fun toMonoDTO(income: Income): Mono<IncomeDTO> = just(toDTO(income))
 
-    private fun toAdditionDTO(addition: Map<String, String>) = AdditionDTO(extractAmount(addition), extractDescription(addition))
+    private fun toAdditionDTO(addition: Addition) = AdditionDTO(addition.amount, addition.description)
 
-    private fun toDiscountDTO(discount: Map<String, String>) = DiscountDTO(extractAmount(discount), extractDescription(discount))
+    private fun toDiscountDTO(discount: Discount) = DiscountDTO(discount.amount, discount.description)
 
-    private fun toDocument(addition: AdditionDTO): Map<String, String> = convertToMap(addition.amount!!, addition.description!!)
+    private fun toDocument(addition: AdditionDTO) = Addition(addition.amount!!, addition.description!!)
 
-    private fun toDocument(discount: DiscountDTO): Map<String, String> = convertToMap(discount.amount!!, discount.description!!)
+    private fun toDocument(discount: DiscountDTO) = Discount(discount.amount!!, discount.description!!)
 
-    private fun extractAmount(map: Map<String, String>) = map["amount"]?.toBigDecimal()!!
-
-    private fun extractDescription(map: Map<String, String>) = map["description"] ?: ""
-
-    private fun convertToMap(amount: BigDecimal, description: String) = mapOf("amount" to amount.toString(), "description" to description)
 }
 

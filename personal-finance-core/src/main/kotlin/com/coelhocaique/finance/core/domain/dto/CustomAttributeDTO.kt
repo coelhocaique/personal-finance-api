@@ -7,7 +7,7 @@ data class CustomAttributeDTO (
         val customAttributeId: UUID? = null,
         val propertyName: String,
         val value: String,
-        val accountId: String? = null,
+        val accountId: UUID? = null,
         val creationDate: LocalDateTime? = null,
         val links: List<Map<String, String>>? = null
 )

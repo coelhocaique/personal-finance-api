@@ -3,7 +3,7 @@ object DependencyVersions {
 }
 
 dependencies {
-    implementation("com.github.derjust:spring-data-dynamodb:5.1.0")
+    implementation("com.amazonaws:aws-java-sdk-dynamodb:1.11.675")
     implementation("org.springframework.boot:spring-boot-starter:${DependencyVersions.SPRING_VERSION}")
     testImplementation("io.projectreactor:reactor-test:3.2.11.RELEASE")
     testImplementation("io.projectreactor:reactor-test:3.2.11.RELEASE")

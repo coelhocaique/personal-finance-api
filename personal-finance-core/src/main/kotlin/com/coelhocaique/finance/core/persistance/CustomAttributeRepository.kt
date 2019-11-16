@@ -1,18 +1,44 @@
 package com.coelhocaique.finance.core.persistance
 
 import com.coelhocaique.finance.core.domain.CustomAttribute
-import org.socialsignin.spring.data.dynamodb.repository.DynamoDBCrudRepository
-import org.socialsignin.spring.data.dynamodb.repository.EnableScan
-import java.util.Optional
+import org.springframework.stereotype.Component
+import reactor.core.publisher.Mono
+import reactor.core.publisher.Mono.just
+import reactor.core.publisher.Mono.justOrEmpty
 
-@EnableScan
-interface CustomAttributeRepository: DynamoDBCrudRepository<CustomAttribute, String> {
+@Component
+class CustomAttributeRepository(val repository: DynamoRepository) {
 
-    fun findByPropertyNameAndAccountId(propertyName: String, accountId: String): List<CustomAttribute>
+    private companion object Const {
+        const val TABLE_NAME = "custom_attribute"
+        const val PROPERTY_NAME = "property_name"
+        const val ID = "custom_attribute_id"
+        const val ACCOUNT_ID = "account_id"
+    }
 
-    fun findByAccountId(accountId: String): List<CustomAttribute>
+    fun insert(document: CustomAttribute): Mono<CustomAttribute> {
+        repository.addItem(TABLE_NAME, document)
+        return just(document)
+    }
 
-    fun findByIdAndAccountId(id: String, accountId: String): Optional<CustomAttribute>
+    fun findByPropertyName(propertyName: String, accountId: String): Mono<List<CustomAttribute>> {
+        return scan(mapOf(PROPERTY_NAME to propertyName, ACCOUNT_ID to accountId))
+    }
 
-    fun deleteByIdAndAccountId(id: String, accountId: String)
+    fun findAll(accountId: String): Mono<List<CustomAttribute>> {
+        return scan(mapOf(ACCOUNT_ID to accountId))
+    }
+
+    fun findById(id: String, accountId: String): Mono<CustomAttribute> {
+        return scan(mapOf(ID to id, ACCOUNT_ID to accountId))
+                .flatMap { justOrEmpty(it.firstOrNull()) }
+    }
+
+    fun deleteById(id: String) {
+        repository.deleteItem(TABLE_NAME, mapOf(ID to id))
+    }
+
+    private fun scan(keys: Map<String, String>): Mono<List<CustomAttribute>> {
+        return justOrEmpty(repository.scanItems(TABLE_NAME, keys, CustomAttribute::class.java))
+    }
 }

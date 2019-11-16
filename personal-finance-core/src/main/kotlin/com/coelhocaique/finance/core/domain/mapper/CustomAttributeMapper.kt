@@ -10,18 +10,19 @@ import java.util.*
 object CustomAttributeMapper {
 
     fun toDocument(dto: CustomAttributeDTO): CustomAttribute =
-            CustomAttribute(id = UUID.randomUUID().toString(),
+            CustomAttribute(
+                    customAttributeId = UUID.randomUUID(),
                     propertyName = dto.propertyName.toLowerCase(),
                     value = dto.value,
-                    accountId = dto.accountId,
+                    accountId = dto.accountId!!,
                     creationDate = LocalDateTime.now())
 
-    fun toDTO(customAttribute: CustomAttribute): CustomAttributeDTO =
+    fun toDTO(document: CustomAttribute): CustomAttributeDTO =
             CustomAttributeDTO(
-                    customAttributeId = UUID.fromString(customAttribute.id),
-                    value = customAttribute.value!!,
-                    propertyName = customAttribute.propertyName!!,
-                    creationDate = customAttribute.creationDate)
+                    customAttributeId = document.customAttributeId,
+                    value = document.value,
+                    propertyName = document.propertyName,
+                    creationDate = document.creationDate)
 
     fun toMonoDTO(customAttribute: CustomAttribute): Mono<CustomAttributeDTO> = just(toDTO(customAttribute))
 

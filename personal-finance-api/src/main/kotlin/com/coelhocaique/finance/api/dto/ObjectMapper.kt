@@ -7,6 +7,8 @@ import com.coelhocaique.finance.core.domain.dto.ParameterDTO
 import com.coelhocaique.finance.core.util.generateReferenceDate
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.just
+import java.util.*
+import java.util.UUID.fromString
 
 object ObjectMapper {
 
@@ -14,7 +16,7 @@ object ObjectMapper {
             just( IncomeDTO(
                     grossAmount = dto.grossAmount!!,
                     description = dto.description!!,
-                    accountId = dto.accountId,
+                    accountId = fromString(dto.accountId),
                     referenceDate = dto.referenceDate!!,
                     receiptDate = dto.receiptDate!!,
                     sourceName = dto.sourceName!!,
@@ -31,7 +33,7 @@ object ObjectMapper {
                     installments = dto.installments!!,
                     nextMonth = dto.nextMonth,
                     description = dto.description!!,
-                    accountId = dto.accountId
+                    accountId = fromString(dto.accountId)
             ) )
 
     fun toParameterDTO(dto: ParameterRequestDTO): Mono<ParameterDTO> =
@@ -39,7 +41,7 @@ object ObjectMapper {
                     name = dto.name!!,
                     value = dto.value!!,
                     referenceDate = generateReferenceDate(dto.referenceDate!!),
-                    accountId = dto.accountId
+                    accountId = fromString(dto.accountId)
             ) )
 
 
@@ -47,6 +49,6 @@ object ObjectMapper {
             just( CustomAttributeDTO(
                     propertyName = dto.propertyName!!,
                     value = dto.value!!,
-                    accountId = dto.accountId
+                    accountId = fromString(dto.accountId)
             ) )
 }

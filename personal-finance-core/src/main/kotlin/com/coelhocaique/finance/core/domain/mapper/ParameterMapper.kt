@@ -10,20 +10,20 @@ import java.util.*
 object ParameterMapper {
 
     fun toDocument(dto: ParameterDTO): Parameter =
-            Parameter(id = UUID.randomUUID().toString(),
+            Parameter(parameterId = UUID.randomUUID(),
                     name = dto.name,
                     value = dto.value,
                     referenceDate = dto.referenceDate,
-                    accountId = dto.accountId,
+                    accountId = dto.accountId!!,
                     creationDate = LocalDateTime.now())
 
-    fun toDTO(parameter: Parameter): ParameterDTO =
+    fun toDTO(document: Parameter): ParameterDTO =
             ParameterDTO(
-                    parameterId= UUID.fromString(parameter.id),
-                    name = parameter.name!!,
-                    value = parameter.value!!,
-                    referenceDate = parameter.referenceDate!!,
-                    creationDate = parameter.creationDate)
+                    parameterId= document.parameterId,
+                    name = document.name,
+                    value = document.value,
+                    referenceDate = document.referenceDate,
+                    creationDate = document.creationDate)
 
     fun toMonoDTO(parameter: Parameter): Mono<ParameterDTO> = just(toDTO(parameter))
 

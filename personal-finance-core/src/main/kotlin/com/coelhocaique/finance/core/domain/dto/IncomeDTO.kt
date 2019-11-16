@@ -15,7 +15,7 @@ data class IncomeDTO (
         val receiptDate: LocalDate,
         val referenceDate: String,
         val sourceName: String,
-        val accountId: String? = null,
+        val accountId: UUID? = null,
         val discounts: List<DiscountDTO>? = emptyList(),
         val additions: List<AdditionDTO>? = emptyList(),
         val creationDate: LocalDateTime? = null,

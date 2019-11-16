@@ -1,18 +1,53 @@
 package com.coelhocaique.finance.core.persistance
 
 import com.coelhocaique.finance.core.domain.Parameter
-import org.socialsignin.spring.data.dynamodb.repository.DynamoDBCrudRepository
-import org.socialsignin.spring.data.dynamodb.repository.EnableScan
-import java.util.Optional
+import org.springframework.stereotype.Component
+import reactor.core.publisher.Mono
+import reactor.core.publisher.Mono.just
+import reactor.core.publisher.Mono.justOrEmpty
 
-@EnableScan
-interface ParameterRepository: DynamoDBCrudRepository<Parameter, String> {
+@Component
+class ParameterRepository(val repository: DynamoRepository) {
 
-    fun findByReferenceDateBetweenAndAccountId(dateFrom: String, dateTo: String, accountId: String): List<Parameter>
+    private companion object Const {
+        const val TABLE_NAME = "parameter"
+        const val REFERENCE_DATE = "reference_date"
+        const val DATE_FROM = "date_from"
+        const val DATE_TO = "date_to"
+        const val ID = "parameter_id"
+        const val ACCOUNT_ID = "account_id"
+    }
 
-    fun findByReferenceDateAndAccountId(referenceDate: String, accountId: String): List<Parameter>
+    fun insert(document: Parameter): Mono<Parameter> {
+        repository.addItem(TABLE_NAME, document)
+        return just(document)
+    }
 
-    fun findByIdAndAccountId(id: String, accountId: String): Optional<Parameter>
+    fun findByReferenceDateBetween(dateFrom: String, dateTo: String, accountId: String):
+            Mono<List<Parameter>> {
+        return justOrEmpty(repository.scanItemsBetween (
+                TABLE_NAME,
+                REFERENCE_DATE,
+                mapOf(DATE_FROM to dateFrom, DATE_TO to dateTo),
+                mapOf(ACCOUNT_ID to accountId),
+                Parameter::class.java))
+    }
 
-    fun deleteByIdAndAccountId(id: String, accountId: String)
+    fun findByReferenceDate(referenceDate: String, accountId: String):
+            Mono<List<Parameter>> {
+        return scan(mapOf(REFERENCE_DATE to referenceDate, ACCOUNT_ID to accountId))
+    }
+
+    fun findById(id: String, accountId: String): Mono<Parameter> {
+        return scan(mapOf(ID to id, ACCOUNT_ID to accountId))
+                .flatMap { justOrEmpty(it.firstOrNull()) }
+    }
+
+    fun deleteById(id: String) {
+        repository.deleteItem(TABLE_NAME, mapOf(ID to id))
+    }
+
+    private fun scan(keys: Map<String, String>): Mono<List<Parameter>> {
+        return justOrEmpty(repository.scanItems(TABLE_NAME, keys, Parameter::class.java))
+    }
 }

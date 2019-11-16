@@ -1,22 +1,64 @@
 package com.coelhocaique.finance.core.persistance
 
 import com.coelhocaique.finance.core.domain.Debt
-import org.socialsignin.spring.data.dynamodb.repository.DynamoDBCrudRepository
-import org.socialsignin.spring.data.dynamodb.repository.EnableScan
-import java.util.Optional
+import org.springframework.stereotype.Component
+import reactor.core.publisher.Mono
+import reactor.core.publisher.Mono.just
+import reactor.core.publisher.Mono.justOrEmpty
 
-@EnableScan
-interface DebtRepository: DynamoDBCrudRepository<Debt, String> {
+@Component
+class DebtRepository(val repository: DynamoRepository) {
 
-    fun findByReferenceCodeAndAccountId(referenceCode: String, accountId: String): List<Debt>
+    private companion object Const {
+        const val TABLE_NAME = "debt"
+        const val REFERENCE_DATE = "reference_date"
+        const val REFERENCE_CODE = "reference_code"
+        const val DATE_FROM = "date_from"
+        const val DATE_TO = "date_to"
+        const val ID = "debt_id"
+        const val ACCOUNT_ID = "account_id"
+    }
 
-    fun findByReferenceDateBetweenAndAccountId(dateFrom: String, dateTo: String, accountId: String): List<Debt>
+    fun insertAll(documents: List<Debt>): Mono<List<Debt>> {
+        documents.forEach { insert(it) }
+        return just(documents)
+    }
+    
+    fun insert(document: Debt): Mono<Debt> {
+        repository.addItem(TABLE_NAME, document)
+        return just(document)
+    }
 
-    fun findByReferenceDateAndAccountId(referenceDate: String, accountId: String): List<Debt>
+    fun findByReferenceDateBetween(dateFrom: String, dateTo: String, accountId: String):
+            Mono<List<Debt>> {
+        return justOrEmpty(repository.scanItemsBetween(
+                TABLE_NAME,
+                REFERENCE_DATE,
+                mapOf(DATE_FROM to dateFrom, DATE_TO to dateTo),
+                mapOf(ACCOUNT_ID to accountId),
+                Debt::class.java))
+    }
 
-    fun findByIdAndAccountId(id: String, accountId: String): Optional<Debt>
+    fun findByReferenceDate(referenceDate: String, accountId: String):
+            Mono<List<Debt>> {
+        return scan(mapOf(REFERENCE_DATE to referenceDate, ACCOUNT_ID to accountId))
+    }
 
-    fun deleteByReferenceCodeAndAccountId(referenceCode: String, accountId: String)
+    fun findByReferenceCode(referenceCode: String, accountId: String):
+            Mono<List<Debt>> {
+        return scan(mapOf(REFERENCE_CODE to referenceCode, ACCOUNT_ID to accountId))
+    }
 
-    fun deleteByIdAndAccountId(id: String, accountId: String)
+    fun findById(id: String, accountId: String): Mono<Debt> {
+        return scan(mapOf(ID to id, ACCOUNT_ID to accountId))
+                .flatMap { justOrEmpty(it.firstOrNull()) }
+    }
+
+    fun deleteById(id: String) {
+        repository.deleteItem(TABLE_NAME, mapOf(ID to id))
+    }
+
+    private fun scan(keys: Map<String, String>): Mono<List<Debt>> {
+        return justOrEmpty(repository.scanItems(TABLE_NAME, keys, Debt::class.java))
+    }
 }

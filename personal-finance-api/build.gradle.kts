@@ -25,7 +25,6 @@ tasks.getByName<Tar>("distTar").enabled = false
 
 dependencies {
     compile(project(":personal-finance-core"))
-//    implementation("com.github.derjust:spring-data-dynamodb:5.1.0")
     implementation("org.springframework.boot:spring-boot-starter-webflux:${DependencyVersions.SPRING_VERSION}")
     implementation("org.springframework.boot:spring-boot-starter-actuator:${DependencyVersions.SPRING_VERSION}")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.9")

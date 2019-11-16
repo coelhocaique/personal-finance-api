@@ -10,33 +10,33 @@ import java.util.*
 object DebtMapper {
 
     fun toDocument(dto: DebtDTO): Debt =
-            Debt(id = UUID.randomUUID().toString(),
-                    amount = dto.amount.toString(),
+            Debt(debtId = UUID.randomUUID(),
+                    amount = dto.amount,
                     description = dto.description,
                     debtDate = dto.debtDate,
-                    referenceCode = dto.referenceCode!!.toString(),
-                    installmentNumber = dto.installmentNumber!!.toString(),
+                    referenceCode = dto.referenceCode!!,
+                    installmentNumber = dto.installmentNumber!!,
                     referenceDate = dto.referenceDate!!,
                     type = dto.type,
                     tag = dto.tag,
-                    installments = dto.installments.toString(),
-                    totalAmount = dto.totalAmount!!.toString(),
-                    accountId = dto.accountId,
+                    installments = dto.installments,
+                    totalAmount = dto.totalAmount!!,
+                    accountId = dto.accountId!!,
                     creationDate = LocalDateTime.now())
 
-    fun toDTO(debt: Debt): DebtDTO =
-            DebtDTO(debtId = UUID.fromString(debt.id),
-                    amount = debt.amount?.toBigDecimal()!!,
-                    description = debt.description!!,
-                    debtDate = debt.debtDate!!,
-                    referenceCode = UUID.fromString(debt.referenceCode),
-                    installmentNumber = debt.installmentNumber?.toInt()!!,
-                    referenceDate = debt.referenceDate,
-                    type = debt.type!!,
-                    tag = debt.tag!!,
-                    installments = debt.installments?.toInt()!!,
-                    totalAmount = debt.totalAmount?.toBigDecimal()!!,
-                    creationDate = debt.creationDate)
+    fun toDTO(document: Debt): DebtDTO =
+            DebtDTO(debtId = document.debtId,
+                    amount = document.amount,
+                    description = document.description,
+                    debtDate = document.debtDate,
+                    referenceCode = document.referenceCode,
+                    installmentNumber = document.installmentNumber,
+                    referenceDate = document.referenceDate,
+                    type = document.type,
+                    tag = document.tag,
+                    installments = document.installments,
+                    totalAmount = document.totalAmount,
+                    creationDate = document.creationDate)
 
     fun toMonoDTO(debt: Debt): Mono<DebtDTO> = just(toDTO(debt))
 
