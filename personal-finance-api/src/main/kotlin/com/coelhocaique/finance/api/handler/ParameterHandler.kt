@@ -57,7 +57,7 @@ class ParameterHandler (private val service: ParameterService) {
                 }
                 .flatMap { buildForParameters(req.uri().toString(), it) }
 
-        return generateResponse(response)
+        return generateResponse(response, onEmptyStatus = 204)
     }
 
     fun deleteById(req: ServerRequest): Mono<ServerResponse> {

@@ -58,7 +58,7 @@ class IncomeHandler (private val service: IncomeService) {
                 }
                 .flatMap { buildForIncomes(req.uri().toString(), it) }
 
-        return generateResponse(response)
+        return generateResponse(response, onEmptyStatus = 204)
     }
 
     fun deleteById(req: ServerRequest): Mono<ServerResponse> {

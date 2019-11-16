@@ -45,7 +45,7 @@ class CustomAttributeHandler (private val service: CustomAttributeService) {
                 }
                 .flatMap { buildForCustomAttributes(req.uri().toString(), it) }
 
-        return generateResponse(response)
+        return generateResponse(response, onEmptyStatus = 204)
     }
 
     fun deleteById(req: ServerRequest): Mono<ServerResponse> {

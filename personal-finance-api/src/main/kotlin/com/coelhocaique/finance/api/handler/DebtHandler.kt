@@ -57,7 +57,7 @@ class DebtHandler (private val service: DebtService) {
                 }
                 .flatMap { buildForDebts(req.uri().toString(), it) }
 
-        return generateResponse(response)
+        return generateResponse(response, onEmptyStatus = 204)
     }
 
     fun deleteById(req: ServerRequest): Mono<ServerResponse> {
@@ -77,7 +77,7 @@ class DebtHandler (private val service: DebtService) {
                     }
                 }
 
-        return generateResponse(response, 204)
+        return generateResponse(response)
     }
 
     private fun findByReferenceCode(it: FetchCriteria): Mono<List<DebtDTO>> =

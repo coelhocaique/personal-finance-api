@@ -12,16 +12,16 @@ object ResponseHandler {
 
      data class ErrorResponse(val errors: List<String>)
 
-    fun <T> generateResponse(body: Mono<T>, status: Int = 200): Mono<ServerResponse> {
+    fun <T> generateResponse(body: Mono<T>, successStatus: Int = 200, onEmptyStatus: Int = 404): Mono<ServerResponse> {
         return body.onErrorMap { it }
-                .flatMap { success(it, status)}
+                .flatMap { success(it, successStatus)}
                 .onErrorResume(Throwable::class.java) {
                     when (it) {
                         is ApiException -> mapApiException(it)
                         else -> mapException(it)
                     }
                 }
-                .switchIfEmpty { ServerResponse.notFound().build() }
+                .switchIfEmpty { ServerResponse.status(onEmptyStatus).build() }
     }
 
     private fun mapException(it: Throwable): Mono<ServerResponse> {
