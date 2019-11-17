@@ -7,10 +7,13 @@ import com.coelhocaique.finance.api.helper.Fields.ID
 import com.coelhocaique.finance.api.helper.Fields.PROPERTY_NAME
 import com.coelhocaique.finance.api.helper.Fields.REF_CODE
 import com.coelhocaique.finance.api.helper.Fields.REF_DATE
+import com.coelhocaique.finance.api.helper.Messages.INVALID_ID
+import com.coelhocaique.finance.api.helper.Messages.INVALID_REF_CODE
 import com.coelhocaique.finance.api.helper.Messages.INVALID_REQUEST
 import com.coelhocaique.finance.api.helper.Messages.MISSING_HEADERS
 import com.coelhocaique.finance.api.helper.exception.ApiException.ApiExceptionHelper.business
 import com.coelhocaique.finance.api.helper.exception.ApiException.ApiExceptionHelper.unauthorized
+import com.coelhocaique.finance.core.util.formatToUUID
 import com.coelhocaique.finance.core.util.logger
 import org.springframework.web.reactive.function.server.ServerRequest
 import reactor.core.publisher.Mono
@@ -38,10 +41,11 @@ object RequestParameterHandler {
 
     fun retrieveAccountId(req: ServerRequest): Mono<String> {
         val account = req.headers().header(AUTHORIZATION)
-        return if (account.size > 0)
-            just(account[0])
-        else
+        return try {
+            just(formatToUUID(account[0]).toString())
+        }catch (e: Exception){
             error { unauthorized(MISSING_HEADERS) }
+        }
     }
 
     inline fun <reified T> extractBody(req: ServerRequest): Mono<T> {
@@ -50,11 +54,21 @@ object RequestParameterHandler {
     }
 
     private fun retrieveId(req: ServerRequest): String {
-        return req.pathVariable(ID)
+        return try {
+            formatToUUID(req.pathVariable(ID)).toString()
+        }catch (e: Exception){
+            throw business(INVALID_ID)
+        }
     }
 
     private fun retrieveReferenceCode(req: ServerRequest): String? {
-        return req.queryParam(REF_CODE).orElse(null)
+        return try {
+            req.queryParam(REF_CODE)
+                    .map { formatToUUID(it).toString() }
+                    .orElse(null)
+        }catch (e: Exception){
+            throw business(INVALID_REF_CODE)
+        }
     }
 
     private fun retrieveReferenceDate(req: ServerRequest): String? {
