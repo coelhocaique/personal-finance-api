@@ -6,6 +6,7 @@ data class FetchCriteria (
         val dateFrom: String? = null,
         val dateTo: String? = null,
         val id: String? = null,
+        val parameterName: String? = null,
         val propertyName: String? = null,
         val accountId: String
 ){
@@ -14,12 +15,21 @@ data class FetchCriteria (
         REFERENCE_CODE,
         REFERENCE_DATE,
         RANGE_DATE,
-        PROPERTY_NAME
+        PROPERTY_NAME,
+        PARAMETER_NAME,
+        PARAMETER_NAME_REF_DATE,
+        PARAMETER_NAME_RANGE_DATE
     }
 
     fun searchType(): SearchType? {
         if (id != null)
             return SearchType.BY_ID
+
+        if(referenceDate != null && parameterName != null)
+            return SearchType.PARAMETER_NAME_REF_DATE
+
+        if(dateFrom != null && dateTo != null && parameterName != null)
+            return SearchType.PARAMETER_NAME_RANGE_DATE
 
         if (referenceCode != null)
             return SearchType.REFERENCE_CODE
@@ -33,6 +43,9 @@ data class FetchCriteria (
         if (propertyName != null)
             return SearchType.PROPERTY_NAME
 
+        if(parameterName != null)
+            return SearchType.PARAMETER_NAME
+
         return null
     }
 
@@ -44,6 +57,7 @@ data class FetchCriteria (
                     .plus(",referenceDate=").plus(referenceDate)
                     .plus(",dateFrom=").plus(dateFrom)
                     .plus(",dateTo=").plus(dateTo)
+                    .plus(",parameterName=").plus(parameterName)
                     .plus(",propertyName=").plus(propertyName)
 
 }

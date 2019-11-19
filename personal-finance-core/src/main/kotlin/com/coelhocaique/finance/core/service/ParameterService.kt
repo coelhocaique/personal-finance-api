@@ -25,6 +25,22 @@ class ParameterService(private val repository: ParameterRepository) {
                 .map { it.map { itt -> toDTO(itt) }}
     }
 
+    fun findByNameAndReferenceDate(accountId: String, name: String, referenceDate: String): Mono<List<ParameterDTO>> {
+        return repository.findByNameAndReferenceDate(name, referenceDate,  accountId)
+                .map { it.map { itt -> toDTO(itt) }}
+    }
+
+    fun findByNameAndReferenceDateRange(accountId: String, name: String, dateFrom: String, dateTo: String):
+            Mono<List<ParameterDTO>> {
+        return repository.findByNameAndReferenceDateBetween(name, dateFrom, dateTo, accountId)
+                .map { it.map { itt -> toDTO(itt) }}
+    }
+
+    fun findByName(accountId: String, name: String): Mono<List<ParameterDTO>> {
+        return repository.findByName(name,  accountId)
+                .map { it.map { itt -> toDTO(itt) }}
+    }
+
     fun deleteById(accountId: String, id: String): Mono<ParameterDTO> {
         return findById(accountId, id)
                 .map {

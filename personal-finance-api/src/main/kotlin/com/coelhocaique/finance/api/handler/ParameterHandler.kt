@@ -1,8 +1,6 @@
 package com.coelhocaique.finance.api.handler
 
 import com.coelhocaique.finance.api.dto.ParameterRequestDTO
-import com.coelhocaique.finance.api.handler.FetchCriteria.SearchType.RANGE_DATE
-import com.coelhocaique.finance.api.handler.FetchCriteria.SearchType.REFERENCE_DATE
 import com.coelhocaique.finance.api.handler.RequestParameterHandler.extractBody
 import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrieveParameters
 import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrievePath
@@ -11,6 +9,7 @@ import com.coelhocaique.finance.api.helper.LinkBuilder.buildForParameter
 import com.coelhocaique.finance.api.helper.LinkBuilder.buildForParameters
 import com.coelhocaique.finance.api.helper.Messages.NO_PARAMETERS
 import com.coelhocaique.finance.api.dto.ObjectMapper.toParameterDTO
+import com.coelhocaique.finance.api.handler.FetchCriteria.SearchType.*
 import com.coelhocaique.finance.api.helper.RequestValidator.validate
 import com.coelhocaique.finance.api.helper.ResponseHandler.generateResponse
 import com.coelhocaique.finance.api.helper.exception.ApiException.ApiExceptionHelper.business
@@ -52,6 +51,9 @@ class ParameterHandler (private val service: ParameterService) {
                     when (it.searchType()) {
                         REFERENCE_DATE -> findByReferenceDate(it)
                         RANGE_DATE -> findByReferenceDateRange(it)
+                        PARAMETER_NAME -> findByName(it)
+                        PARAMETER_NAME_REF_DATE -> findByNameAndReferenceDate(it)
+                        PARAMETER_NAME_RANGE_DATE -> findByNameAndRangeDate(it)
                         else -> error(business(NO_PARAMETERS))
                     }
                 }
@@ -67,11 +69,20 @@ class ParameterHandler (private val service: ParameterService) {
         return generateResponse(response, 204)
     }
 
+    private fun findByName(it: FetchCriteria) =
+            service.findByName(it.accountId, it.parameterName!!)
+
     private fun findByReferenceDate(it: FetchCriteria) =
             service.findByReferenceDate(it.accountId, it.referenceDate!!)
 
+    private fun findByNameAndReferenceDate(it: FetchCriteria) =
+            service.findByNameAndReferenceDate(it.accountId, it.parameterName!!, it.referenceDate!!)
+
     private fun findByReferenceDateRange(it: FetchCriteria) =
             service.findByReferenceDateRange(it.accountId, it.dateFrom!!, it.dateTo!!)
+
+    private fun findByNameAndRangeDate(it: FetchCriteria) =
+            service.findByNameAndReferenceDateRange(it.accountId, it.parameterName!!, it.dateFrom!!, it.dateTo!!)
 
 
 }

@@ -16,6 +16,8 @@ class ParameterRepository(val repository: DynamoRepository) {
         const val DATE_TO = "date_to"
         const val ID = "parameter_id"
         const val ACCOUNT_ID = "account_id"
+        const val NAME = "parameter_name"
+
     }
 
     fun insert(document: Parameter): Mono<Parameter> {
@@ -33,9 +35,29 @@ class ParameterRepository(val repository: DynamoRepository) {
                 Parameter::class.java))
     }
 
+    fun findByNameAndReferenceDateBetween(name: String, dateFrom: String, dateTo: String, accountId: String):
+            Mono<List<Parameter>> {
+        return justOrEmpty(repository.scanItemsBetween (
+                TABLE_NAME,
+                REFERENCE_DATE,
+                mapOf(DATE_FROM to dateFrom, DATE_TO to dateTo),
+                mapOf(NAME to name, ACCOUNT_ID to accountId),
+                Parameter::class.java))
+    }
+
     fun findByReferenceDate(referenceDate: String, accountId: String):
             Mono<List<Parameter>> {
         return scan(mapOf(REFERENCE_DATE to referenceDate, ACCOUNT_ID to accountId))
+    }
+
+    fun findByNameAndReferenceDate(name: String, referenceDate: String, accountId: String):
+            Mono<List<Parameter>> {
+        return scan(mapOf(NAME to name, REFERENCE_DATE to referenceDate, ACCOUNT_ID to accountId))
+    }
+
+    fun findByName(name: String, accountId: String):
+            Mono<List<Parameter>> {
+        return scan(mapOf(NAME to name, ACCOUNT_ID to accountId))
     }
 
     fun findById(id: String, accountId: String): Mono<Parameter> {

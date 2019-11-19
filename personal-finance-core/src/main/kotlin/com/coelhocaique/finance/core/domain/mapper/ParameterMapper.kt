@@ -11,8 +11,8 @@ object ParameterMapper {
 
     fun toDocument(dto: ParameterDTO): Parameter =
             Parameter(parameterId = UUID.randomUUID(),
-                    name = dto.name,
-                    value = dto.value,
+                    parameterName = dto.name,
+                    parameterValue = dto.value,
                     referenceDate = dto.referenceDate,
                     accountId = dto.accountId!!,
                     creationDate = LocalDateTime.now())
@@ -20,8 +20,8 @@ object ParameterMapper {
     fun toDTO(document: Parameter): ParameterDTO =
             ParameterDTO(
                     parameterId= document.parameterId,
-                    name = document.name,
-                    value = document.value,
+                    name = document.parameterName,
+                    value = document.parameterValue,
                     referenceDate = document.referenceDate,
                     creationDate = document.creationDate)
 

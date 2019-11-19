@@ -4,6 +4,7 @@ import com.coelhocaique.finance.api.helper.Fields.AUTHORIZATION
 import com.coelhocaique.finance.api.helper.Fields.DATE_FROM
 import com.coelhocaique.finance.api.helper.Fields.DATE_TO
 import com.coelhocaique.finance.api.helper.Fields.ID
+import com.coelhocaique.finance.api.helper.Fields.NAME
 import com.coelhocaique.finance.api.helper.Fields.PROPERTY_NAME
 import com.coelhocaique.finance.api.helper.Fields.REF_CODE
 import com.coelhocaique.finance.api.helper.Fields.REF_DATE
@@ -29,6 +30,7 @@ object RequestParameterHandler {
                              referenceDate = retrieveReferenceDate(req),
                              dateFrom = retrieveDateFrom(req),
                              dateTo = retrieveDateTo(req),
+                             parameterName = retrieveParameterName(req),
                              propertyName = retrievePropertyName(req)) }
     }
 
@@ -69,6 +71,10 @@ object RequestParameterHandler {
         }catch (e: Exception){
             throw business(INVALID_REF_CODE)
         }
+    }
+
+    private fun retrieveParameterName(req: ServerRequest): String? {
+        return req.queryParam(NAME).orElse(null)
     }
 
     private fun retrieveReferenceDate(req: ServerRequest): String? {
