@@ -60,5 +60,6 @@ class DebtRepository(val repository: DynamoRepository) {
 
     private fun scan(keys: Map<String, String>): Mono<List<Debt>> {
         return justOrEmpty(repository.scanItems(TABLE_NAME, keys, Debt::class.java))
+                .map { it.sortedByDescending { itt -> itt.creationDate } }
     }
 }

@@ -40,5 +40,6 @@ class CustomAttributeRepository(val repository: DynamoRepository) {
 
     private fun scan(keys: Map<String, String>): Mono<List<CustomAttribute>> {
         return justOrEmpty(repository.scanItems(TABLE_NAME, keys, CustomAttribute::class.java))
+                .map { it.sortedByDescending { itt -> itt.creationDate } }
     }
 }

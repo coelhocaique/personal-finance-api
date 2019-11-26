@@ -71,5 +71,6 @@ class ParameterRepository(val repository: DynamoRepository) {
 
     private fun scan(keys: Map<String, String>): Mono<List<Parameter>> {
         return justOrEmpty(repository.scanItems(TABLE_NAME, keys, Parameter::class.java))
+                .map { it.sortedByDescending { itt -> itt.creationDate } }
     }
 }

@@ -48,5 +48,6 @@ class IncomeRepository(val repository: DynamoRepository) {
 
     private fun scan(keys: Map<String, String>): Mono<List<Income>> {
         return justOrEmpty(repository.scanItems(TABLE_NAME, keys, Income::class.java))
+                    .map { it.sortedByDescending { itt -> itt.creationDate } }
     }
 }
