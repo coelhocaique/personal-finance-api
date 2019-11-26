@@ -37,6 +37,7 @@ class DebtRepository(val repository: DynamoRepository) {
                 mapOf(DATE_FROM to dateFrom, DATE_TO to dateTo),
                 mapOf(ACCOUNT_ID to accountId),
                 Debt::class.java))
+                .map { it.sortedByDescending { itt -> itt.creationDate } }
     }
 
     fun findByReferenceDate(referenceDate: String, accountId: String):

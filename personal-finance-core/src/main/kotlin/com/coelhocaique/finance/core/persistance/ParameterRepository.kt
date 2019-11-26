@@ -33,6 +33,7 @@ class ParameterRepository(val repository: DynamoRepository) {
                 mapOf(DATE_FROM to dateFrom, DATE_TO to dateTo),
                 mapOf(ACCOUNT_ID to accountId),
                 Parameter::class.java))
+                .map { it.sortedByDescending { itt -> itt.creationDate } }
     }
 
     fun findByNameAndReferenceDateBetween(name: String, dateFrom: String, dateTo: String, accountId: String):
@@ -43,6 +44,7 @@ class ParameterRepository(val repository: DynamoRepository) {
                 mapOf(DATE_FROM to dateFrom, DATE_TO to dateTo),
                 mapOf(NAME to name, ACCOUNT_ID to accountId),
                 Parameter::class.java))
+                .map { it.sortedByDescending { itt -> itt.creationDate } }
     }
 
     fun findByReferenceDate(referenceDate: String, accountId: String):
