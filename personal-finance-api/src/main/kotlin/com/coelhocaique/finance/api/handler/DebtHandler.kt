@@ -27,25 +27,23 @@ import reactor.core.publisher.Mono.just
 class DebtHandler (private val service: DebtService) {
 
     fun create(req: ServerRequest): Mono<ServerResponse> {
-        val response = retrieveAccountId(req)
+        return retrieveAccountId(req)
                 .flatMap { extractBody<DebtRequestDTO>(req).map { itt -> itt.copy(accountId = it) } }
                 .flatMap { validate(it) }
                 .flatMap { service.create(toDebtDTO(it)) }
                 .flatMap { buildForDebts(req.uri().toString(), it) }
-
-        return generateResponse(response,201)
+                .let { generateResponse(it,201)  }
     }
 
     fun findById(req: ServerRequest): Mono<ServerResponse> {
-        val response = retrievePath(req)
+        return retrievePath(req)
                 .flatMap { service.findById(it.accountId, it.id!!) }
                 .flatMap { just(buildForDebt(req.uri().toString(), it)) }
-
-        return generateResponse(response)
+                .let { generateResponse(it) }
     }
 
     fun fetchDebts(req: ServerRequest): Mono<ServerResponse> {
-        val response = retrieveParameters(req)
+        return retrieveParameters(req)
                 .flatMap {
                     logger().info(it.toString())
                     when (it.searchType()) {
@@ -56,19 +54,17 @@ class DebtHandler (private val service: DebtService) {
                     }
                 }
                 .flatMap { buildForDebts(req.uri().toString(), it) }
-
-        return generateResponse(response, onEmptyStatus = 204)
+                .let { generateResponse(it, onEmptyStatus = 204) }
     }
 
     fun deleteById(req: ServerRequest): Mono<ServerResponse> {
-        val response = retrievePath(req)
+        return retrievePath(req)
                 .flatMap { service.deleteById(it.accountId, it.id!!) }
-
-        return generateResponse(response, 204)
+                .let { generateResponse(it, 204) }
     }
 
     fun delete(req: ServerRequest): Mono<ServerResponse> {
-        val response = retrieveParameters(req)
+        return retrieveParameters(req)
                 .flatMap {
                     logger().info(it.toString())
                     when (it.searchType()) {
@@ -76,8 +72,7 @@ class DebtHandler (private val service: DebtService) {
                         else -> error(business(NO_PARAMETERS))
                     }
                 }
-
-        return generateResponse(response)
+                .let { generateResponse(it, 204) }
     }
 
     private fun findByReferenceCode(it: FetchCriteria): Mono<List<DebtDTO>> =

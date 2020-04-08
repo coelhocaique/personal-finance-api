@@ -13,7 +13,6 @@ import com.coelhocaique.finance.api.helper.RequestValidator.validate
 import com.coelhocaique.finance.api.helper.ResponseHandler.generateResponse
 import com.coelhocaique.finance.core.service.CustomAttributeService
 import com.coelhocaique.finance.core.util.logger
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
@@ -24,17 +23,16 @@ import reactor.core.publisher.Mono.just
 class CustomAttributeHandler (private val service: CustomAttributeService) {
 
     fun create(req: ServerRequest): Mono<ServerResponse> {
-        val response = retrieveAccountId(req)
+        return retrieveAccountId(req)
                 .flatMap { extractBody<CustomAttributeRequestDTO>(req).map { itt -> itt.copy(accountId = it) } }
                 .flatMap { validate(it) }
                 .flatMap { service.create(toCustomAttributeDTO(it)) }
                 .flatMap { just(buildForCustomAttribute(req.uri().toString(), it)) }
-
-        return generateResponse(response, HttpStatus.CREATED.value())
+                .let { generateResponse(it, 201) }
     }
 
     fun fetchCustomAttributes(req: ServerRequest): Mono<ServerResponse> {
-        val response = retrieveParameters(req)
+        return retrieveParameters(req)
                 .onErrorMap { it }
                 .flatMap {
                     logger().info(it.toString())
@@ -44,15 +42,13 @@ class CustomAttributeHandler (private val service: CustomAttributeService) {
                     }
                 }
                 .flatMap { buildForCustomAttributes(req.uri().toString(), it) }
-
-        return generateResponse(response, onEmptyStatus = 204)
+                .let { generateResponse(it, onEmptyStatus = 204) }
     }
 
     fun deleteById(req: ServerRequest): Mono<ServerResponse> {
-        val response = retrievePath(req)
+        return retrievePath(req)
                 .flatMap { service.deleteById(it.accountId, it.id!!) }
-
-        return generateResponse(response, 204)
+                .let { generateResponse(it, 204) }
     }
 
     private fun findByPropertyName(it: FetchCriteria) =

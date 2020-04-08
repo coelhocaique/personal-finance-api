@@ -1,21 +1,20 @@
 package com.coelhocaique.finance.api.handler
 
+import com.coelhocaique.finance.api.dto.ObjectMapper.toParameterDTO
 import com.coelhocaique.finance.api.dto.ParameterRequestDTO
+import com.coelhocaique.finance.api.handler.FetchCriteria.SearchType.*
 import com.coelhocaique.finance.api.handler.RequestParameterHandler.extractBody
+import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrieveAccountId
 import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrieveParameters
 import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrievePath
-import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrieveAccountId
 import com.coelhocaique.finance.api.helper.LinkBuilder.buildForParameter
 import com.coelhocaique.finance.api.helper.LinkBuilder.buildForParameters
 import com.coelhocaique.finance.api.helper.Messages.NO_PARAMETERS
-import com.coelhocaique.finance.api.dto.ObjectMapper.toParameterDTO
-import com.coelhocaique.finance.api.handler.FetchCriteria.SearchType.*
 import com.coelhocaique.finance.api.helper.RequestValidator.validate
 import com.coelhocaique.finance.api.helper.ResponseHandler.generateResponse
 import com.coelhocaique.finance.api.helper.exception.ApiException.ApiExceptionHelper.business
 import com.coelhocaique.finance.core.service.ParameterService
 import com.coelhocaique.finance.core.util.logger
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
@@ -27,25 +26,23 @@ import reactor.core.publisher.Mono.just
 class ParameterHandler (private val service: ParameterService) {
 
     fun create(req: ServerRequest): Mono<ServerResponse> {
-        val response = retrieveAccountId(req)
+        return retrieveAccountId(req)
                 .flatMap { extractBody<ParameterRequestDTO>(req).map { itt -> itt.copy(accountId = it) } }
                 .flatMap { validate(it) }
                 .flatMap { service.create(toParameterDTO(it)) }
                 .flatMap { just(buildForParameter(req.uri().toString(), it)) }
-
-        return generateResponse(response, HttpStatus.CREATED.value())
+                .let { generateResponse(it, 201) }
     }
 
     fun findById(req: ServerRequest): Mono<ServerResponse> {
-        val response = retrievePath(req)
+        return retrievePath(req)
                 .flatMap { service.findById(it.accountId, it.id!!) }
                 .flatMap { just(buildForParameter(req.uri().toString(), it)) }
-
-        return generateResponse(response)
+                .let { generateResponse(it) }
     }
 
     fun fetchParameters(req: ServerRequest): Mono<ServerResponse> {
-        val response = retrieveParameters(req)
+        return retrieveParameters(req)
                 .flatMap {
                     logger().info(it.toString())
                     when (it.searchType()) {
@@ -58,15 +55,13 @@ class ParameterHandler (private val service: ParameterService) {
                     }
                 }
                 .flatMap { buildForParameters(req.uri().toString(), it) }
-
-        return generateResponse(response, onEmptyStatus = 204)
+                .let { generateResponse(it, onEmptyStatus = 204) }
     }
 
     fun deleteById(req: ServerRequest): Mono<ServerResponse> {
-        val response = retrievePath(req)
+        return retrievePath(req)
                 .flatMap { service.deleteById(it.accountId, it.id!!) }
-
-        return generateResponse(response, 204)
+                .let { generateResponse(it, 204) }
     }
 
     private fun findByName(it: FetchCriteria) =
