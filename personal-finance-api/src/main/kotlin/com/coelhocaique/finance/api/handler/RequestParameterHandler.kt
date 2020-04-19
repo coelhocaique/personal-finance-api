@@ -15,7 +15,6 @@ import com.coelhocaique.finance.api.helper.Messages.MISSING_HEADERS
 import com.coelhocaique.finance.api.helper.exception.ApiException.ApiExceptionHelper.business
 import com.coelhocaique.finance.api.helper.exception.ApiException.ApiExceptionHelper.unauthorized
 import com.coelhocaique.finance.core.util.formatToUUID
-import com.coelhocaique.finance.core.util.logger
 import org.springframework.web.reactive.function.server.ServerRequest
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.error
@@ -35,10 +34,8 @@ object RequestParameterHandler {
     }
 
     fun retrievePath(req: ServerRequest): Mono<FetchCriteria> {
-        val criteria =  retrieveAccountId(req)
+        return retrieveAccountId(req)
                 .map { FetchCriteria(accountId = it, id = retrieveId(req)) }
-        logger().info(criteria.toString())
-        return criteria
     }
 
     fun retrieveAccountId(req: ServerRequest): Mono<String> {

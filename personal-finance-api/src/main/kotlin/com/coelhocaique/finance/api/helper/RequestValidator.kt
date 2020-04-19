@@ -1,9 +1,6 @@
 package com.coelhocaique.finance.api.helper
 
-import com.coelhocaique.finance.api.dto.CustomAttributeRequestDTO
-import com.coelhocaique.finance.api.dto.DebtRequestDTO
-import com.coelhocaique.finance.api.dto.IncomeRequestDTO
-import com.coelhocaique.finance.api.dto.ParameterRequestDTO
+import com.coelhocaique.finance.api.dto.*
 import com.coelhocaique.finance.api.helper.Fields.AMOUNT
 import com.coelhocaique.finance.api.helper.Fields.DEBT_DATE
 import com.coelhocaique.finance.api.helper.Fields.DESCRIPTION
@@ -79,6 +76,18 @@ object RequestValidator {
         return try {
             nonNull(dto.propertyName, PROPERTY_NAME)
             nonNull(dto.value, VALUE)
+            just(dto)
+        } catch (e: IllegalArgumentException){
+            error(business(e.message!!))
+        }
+    }
+
+    fun validate(dto: RecurringDebtRequestDTO): Mono<RecurringDebtRequestDTO> {
+        return try {
+            nonNull(dto.amount, AMOUNT)
+            nonNull(dto.description, DESCRIPTION)
+            nonNull(dto.tag, TAG)
+            nonNull(dto.type, TYPE)
             just(dto)
         } catch (e: IllegalArgumentException){
             error(business(e.message!!))

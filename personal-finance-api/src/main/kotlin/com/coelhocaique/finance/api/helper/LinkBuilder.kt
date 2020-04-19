@@ -1,9 +1,6 @@
 package com.coelhocaique.finance.api.helper
 
-import com.coelhocaique.finance.core.domain.dto.CustomAttributeDTO
-import com.coelhocaique.finance.core.domain.dto.DebtDTO
-import com.coelhocaique.finance.core.domain.dto.IncomeDTO
-import com.coelhocaique.finance.core.domain.dto.ParameterDTO
+import com.coelhocaique.finance.core.domain.dto.*
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.just
 import java.util.stream.Collectors
@@ -67,6 +64,21 @@ object LinkBuilder {
                 mapLink("GET", baseUri.plus("v1/custom-attribute")),
                 mapLink("GET", baseUri.plus("v1/custom-attribute?property_name=".plus(dto.propertyName))),
                 mapLink("DELETE",baseUri.plus("v1/custom-attribute/".plus(dto.customAttributeId)))
+        )
+
+        return dto.copy(links = links)
+    }
+
+    fun buildForRecurringDebts(uri: String, dtos: List<RecurringDebtDTO>): Mono<List<RecurringDebtDTO>> {
+        return just(dtos.stream().map { buildForRecurringDebt(uri, it) }.collect(Collectors.toList()))
+    }
+
+    fun buildForRecurringDebt(uri: String, dto: RecurringDebtDTO): RecurringDebtDTO {
+        val baseUri = uri.substringBefore("v1")
+        val links = listOf(
+                mapLink("GET", baseUri.plus("v1/recurring-debt")),
+                mapLink("GET", baseUri.plus("v1/recurring-debt/".plus(dto.recurringDebtId))),
+                mapLink("DELETE",baseUri.plus("v1/recurring-debt/".plus(dto.recurringDebtId)))
         )
 
         return dto.copy(links = links)

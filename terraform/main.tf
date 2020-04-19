@@ -5,8 +5,8 @@ locals {
 }
 resource "aws_dynamodb_table" "personal-finance-income" {
   name = "income"
-  read_capacity = "10"
-  write_capacity = "10"
+  read_capacity = "1"
+  write_capacity = "1"
   hash_key = "income_id"
 
   attribute {
@@ -16,8 +16,8 @@ resource "aws_dynamodb_table" "personal-finance-income" {
 }
 resource "aws_dynamodb_table" "personal-finance-debt" {
   name = "debt"
-  read_capacity = "10"
-  write_capacity = "10"
+  read_capacity = "1"
+  write_capacity = "1"
   hash_key = "debt_id"
 
   attribute {
@@ -27,8 +27,8 @@ resource "aws_dynamodb_table" "personal-finance-debt" {
 }
 resource "aws_dynamodb_table" "personal-finance-parameter" {
   name = "parameter"
-  read_capacity = "10"
-  write_capacity = "10"
+  read_capacity = "1"
+  write_capacity = "1"
   hash_key = "parameter_id"
 
   attribute {
@@ -38,12 +38,23 @@ resource "aws_dynamodb_table" "personal-finance-parameter" {
 }
 resource "aws_dynamodb_table" "personal-finance-custom-attribute" {
   name = "custom_attribute"
-  read_capacity = "10"
-  write_capacity = "10"
+  read_capacity = "1"
+  write_capacity = "1"
   hash_key = "custom_attribute_id"
 
   attribute {
     name = "custom_attribute_id"
+    type = "S"
+  }
+}
+resource "aws_dynamodb_table" "personal-finance-recurring-debt" {
+  name = "recurring_debt"
+  read_capacity = "1"
+  write_capacity = "1"
+  hash_key = "recurring_debt_id"
+
+  attribute {
+    name = "recurring_debt_id"
     type = "S"
   }
 }

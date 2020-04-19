@@ -40,6 +40,11 @@ class DynamoRepository(val db: AmazonDynamoDB,
         return scan(tableName, key, buildFilterExpression(key), clazz)
     }
 
+    fun <T> scanAll(tableName: String, clazz: Class<T>): List<T> {
+        val request = ScanRequest(tableName)
+        return convertToMap(db.scan(request).items, clazz)
+    }
+
     fun <T> addItem(tableName: String, o: T){
         db.putItem(tableName, convertToDb(writeKeys(o)))
     }

@@ -1,9 +1,6 @@
 package com.coelhocaique.finance.api.dto
 
-import com.coelhocaique.finance.core.domain.dto.CustomAttributeDTO
-import com.coelhocaique.finance.core.domain.dto.DebtDTO
-import com.coelhocaique.finance.core.domain.dto.IncomeDTO
-import com.coelhocaique.finance.core.domain.dto.ParameterDTO
+import com.coelhocaique.finance.core.domain.dto.*
 import com.coelhocaique.finance.core.util.generateReferenceDate
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.just
@@ -32,6 +29,15 @@ object ObjectMapper {
                     type = dto.type!!,
                     installments = dto.installments!!,
                     nextMonth = dto.nextMonth,
+                    description = dto.description!!,
+                    accountId = fromString(dto.accountId)
+            ) )
+
+    fun toRecurringDebtDTO(dto: RecurringDebtRequestDTO): Mono<RecurringDebtDTO> =
+            just( RecurringDebtDTO(
+                    amount = dto.amount!!,
+                    tag = dto.tag!!,
+                    type = dto.type!!,
                     description = dto.description!!,
                     accountId = fromString(dto.accountId)
             ) )

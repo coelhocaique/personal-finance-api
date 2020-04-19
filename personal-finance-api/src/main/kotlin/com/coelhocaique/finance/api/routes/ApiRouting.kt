@@ -1,9 +1,6 @@
 package com.coelhocaique.finance.api.routes
 
-import com.coelhocaique.finance.api.handler.CustomAttributeHandler
-import com.coelhocaique.finance.api.handler.DebtHandler
-import com.coelhocaique.finance.api.handler.IncomeHandler
-import com.coelhocaique.finance.api.handler.ParameterHandler
+import com.coelhocaique.finance.api.handler.*
 import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.router
@@ -29,12 +26,21 @@ class ApiRouting {
     }
 
     @Bean
+    fun recurringDebtRoutes(handler: RecurringDebtHandler) = router {
+        POST("/v1/recurring-debt", handler::create)
+        GET("/v1/recurring-debt", handler::fetchAll)
+        GET("/v1/recurring-debt/{id}", handler::findById)
+        DELETE("/v1/recurring-debt/{id}", handler::delete)
+    }
+
+    @Bean
     fun parameterRoutes(handler: ParameterHandler) = router {
         POST("/v1/parameter", handler::create)
         GET("/v1/parameter/{id}", handler::findById)
         GET("/v1/parameter", handler::fetchParameters)
         DELETE("/v1/parameter/{id}", handler::deleteById)
     }
+
     @Bean
     fun customAttributesRoutes(handler: CustomAttributeHandler) = router {
         POST("/v1/custom-attribute", handler::create)
