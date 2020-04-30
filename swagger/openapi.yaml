@@ -1,0 +1,326 @@
+openapi: 3.0.1
+info:
+  title: Personal Finance API
+  description: APIs to control your personal finance
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8081/v1'
+tags:
+  - name: debt
+    description: Control everything you spend
+  - name: income
+    description: Control all the money you make
+  - name: user
+    description: Operations about user
+paths:
+  /debt:
+    post:
+      tags:
+        - debt
+      summary: Add a new debt or something you've spent
+      operationId: create-debt
+      requestBody:
+        description: Data needed to create a add a debt
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DebtRequest'
+        required: true
+      responses:
+        '201':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DebtResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+      security:
+        - auth_account_id: []
+    get:
+      tags:
+        - debt
+      summary: Find Debts
+      description: At least one filter should be informed. Reference date range, reference date or reference code
+      operationId: find-debts
+      parameters:
+        - name: date_from
+          in: query
+          description: reference date from
+          schema:
+            type: string
+            format: YYYYMM
+        - name: date_to
+          in: query
+          description: reference date to
+          schema:
+            type: string
+            format: YYYYMM
+        - name: reference_date
+          in: query
+          description: reference date
+          schema:
+            type: string
+            format: YYYYMM
+        - name: reference_code
+          in: query
+          description: debt reference code
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DebtResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+      security:
+        - auth_account_id: []
+    delete:
+      tags:
+        - debt
+      summary: Delete a Debts
+      description: Delete by reference code, that means all installments will be deleted
+      operationId: delete-by-reference-code
+      parameters:
+        - name: reference_code
+          in: query
+          required: true
+          description: reference date
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: successful operation
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+      security:
+        - auth_account_id: []
+  /debt/{debt_id}:
+    get:
+      tags:
+        - debt
+      summary: Find a debt by id
+      description: Returns a single debt
+      operationId: find-debt-by-id
+      parameters:
+        - name: debt_id
+          in: path
+          description: ID of debt to return
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DebtRequest'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+      security:
+        - auth_account_id: []
+    delete:
+      tags:
+        - debt
+      summary: Deletes a debt
+      operationId: delete-debt
+      parameters:
+        - name: debt_id
+          in: path
+          description: Debt id to delete
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: successful operation
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - auth_account_id: []
+components:
+  schemas:
+    DebtRequest:
+      type: object
+      properties:
+        amount:
+          type: number
+          description: the debt total amount
+          format: double
+        description:
+          type: string
+          description: what did you spend with?
+        debt_date:
+          type: string
+          description: the date this transaction happened
+          format: date
+        installments:
+          type: integer
+          description: did you split the payment? In how many installments are you paying?
+        type:
+          type: string
+          description: was it in cash? credit card? ...
+        tag:
+          type: string
+          description: Add a tag to your debt. housing, halth, sports...
+        next_month:
+          type: boolean
+          description: whether this debt should be considered just next month or not
+          default: false
+    DebtResponse:
+      type: object
+      properties:
+        debt_id:
+          type: string
+          format: uuid
+        amount:
+          type: number
+          description: the debt total amount
+          format: double
+        description:
+          type: string
+          description: what did you spend with?
+        debt_date:
+          type: string
+          description: the date this transaction happened
+          format: date
+        installment_number:
+          type: number
+          description: the installment number of the debt
+        installments:
+          type: integer
+          description: total number of installments
+        type:
+          type: string
+          description: debt type
+        tag:
+          type: string
+          description: debt tag
+        reference_code:
+          type: string
+          format: uuid
+        reference_date:
+          type: string 
+          format: YYYYMM
+        total_amount:
+          type: number
+          format: float
+        creation_date:
+          type: string
+          format: date-time
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+    Error:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+    Link:
+      type: object
+      properties:
+        method:
+          type: string
+        href:
+          type: string
+    
+  securitySchemes:
+    auth_account_id:
+      type: apiKey
+      in: header
+      name: Authorization
