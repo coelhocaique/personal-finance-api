@@ -8,10 +8,10 @@ servers:
 tags:
   - name: debt
     description: Control everything you spend
+  - name: recurring-debt
+    description: Add debts that shoud be renewed every month
   - name: income
     description: Control all the money you make
-  - name: user
-    description: Operations about user
 paths:
   /debt:
     post:
@@ -230,6 +230,336 @@ paths:
                 $ref: '#/components/schemas/Error'
       security:
         - auth_account_id: []
+  
+  /recurring-debt:
+    post:
+      tags:
+        - recurring-debt
+      summary: Add a debt that should be renewed every month
+      operationId: create-recurring-debt
+      requestBody:
+        description: Data needed to add a recurring debt
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecurringDebtRequest'
+        required: true
+      responses:
+        '201':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecurringDebtResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+      security:
+        - auth_account_id: []
+    get:
+      tags:
+        - recurring-debt
+      summary: Find Incomes
+      description: At least one filter should be informed. Reference date range or reference date
+      operationId: find-recurring-debts
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecurringDebtResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+      security:
+        - auth_account_id: []
+  /recurring-debt/{recurring_debt_id}:
+    get:
+      tags:
+        - recurring-debt
+      summary: Find an income by id
+      description: Returns a single debt
+      operationId: find-recurring-debt-by-id
+      parameters:
+        - name: recurring_debt_id
+          in: path
+          description: ID of debt to return
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecurringDebtResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+      security:
+        - auth_account_id: []
+    delete:
+      tags:
+        - recurring-debt
+      summary: Deletes a Income
+      operationId: delete-recurring-debt
+      parameters:
+        - name: recurring_debt_id
+          in: path
+          description: Debt id to delete
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: successful operation
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - auth_account_id: []
+  /income:
+    post:
+      tags:
+        - income
+      summary: Add a new income 
+      operationId: create-income
+      requestBody:
+        description: Data needed to add a income
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IncomeRequest'
+        required: true
+      responses:
+        '201':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IncomeResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+      security:
+        - auth_account_id: []
+    get:
+      tags:
+        - income
+      summary: Find Incomes
+      description: At least one filter should be informed. Reference date range or reference date
+      operationId: find-incomes
+      parameters:
+        - name: date_from
+          in: query
+          description: reference date from
+          schema:
+            type: string
+            format: YYYYMM
+        - name: date_to
+          in: query
+          description: reference date to
+          schema:
+            type: string
+            format: YYYYMM
+        - name: reference_date
+          in: query
+          description: reference date
+          schema:
+            type: string
+            format: YYYYMM
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IncomeResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+      security:
+        - auth_account_id: []
+  /income/{income_id}:
+    get:
+      tags:
+        - income
+      summary: Find an income by id
+      description: Returns a single debt
+      operationId: find-income-by-id
+      parameters:
+        - name: income_id
+          in: path
+          description: ID of debt to return
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IncomeResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+      security:
+        - auth_account_id: []
+    delete:
+      tags:
+        - income
+      summary: Deletes a Income
+      operationId: delete-income
+      parameters:
+        - name: income_id
+          in: path
+          description: Debt id to delete
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: successful operation
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - auth_account_id: []
 components:
   schemas:
     DebtRequest:
@@ -304,6 +634,139 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Link'
+    RecurringDebtRequest:
+      type: object
+      properties:
+        amount:
+          type: number
+          description: the debt total amount
+          format: double
+        description:
+          type: string
+          description: what did you spend with?
+        type:
+          type: string
+          description: was it in cash? credit card? ...
+        tag:
+          type: string
+          description: Add a tag to your debt. housing, halth, sports...
+    RecurringDebtResponse:
+      type: object
+      properties:
+        recurring_debt_id:
+          type: string
+          format: uuid
+        amount:
+          type: number
+          description: the debt total amount
+          format: double
+        description:
+          type: string
+          description: what did you spend with?
+        type:
+          type: string
+          description: debt type
+        tag:
+          type: string
+          description: debt tag
+        creation_date:
+          type: string
+          format: date-time
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+    IncomeRequest:
+      type: object
+      properties:
+        gross_amount:
+          type: number
+          description: the income gross amount
+          format: double
+        description:
+          type: string
+          description: what did you spend with?
+        receipt_date:
+          type: string
+          description: the date you received the income
+          format: date
+        reference_date:
+          type: string 
+          format: YYYYMM
+        source_name:
+          type: string
+          description: did you split the payment? In how many installments are you paying?
+        discounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Discount'
+        additions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Addition'
+    IncomeResponse:
+      type: object
+      properties:
+        income_id:
+          type: string
+          format: uuid
+        gross_amount:
+          type: number
+          description: the income gross amount
+          format: double
+        net_amount:
+          type: number
+          format: double
+        additional_amount:
+          type: number
+          format: double
+        discount_amount:
+          type: number
+          format: double
+        description:
+          type: string
+          description: ???
+        receipt_date:
+          type: string
+          description: the date you received the income
+          format: date
+        reference_date:
+          type: string 
+          format: YYYYMM
+        source_name:
+          type: string
+          description: ??
+        creation_date:
+          type: string
+          format: date-time
+        discounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Discount'
+        additions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Addition'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+    Discount:
+      type: object
+      properties:
+        amount:
+          type: number
+        description:
+          type: string
+    
+    Addition:
+      type: object
+      properties:
+        amount:
+          type: number
+        description:
+          type: string
+    
     Error:
       type: object
       properties:
