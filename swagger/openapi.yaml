@@ -12,6 +12,10 @@ tags:
     description: Add debts that shoud be renewed every month
   - name: income
     description: Control all the money you make
+  - name: parameter
+    description: You can also use custom parameters with reference date
+  - name: custom-attribute
+    description: Use custom attributes to create static data
 paths:
   /debt:
     post:
@@ -20,7 +24,7 @@ paths:
       summary: Add a new debt or something you've spent
       operationId: create-debt
       requestBody:
-        description: Data needed to create a add a debt
+        description: Data needed to create a new debt
         content:
           application/json:
             schema:
@@ -58,8 +62,8 @@ paths:
     get:
       tags:
         - debt
-      summary: Find Debts
-      description: At least one filter should be informed. Reference date range, reference date or reference code
+      summary: Finds debts
+      description: At least one filter should be informed. Reference date(reference_date), date range (date_from and date_to) which should be in an YYYYMM (year and month) format. For example 202001 (January of 2020) or the debt reference code (UUID).
       operationId: find-debts
       parameters:
         - name: date_from
@@ -118,7 +122,7 @@ paths:
     delete:
       tags:
         - debt
-      summary: Delete a Debts
+      summary: Deletes by reference code
       description: Delete by reference code, that means all installments will be deleted
       operationId: delete-by-reference-code
       parameters:
@@ -152,15 +156,15 @@ paths:
                   $ref: '#/components/schemas/Error'
       security:
         - auth_account_id: []
-  /debt/{debt_id}:
+  /debt/{id}:
     get:
       tags:
         - debt
-      summary: Find a debt by id
+      summary: Finds a debt by id
       description: Returns a single debt
       operationId: find-debt-by-id
       parameters:
-        - name: debt_id
+        - name: id
           in: path
           description: ID of debt to return
           required: true
@@ -197,12 +201,12 @@ paths:
     delete:
       tags:
         - debt
-      summary: Deletes a debt
+      summary: Deletes a single debt
       operationId: delete-debt
       parameters:
-        - name: debt_id
+        - name: id
           in: path
-          description: Debt id to delete
+          description: ID of debt to delete
           required: true
           schema:
             type: string
@@ -238,7 +242,7 @@ paths:
       summary: Add a debt that should be renewed every month
       operationId: create-recurring-debt
       requestBody:
-        description: Data needed to add a recurring debt
+        description: Data needed to create a new recurring debt
         content:
           application/json:
             schema:
@@ -276,8 +280,8 @@ paths:
     get:
       tags:
         - recurring-debt
-      summary: Find Incomes
-      description: At least one filter should be informed. Reference date range or reference date
+      summary: Finds recurring debts
+      description: At least one filter should be informed. Reference date(reference_date) or date range (date_from and date_to). All of them should be in an YYYYMM (year and month). For example 202001 (January of 2020)
       operationId: find-recurring-debts
       responses:
         '200':
@@ -308,17 +312,17 @@ paths:
                   $ref: '#/components/schemas/Error'
       security:
         - auth_account_id: []
-  /recurring-debt/{recurring_debt_id}:
+  /recurring-debt/{id}:
     get:
       tags:
         - recurring-debt
-      summary: Find an income by id
-      description: Returns a single debt
+      summary: Finds a recurring debt by id
+      description: Returns a single recurring debt
       operationId: find-recurring-debt-by-id
       parameters:
-        - name: recurring_debt_id
+        - name: id
           in: path
-          description: ID of debt to return
+          description: ID of recurring debt to return
           required: true
           schema:
             type: string
@@ -353,12 +357,12 @@ paths:
     delete:
       tags:
         - recurring-debt
-      summary: Deletes a Income
+      summary: Deletes a recurring debt
       operationId: delete-recurring-debt
       parameters:
-        - name: recurring_debt_id
+        - name: id
           in: path
-          description: Debt id to delete
+          description: ID of recurring debt to delete
           required: true
           schema:
             type: string
@@ -390,10 +394,10 @@ paths:
     post:
       tags:
         - income
-      summary: Add a new income 
+      summary: Create a new income 
       operationId: create-income
       requestBody:
-        description: Data needed to add a income
+        description: Data needed to create a new income
         content:
           application/json:
             schema:
@@ -431,8 +435,8 @@ paths:
     get:
       tags:
         - income
-      summary: Find Incomes
-      description: At least one filter should be informed. Reference date range or reference date
+      summary: Finds incomes
+      description: At least one filter should be informed. Reference date(reference_date) or date range (date_from and date_to). All of them should be in an YYYYMM (year and month). For example 202001 (January of 2020)
       operationId: find-incomes
       parameters:
         - name: date_from
@@ -482,17 +486,17 @@ paths:
                   $ref: '#/components/schemas/Error'
       security:
         - auth_account_id: []
-  /income/{income_id}:
+  /income/{id}:
     get:
       tags:
         - income
-      summary: Find an income by id
-      description: Returns a single debt
+      summary: Finds an income by id
+      description: Returns a single income
       operationId: find-income-by-id
       parameters:
-        - name: income_id
+        - name: id
           in: path
-          description: ID of debt to return
+          description: ID of income to return
           required: true
           schema:
             type: string
@@ -527,12 +531,13 @@ paths:
     delete:
       tags:
         - income
-      summary: Deletes a Income
+      summary: Deletes an income
       operationId: delete-income
+      description: Deletes a single income
       parameters:
-        - name: income_id
+        - name: id
           in: path
-          description: Debt id to delete
+          description: ID of income to delete
           required: true
           schema:
             type: string
@@ -560,6 +565,308 @@ paths:
                 $ref: '#/components/schemas/Error'
       security:
         - auth_account_id: []
+
+  /parameter:
+    post:
+      tags:
+        - parameter
+      summary: Creates a new parameter 
+      operationId: create-parameter
+      description: Parameters can be useful to control debt thresholds by month for example, where you can add a custom value you are allowed to spend every month. 
+      requestBody:
+        description: Data needed to create a new parameter
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParameterRequest'
+        required: true
+      responses:
+        '201':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ParameterResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+      security:
+        - auth_account_id: []
+    get:
+      tags:
+        - parameter
+      summary: Finds parameters
+      description: At least one filter should be informed. Reference date(reference_date) or date range (date_from and date_to). All of them should be in an YYYYMM (year and month). For example 202001 (January of 2020)
+      operationId: find-parameters
+      parameters:
+        - name: date_from
+          in: query
+          description: reference date from
+          schema:
+            type: string
+            format: YYYYMM
+        - name: date_to
+          in: query
+          description: reference date to
+          schema:
+            type: string
+            format: YYYYMM
+        - name: reference_date
+          in: query
+          description: reference date
+          schema:
+            type: string
+            format: YYYYMM
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ParameterResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+      security:
+        - auth_account_id: []
+  /parameter/{id}:
+    get:
+      tags:
+        - parameter
+      summary: Finds a parameter by id
+      description: Returns a single parameter
+      operationId: find-parameter-by-id
+      parameters:
+        - name: id
+          in: path
+          description: ID of parameter to fetch
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParameterResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+      security:
+        - auth_account_id: []
+    delete:
+      tags:
+        - parameter
+      summary: Deletes a parameter
+      operationId: delete-parameter
+      description: Deletes a single parameter
+      parameters:
+        - name: id
+          in: path
+          description: ID of parameter to delete
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: successful operation
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - auth_account_id: []
+        
+  /custom-attribute:
+    post:
+      tags:
+        - custom-attribute
+      summary: Creates a new custom attribute 
+      operationId: create-custom-attribute
+      description: Custom attributes are very similar to Parameters but it is not controlled by reference date, so it is advised to be used for static contents, such as debt tags, debt types or income sources.  
+      requestBody:
+        description: Data needed to create a new custom attribute
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomAttributeRequest'
+        required: true
+      responses:
+        '201':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomAttributeResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+      security:
+        - auth_account_id: []
+    get:
+      tags:
+        - custom-attribute
+      summary: Finds custom attributes
+      description: Searches can be performed by property name or no parameters, where all custom attributes are returned 
+      operationId: find-custom-attributes
+      parameters:
+        - name: property_name
+          in: query
+          description: the custom attribute property name
+          schema:
+            type: string
+            format: YYYYMM
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomAttributeResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+      security:
+        - auth_account_id: []
+  /custom-attribute/{id}:
+    delete:
+      tags:
+        - custom-attribute
+      summary: Deletes a custom attribute
+      operationId: delete-custom-attribute
+      description: Deletes a single custom attribute
+      parameters:
+        - name: id
+          in: path
+          description: ID of custom attribute to delete
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: successful operation
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - auth_account_id: []
+
 components:
   schemas:
     DebtRequest:
@@ -751,6 +1058,75 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Link'
+            
+    ParameterRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: the name for the new parameter
+        value:
+          type: string
+          description: the value for this parameter
+        reference_date:
+          type: string
+          format: date
+          description: the month it refers to
+          
+    ParameterResponse:
+      type: object
+      properties:
+        parameter_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          description: the parameter name
+        value:
+          type: string
+          description: the parameter value
+        reference_date:
+          type: string
+          format: YYYYMM
+          description: the reference date the parameter refers to
+        creation_date:
+          type: string
+          format: date-time
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+            
+    CustomAttributeRequest:
+      type: object
+      properties:
+        property_name:
+          type: string
+          description: the name for the property
+        value:
+          type: string
+          description: the value for this property
+          
+    CustomAttributeResponse:
+      type: object
+      properties:
+        custom_attribute_id:
+          type: string
+          format: uuid
+        property_name:
+          type: string
+          description: the custom atrribute property name
+        value:
+          type: string
+          description: the custom atrribute property value
+        creation_date:
+          type: string
+          format: date-time
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+            
     Discount:
       type: object
       properties:
@@ -758,7 +1134,6 @@ components:
           type: number
         description:
           type: string
-    
     Addition:
       type: object
       properties:
