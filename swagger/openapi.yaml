@@ -1,7 +1,51 @@
 openapi: 3.0.1
 info:
   title: Personal Finance API
-  description: APIs to control your personal finance
+  description: >
+    # Introduction
+
+    Control your personal money with Personal Finance API, it is a simple, cool and secure way to store the personal information about your money. This REST API allows you to create, access and manage your data and it do not store any personal sensitive information such as name, email and etc. All you need is an authorization code which will be covered in the next section.
+    
+    # Authentication
+
+    All requests to the API need an Authorization code which will be sent as a header. This authorization code needs to be an UUID which will be the token to access your data. 
+    
+    # Key Concepts
+    
+    The API was architected with a strong concept of reference date, that means it groups your input by year and month (YYYYMM). So, let's say that every first day of the month begins a new cycle.<br>
+    
+    So every end of the month you will know how much you've spent and how much you've made
+    
+    ## Operations
+    
+    * Debt - a debt, something you've spent. 
+    
+    * Recurring Debt - a debt that shoud be renewed every month. Like netflix, spotify, gym...
+    
+    * Income - an income, any money you make like salary, a gift cash...
+    
+    * Parameter - it can be used to store properties that can be customizable by month. Like debt threshold or a target income amount.
+    
+    * Custom Parameter - it can be used to store properties that do not change every month. Just like debt tags, debt types or income sources.
+  
+    # Author
+    
+    <strong>Caique Dos Santos Coelho, Computer Scientist.<br/>
+    [Linkedin profile](https://www.linkedin.com/in/coelhocaiquesantos96) <br/>
+    [Github profile](https://github.com/coelhocaique)
+    </strong>
+    
+    # Project
+    
+    <strong>
+    [Documentation](https://github.com/coelhocaique/personal-finance-api/wiki)<br/>
+    [Github repository](https://github.com/coelhocaique/personal-finance-api)<br/>
+    [Docker hub repository](https://hub.docker.com/repository/docker/coelhocaique/personal-finance-api)
+    <br/><br/>
+    
+    Feel free to contribute.
+    </strong>
+    
   version: 1.0.0
 servers:
   - url: 'http://localhost:8081/v1'
@@ -871,6 +915,14 @@ components:
   schemas:
     DebtRequest:
       type: object
+      required:
+        - amount
+        - description
+        - debt_date
+        - installments
+        - type
+        - tag
+        - next_month
       properties:
         amount:
           type: number
@@ -878,71 +930,96 @@ components:
           format: double
         description:
           type: string
-          description: what did you spend with?
+          description: a description for this debt
         debt_date:
           type: string
           description: the date this transaction happened
           format: date
         installments:
           type: integer
-          description: did you split the payment? In how many installments are you paying?
+          description: is the payment splitted? If so, in how many installments?
         type:
           type: string
           description: was it in cash? credit card? ...
         tag:
           type: string
-          description: Add a tag to your debt. housing, halth, sports...
+          description: Add a tag for this debt. Ex. housing, halth, sports...
         next_month:
           type: boolean
           description: whether this debt should be considered just next month or not
           default: false
     DebtResponse:
       type: object
+      required:
+        - debt_id
+        - amount
+        - description
+        - debt_date
+        - installments
+        - installment_number
+        - type
+        - tag
+        - reference_code
+        - reference_date
+        - total_amount
+        - creation_date
+        - links
       properties:
         debt_id:
           type: string
           format: uuid
+          description: the debt UUID
         amount:
           type: number
-          description: the debt total amount
+          description: the current debt amount, the amount splitted if it has more than one installment
           format: double
         description:
           type: string
-          description: what did you spend with?
+          description: the debt description
         debt_date:
           type: string
-          description: the date this transaction happened
+          description: the debt date description
           format: date
         installment_number:
           type: number
           description: the installment number of the debt
         installments:
           type: integer
-          description: total number of installments
+          description: the total number of installments
         type:
           type: string
-          description: debt type
+          description: the debt type
         tag:
           type: string
-          description: debt tag
+          description: the debt tag
         reference_code:
           type: string
           format: uuid
+          description: the debt reference code, a unique reference code is generated by debt, even if it is splitted
         reference_date:
           type: string 
           format: YYYYMM
+          description: the debt reference date
         total_amount:
           type: number
           format: float
+          description: the debt total amount
         creation_date:
           type: string
           format: date-time
+          description: the date the debt was created
         links:
           type: array
+          description: links with all operations for the debt
           items:
             $ref: '#/components/schemas/Link'
     RecurringDebtRequest:
       type: object
+      required:
+        - amount
+        - description
+        - type
+        - tag
       properties:
         amount:
           type: number
@@ -950,41 +1027,58 @@ components:
           format: double
         description:
           type: string
-          description: what did you spend with?
+          description: the debt description
         type:
           type: string
           description: was it in cash? credit card? ...
         tag:
           type: string
-          description: Add a tag to your debt. housing, halth, sports...
+          description: Add a tag to this debt. Ex housing, halth, sports...
     RecurringDebtResponse:
       type: object
+      required:
+        - recurring_debt_id
+        - amount
+        - description
+        - type
+        - tag
+        - creation_date
+        - links
       properties:
         recurring_debt_id:
           type: string
           format: uuid
+          description: the recurring debt UUID
         amount:
           type: number
-          description: the debt total amount
+          description: the recurring debt amount
           format: double
         description:
           type: string
-          description: what did you spend with?
+          description: the recurring debt description
         type:
           type: string
-          description: debt type
+          description: recurring debt type
         tag:
           type: string
-          description: debt tag
+          description: recurring debt tag
         creation_date:
           type: string
           format: date-time
+          description: the date the recurring debt was created
         links:
           type: array
+          description: links with all operations for the recurring debt
           items:
             $ref: '#/components/schemas/Link'
     IncomeRequest:
       type: object
+      required:
+        - gross_amount
+        - description
+        - receipt_date
+        - reference_date
+        - source_name
       properties:
         gross_amount:
           type: number
@@ -998,25 +1092,43 @@ components:
           description: the date you received the income
           format: date
         reference_date:
+          description: the reference date for this income
           type: string 
           format: YYYYMM
         source_name:
           type: string
-          description: did you split the payment? In how many installments are you paying?
+          description: the source of this income. Who paid you?
         discounts:
           type: array
+          description: the discounts that should be applied
           items:
             $ref: '#/components/schemas/Discount'
         additions:
+          description: the additions that should be applied
           type: array
           items:
             $ref: '#/components/schemas/Addition'
     IncomeResponse:
       type: object
+      required:
+        - income_id
+        - gross_amount
+        - net_amount
+        - additional_amount
+        - discount_amount
+        - description
+        - receipt_date
+        - reference_date
+        - source_name
+        - discounts
+        - additions
+        - creation_date
+        - links
       properties:
         income_id:
           type: string
           format: uuid
+          description: the income UUID
         gross_amount:
           type: number
           description: the income gross amount
@@ -1024,15 +1136,18 @@ components:
         net_amount:
           type: number
           format: double
+          description: the income net amount
         additional_amount:
           type: number
           format: double
+          description: the amount was added
         discount_amount:
           type: number
           format: double
+          description: the amount was discounted
         description:
           type: string
-          description: ???
+          description: income description
         receipt_date:
           type: string
           description: the date you received the income
@@ -1040,12 +1155,14 @@ components:
         reference_date:
           type: string 
           format: YYYYMM
+          description: the reference date of the income
         source_name:
           type: string
-          description: ??
+          description: the income source name
         creation_date:
           type: string
           format: date-time
+          description: the date the income was created
         discounts:
           type: array
           items:
@@ -1056,11 +1173,16 @@ components:
             $ref: '#/components/schemas/Addition'
         links:
           type: array
+          description: links with all operations for the income
           items:
             $ref: '#/components/schemas/Link'
             
     ParameterRequest:
       type: object
+      required:
+        - name
+        - value
+        - reference_date
       properties:
         name:
           type: string
@@ -1075,10 +1197,18 @@ components:
           
     ParameterResponse:
       type: object
+      required:
+        - parameter_id
+        - name
+        - value
+        - reference_date
+        - creation_date
+        - links
       properties:
         parameter_id:
           type: string
           format: uuid
+          description: the parameter UUID
         name:
           type: string
           description: the parameter name
@@ -1094,11 +1224,15 @@ components:
           format: date-time
         links:
           type: array
+          description: links with all operations for the parameter
           items:
             $ref: '#/components/schemas/Link'
             
     CustomAttributeRequest:
       type: object
+      required:
+        - property_name
+        - value
       properties:
         property_name:
           type: string
@@ -1109,10 +1243,17 @@ components:
           
     CustomAttributeResponse:
       type: object
+      required:
+        - custom_attribute_id 
+        - property_name
+        - value
+        - creation_date
+        - links
       properties:
         custom_attribute_id:
           type: string
           format: uuid
+          description: the custom attribute UUID
         property_name:
           type: string
           description: the custom atrribute property name
@@ -1124,26 +1265,41 @@ components:
           format: date-time
         links:
           type: array
+          description: links with all operations for the custom attribute
           items:
             $ref: '#/components/schemas/Link'
             
     Discount:
       type: object
+      required:
+        - amount
+        - description
       properties:
         amount:
           type: number
+          format: double
+          description: the amount of the discount
         description:
           type: string
+          description: the description of the discount
     Addition:
       type: object
+      required:
+        - amount
+        - description
       properties:
         amount:
+          format: double
           type: number
+          description: the amount of the addition
         description:
           type: string
+          description: the description of the addition
     
     Error:
       type: object
+      required:
+        - errors
       properties:
         errors:
           type: array
@@ -1151,6 +1307,9 @@ components:
             type: string
     Link:
       type: object
+      required:
+        - method
+        - href
       properties:
         method:
           type: string
