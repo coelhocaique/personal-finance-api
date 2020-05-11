@@ -1,0 +1,6 @@
+personal-finance-api:
+  image: coelhocaique/personal-finance-api
+  container_name: pf-api
+  env_file: pf-environment.list
+  ports:
+    - 8081:8081

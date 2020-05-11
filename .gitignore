@@ -32,3 +32,4 @@ out/
 .vscode/
 */.terraform/*
 */terraform.tfstate.*
+*/pf-environment.list
