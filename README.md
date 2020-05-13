@@ -9,7 +9,7 @@
 ## Introduction
 Control your personal money with Personal Finance API, it is a simple, cool and secure way to store the personal information about your money. This REST API allows you to create, access and manage your data and it do not store any personal sensitive information such as name, email and etc.
 
-## Create database
+## Create DynamoDB tables
 
 Before running the project for the first time, the databases on AWS must be created. To do so, [terraform](https://www.terraform.io/downloads.html) CLI is required.
 Also, AWS credentials (**AWS_ACCESS_KEY_ID** and **AWS_SECRET_ACCESS_KEY**) are required as environment variables in your local machine.
@@ -38,7 +38,8 @@ docker-compose up
 ```
 
 ## Checkout how to use the API
+[Wiki Documentation](https://github.com/coelhocaique/personal-finance-api/wiki)
+
 [Swagger Documentation](https://app.swaggerhub.com/apis-docs/coelhocaique/personal-finance_api/1.0.0#/)
 
-[Wiki Documentation](https://github.com/coelhocaique/personal-finance-api/wiki)
 
