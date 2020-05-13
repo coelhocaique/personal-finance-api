@@ -1,5 +1,5 @@
 # Personal Finance API
-<!--[![Build Status](https://travis-ci.com/coelhocaique/personal-finance-api.svg?branch=master)](https://travis-ci.com/coelhocaique/personal-finance-api)-->
+[![Build Status](https://travis-ci.com/coelhocaique/personal-finance-api.svg?branch=master)](https://travis-ci.com/coelhocaique/personal-finance-api)
 <!-- [![Code Coverage](https://codecov.io/github/coelhocaique/personal-finance-api.svg)](https://codecov.io/gh/coelhocaique/personal-finance-api)-->
 
 ## Technologies
