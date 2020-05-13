@@ -38,8 +38,9 @@ docker-compose up
 ```
 
 ## Checkout how to use the API
-[Wiki Documentation](https://github.com/coelhocaique/personal-finance-api/wiki)
 
 [Swagger Documentation](https://app.swaggerhub.com/apis-docs/coelhocaique/personal-finance_api/1.0.0#/)
+
+[Docker hub repository](https://hub.docker.com/repository/docker/coelhocaique/personal-finance-api)
 
 
