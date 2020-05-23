@@ -8,7 +8,6 @@ import com.coelhocaique.finance.core.domain.dto.DiscountDTO
 import com.coelhocaique.finance.core.domain.dto.IncomeDTO
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.just
-import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*
 
@@ -25,8 +24,8 @@ object IncomeMapper {
                 accountId = incomeDTO.accountId!!,
                 sourceName = incomeDTO.sourceName.toUpperCase(),
                 discountAmount = incomeDTO.discountAmount!!,
-                discounts = incomeDTO.discounts?.map{ toDocument(it)},
-                additions = incomeDTO.additions?.map{ toDocument(it)},
+                discounts = incomeDTO.discounts.map{ toDocument(it)},
+                additions = incomeDTO.additions.map{ toDocument(it)},
                 creationDate = LocalDateTime.now())
 
     fun toDTO(document: Income): IncomeDTO =
@@ -40,8 +39,8 @@ object IncomeMapper {
                         referenceDate = document.referenceDate,
                         sourceName = document.sourceName,
                         discountAmount = document.discountAmount,
-                        discounts = document.discounts?.map(::toDiscountDTO),
-                        additions = document.additions?.map(::toAdditionDTO),
+                        discounts = document.discounts.map(::toDiscountDTO),
+                        additions = document.additions.map(::toAdditionDTO),
                         creationDate = document.creationDate)
 
     fun toMonoDTO(income: Income): Mono<IncomeDTO> = just(toDTO(income))

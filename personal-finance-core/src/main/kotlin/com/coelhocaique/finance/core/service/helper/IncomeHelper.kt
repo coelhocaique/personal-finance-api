@@ -16,14 +16,13 @@ object IncomeHelper {
                 discountAmount = discountAmount)
     }
 
-    private fun calculateDiscountAmount(discounts: List<DiscountDTO>?) =
-            discounts?.fold(BigDecimal.ZERO) { x, it -> x.add(it.amount) }
+    private fun calculateDiscountAmount(discounts: List<DiscountDTO>) =
+            discounts.fold(BigDecimal.ZERO) { x, it -> x.add(it.amount) }
 
-    private fun calculateAdditionalAmount(additions: List<AdditionDTO>?) =
-            additions?.fold(BigDecimal.ZERO) { x, it -> x.add(it.amount) }
+    private fun calculateAdditionalAmount(additions: List<AdditionDTO>) =
+            additions.fold(BigDecimal.ZERO) { x, it -> x.add(it.amount) }
 
     private fun calculateNetAmount(grossAmount: BigDecimal, additionalAmount: BigDecimal,
                                    discountAmount: BigDecimal): BigDecimal =
         grossAmount.add(additionalAmount).subtract(discountAmount)
-
 }

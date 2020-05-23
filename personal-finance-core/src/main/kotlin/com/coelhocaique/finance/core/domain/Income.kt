@@ -15,8 +15,8 @@ data class Income (
         val sourceName: String,
         val additionalAmount: BigDecimal,
         val discountAmount: BigDecimal,
-        val discounts: List<Discount>? = emptyList(),
-        val additions: List<Addition>? = emptyList(),
+        val discounts: List<Discount> = emptyList(),
+        val additions: List<Addition> = emptyList(),
         val accountId: UUID,
         val creationDate: LocalDateTime
 )

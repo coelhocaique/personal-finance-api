@@ -2,6 +2,7 @@ package com.coelhocaique.finance.core.util
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.lang.IllegalArgumentException
 import java.time.LocalDate
 import java.util.*
 
@@ -11,8 +12,10 @@ fun generateReferenceDate(date: LocalDate) = date.toString()
         .replace("-", "")
         .substring(0, 6)
 
-fun formatToUUID(st: String): UUID {
-    val uuid = st.replace("-", "")
+fun formatToUUID(uuidString: String): UUID {
+    if (!(uuidString.length == 32 || uuidString.length == 36))
+        throw IllegalArgumentException()
+    val uuid = uuidString.replace("-", "")
     return UUID.fromString(uuid.substring(0, 8)
             .plus("-")
             .plus(uuid.substring(8, 12))

@@ -5,6 +5,7 @@ plugins {
     id("org.sonarqube") version "2.7.1"
     id("org.jetbrains.kotlin.plugin.spring") version "1.3.41"
     kotlin("jvm") version "1.3.41"
+    id("jacoco")
 }
 
 repositories {
@@ -15,6 +16,7 @@ subprojects{
     apply(plugin = "java")
     apply(plugin = "kotlin")
     apply(plugin = "org.jetbrains.kotlin.plugin.spring")
+    apply(plugin = "jacoco")
 
     group = "com.coelhocaique"
     version = "0.0.1-SNAPSHOT"
@@ -59,6 +61,37 @@ subprojects{
         kotlinOptions {
             freeCompilerArgs = listOf("-Xjsr305=strict")
             jvmTarget = "11"
+        }
+    }
+
+    val excludedClassesFromCoverageAnalysis = listOf(
+            "**/config/**",
+            "**/domain/**",
+            "**/scheduler/**"
+    )
+
+    tasks.test {
+        useJUnitPlatform()
+        reports.junitXml.isEnabled = true
+        finalizedBy(tasks.jacocoTestReport)
+    }
+
+    tasks.jacocoTestReport {
+        dependsOn(tasks.test)
+
+        reports {
+            xml.isEnabled = true
+            csv.isEnabled = false
+            html.isEnabled = true
+            html.destination = file("${buildDir}/jacocoTestReport")
+        }
+    }
+
+    afterEvaluate {
+        tasks.jacocoTestReport {
+            classDirectories.setFrom(files(classDirectories.files.map {
+                fileTree("dir" to it, "exclude" to excludedClassesFromCoverageAnalysis)
+            }))
         }
     }
 }

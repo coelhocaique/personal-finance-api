@@ -6,4 +6,9 @@ dist: trusty
 jdk: oraclejdk11
 
 script:
-  - ./gradlew clean build
+  - ./gradlew clean
+  - ./gradlew build -x test
+  - ./gradlew test
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

@@ -22,7 +22,6 @@ object DebtHelper {
         return buildDebts(newDto, installmentAmount, totalAmount, debtDates)
     }
 
-
     private fun getFirstDebtDate(dto: DebtDTO): LocalDate {
         return if (dto.nextMonth!!)
             dto.debtDate.plusMonths(1)
@@ -37,7 +36,6 @@ object DebtHelper {
         val newDebtDate = debtDate.plusMonths(1)
         return getDebtDates(newDebtDate, installments - 1, debtDates + listOf(newDebtDate))
     }
-
 
     private fun buildDebts(dto: DebtDTO, installmentAmount: BigDecimal,
                            remainingAmount: BigDecimal, debtDates: List<LocalDate>,
