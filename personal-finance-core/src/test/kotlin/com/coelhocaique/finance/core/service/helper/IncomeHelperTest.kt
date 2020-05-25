@@ -2,75 +2,84 @@ package com.coelhocaique.finance.core.service.helper
 
 import com.coelhocaique.finance.core.domain.dto.AdditionDTO
 import com.coelhocaique.finance.core.domain.dto.DiscountDTO
-import com.coelhocaique.finance.core.domain.dto.IncomeDTO
+import com.coelhocaique.finance.core.domain.dto.IncomeRequest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class IncomeHelperTest{
 
+    private val accountId = UUID.randomUUID()
+
     @Test
     fun testCalculateIncomeNoAdditionNoDiscount() {
 
-        val incomeDTO = IncomeDTO(
+        val request = IncomeRequest(
+                accountId = accountId,
                 grossAmount = BigDecimal.TEN,
                 description = "salary",
                 receiptDate = LocalDate.now(),
-                referenceDate = "202005",
+                referenceDate = LocalDate.of(2020, 5, 24),
                 sourceName = "income source"
         )
 
-        val calculatedIncome = IncomeHelper.calculateIncome(incomeDTO)
+        val income = IncomeHelper.generateIncome(request)
 
-        assertEquals(incomeDTO.grossAmount, calculatedIncome.grossAmount)
-        assertEquals(incomeDTO.grossAmount, calculatedIncome.netAmount)
-        assertEquals(BigDecimal.ZERO, calculatedIncome.additionalAmount)
-        assertEquals(BigDecimal.ZERO, calculatedIncome.discountAmount)
+        assertEquals(request.grossAmount, income.grossAmount)
+        assertEquals(request.grossAmount, income.netAmount)
+        assertEquals(BigDecimal.ZERO, income.additionalAmount)
+        assertEquals(BigDecimal.ZERO, income.discountAmount)
+        assertEquals("202005", income.referenceDate)
     }
 
     @Test
     fun testCalculateIncomeWithAdditionNoDiscount() {
         val additionalAmount = BigDecimal.TEN
 
-        val incomeDTO = IncomeDTO(
+        val request = IncomeRequest(
+                accountId = accountId,
                 grossAmount = BigDecimal.TEN,
                 description = "salary",
                 receiptDate = LocalDate.now(),
-                referenceDate = "202005",
+                referenceDate = LocalDate.of(2020, 5, 24),
                 sourceName = "income source",
                 additions = listOf(AdditionDTO(additionalAmount, "addition"))
         )
 
-        val calculatedIncome = IncomeHelper.calculateIncome(incomeDTO)
+        val income = IncomeHelper.generateIncome(request)
 
-        assertEquals(incomeDTO.grossAmount, calculatedIncome.grossAmount)
-        assertEquals(incomeDTO.grossAmount.add(additionalAmount), calculatedIncome.netAmount)
-        assertEquals(additionalAmount, calculatedIncome.additionalAmount)
-        assertEquals(BigDecimal.ZERO, calculatedIncome.discountAmount)
+        assertEquals(request.grossAmount, income.grossAmount)
+        assertEquals(request.grossAmount.add(additionalAmount), income.netAmount)
+        assertEquals(additionalAmount, income.additionalAmount)
+        assertEquals(BigDecimal.ZERO, income.discountAmount)
+        assertEquals("202005", income.referenceDate)
     }
 
     @Test
     fun testCalculateIncomeNoAdditionWithDiscount() {
         val discountAmount = BigDecimal.TEN
 
-        val incomeDTO = IncomeDTO(
+        val request = IncomeRequest(
+                accountId = accountId,
                 grossAmount = BigDecimal.TEN,
                 description = "salary",
                 receiptDate = LocalDate.now(),
-                referenceDate = "202005",
+                referenceDate = LocalDate.of(2020, 5, 24),
                 sourceName = "income source",
                 discounts = listOf(DiscountDTO(discountAmount, "discount"))
         )
 
-        val calculatedIncome = IncomeHelper.calculateIncome(incomeDTO)
+        val income = IncomeHelper.generateIncome(request)
 
-        assertEquals(incomeDTO.grossAmount, calculatedIncome.grossAmount)
-        assertEquals(incomeDTO.grossAmount.subtract(discountAmount), calculatedIncome.netAmount)
-        assertEquals(BigDecimal.ZERO, calculatedIncome.additionalAmount)
-        assertEquals(discountAmount, calculatedIncome.discountAmount)
+        assertEquals(request.grossAmount, income.grossAmount)
+        assertEquals(request.grossAmount.subtract(discountAmount), income.netAmount)
+        assertEquals(BigDecimal.ZERO, income.additionalAmount)
+        assertEquals(discountAmount, income.discountAmount)
+        assertEquals("202005", income.referenceDate)
     }
 
     @Test
@@ -78,21 +87,23 @@ class IncomeHelperTest{
         val additionalAmount = BigDecimal.TEN
         val discountAmount = BigDecimal.ONE
 
-        val incomeDTO = IncomeDTO(
+        val request = IncomeRequest(
+                accountId = accountId,
                 grossAmount = BigDecimal.TEN,
                 description = "salary",
                 receiptDate = LocalDate.now(),
-                referenceDate = "202005",
+                referenceDate = LocalDate.of(2020, 5, 24),
                 sourceName = "income source",
                 discounts = listOf(DiscountDTO(discountAmount, "discount")),
                 additions = listOf(AdditionDTO(additionalAmount, "addition"))
         )
 
-        val calculatedIncome = IncomeHelper.calculateIncome(incomeDTO)
+        val income = IncomeHelper.generateIncome(request)
 
-        assertEquals(incomeDTO.grossAmount, calculatedIncome.grossAmount)
-        assertEquals(incomeDTO.grossAmount.add(additionalAmount).subtract(discountAmount), calculatedIncome.netAmount)
-        assertEquals(additionalAmount, calculatedIncome.additionalAmount)
-        assertEquals(discountAmount, calculatedIncome.discountAmount)
+        assertEquals(request.grossAmount, income.grossAmount)
+        assertEquals(request.grossAmount.add(additionalAmount).subtract(discountAmount), income.netAmount)
+        assertEquals(additionalAmount, income.additionalAmount)
+        assertEquals(discountAmount, income.discountAmount)
+        assertEquals("202005", income.referenceDate)
     }
 }

@@ -1,6 +1,6 @@
 package com.coelhocaique.finance.core.service.helper
 
-import com.coelhocaique.finance.core.domain.dto.DebtDTO
+import com.coelhocaique.finance.core.domain.dto.DebtRequest
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -14,7 +14,7 @@ class DebtHelperTest {
     @Test
     fun testGenerateDebtsOneInstallment() {
         val debtDate = LocalDate.of(2020, 5, 23)
-        val debtDTO = DebtDTO(
+        val debtDTO = DebtRequest(
                 amount = BigDecimal.TEN,
                 description = "course",
                 installments = 1,
@@ -44,7 +44,7 @@ class DebtHelperTest {
     @Test
     fun testGenerateDebtsOneInstallmentNextMonth() {
         val debtDate = LocalDate.of(2020, 5, 23)
-        val debtDTO = DebtDTO(
+        val debtDTO = DebtRequest(
                 amount = BigDecimal.TEN,
                 description = "course",
                 installments = 1,
@@ -74,7 +74,7 @@ class DebtHelperTest {
     @Test
     fun testGenerateDebtsMoreThanOneInstallment() {
         val debtDate = LocalDate.of(2020, 5, 23)
-        val debtDTO = DebtDTO(
+        val debtDTO = DebtRequest(
                 amount = BigDecimal("100.05"),
                 description = "course",
                 installments = 2,
@@ -117,7 +117,7 @@ class DebtHelperTest {
     @Test
     fun testGenerateDebtsMoreThanOneInstallmentNextMonth() {
         val debtDate = LocalDate.of(2020, 5, 23)
-        val debtDTO = DebtDTO(
+        val debtDTO = DebtRequest(
                 amount = BigDecimal("100.05"),
                 description = "course",
                 installments = 2,

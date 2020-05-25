@@ -7,11 +7,11 @@ import java.util.stream.Collectors
 
 object LinkBuilder {
 
-    fun buildForIncomes(uri: String, dtos: List<IncomeDTO>): Mono<List<IncomeDTO>> {
+    fun buildForIncomes(uri: String, dtos: List<IncomeResponse>): Mono<List<IncomeResponse>> {
         return just(dtos.stream().map { buildForIncome(uri, it) }.collect(Collectors.toList()))
     }
 
-    fun buildForIncome(uri: String, dto: IncomeDTO): IncomeDTO {
+    fun buildForIncome(uri: String, dto: IncomeResponse): IncomeResponse {
         val baseUri = uri.substringBefore("v1")
         val links = listOf(
                 mapLink("GET", baseUri.plus("v1/income/".plus(dto.incomeId))),
@@ -22,11 +22,11 @@ object LinkBuilder {
         return dto.copy(links = links)
     }
 
-    fun buildForDebts(uri: String, dtos: List<DebtDTO>): Mono<List<DebtDTO>> {
+    fun buildForDebts(uri: String, dtos: List<DebtResponse>): Mono<List<DebtResponse>> {
         return just(dtos.stream().map { buildForDebt(uri, it) }.collect(Collectors.toList()))
     }
 
-    fun buildForDebt(uri: String, dto: DebtDTO): DebtDTO {
+    fun buildForDebt(uri: String, dto: DebtResponse): DebtResponse {
         val baseUri = uri.substringBefore("v1")
         val links = listOf(
                 mapLink("GET", baseUri.plus("v1/debt/".plus(dto.debtId))),
@@ -39,11 +39,11 @@ object LinkBuilder {
         return dto.copy(links = links)
     }
 
-    fun buildForParameters(uri: String, dtos: List<ParameterDTO>): Mono<List<ParameterDTO>> {
+    fun buildForParameters(uri: String, dtos: List<ParameterResponse>): Mono<List<ParameterResponse>> {
         return just(dtos.stream().map { buildForParameter(uri, it) }.collect(Collectors.toList()))
     }
 
-    fun buildForParameter(uri: String, dto: ParameterDTO): ParameterDTO {
+    fun buildForParameter(uri: String, dto: ParameterResponse): ParameterResponse {
         val baseUri = uri.substringBefore("v1")
         val links = listOf(
                 mapLink("GET", baseUri.plus("v1/parameter/".plus(dto.parameterId))),
@@ -54,26 +54,26 @@ object LinkBuilder {
         return dto.copy(links = links)
     }
 
-    fun buildForCustomAttributes(uri: String, dtos: List<CustomAttributeDTO>): Mono<List<CustomAttributeDTO>> {
-        return just(dtos.stream().map { buildForCustomAttribute(uri, it) }.collect(Collectors.toList()))
+    fun buildForCustomAttributes(uri: String, requests: List<CustomAttributeResponse>): Mono<List<CustomAttributeResponse>> {
+        return just(requests.stream().map { buildForCustomAttribute(uri, it) }.collect(Collectors.toList()))
     }
 
-    fun buildForCustomAttribute(uri: String, dto: CustomAttributeDTO): CustomAttributeDTO {
+    fun buildForCustomAttribute(uri: String, request: CustomAttributeResponse): CustomAttributeResponse {
         val baseUri = uri.substringBefore("v1")
         val links = listOf(
                 mapLink("GET", baseUri.plus("v1/custom-attribute")),
-                mapLink("GET", baseUri.plus("v1/custom-attribute?property_name=".plus(dto.propertyName))),
-                mapLink("DELETE",baseUri.plus("v1/custom-attribute/".plus(dto.customAttributeId)))
+                mapLink("GET", baseUri.plus("v1/custom-attribute?property_name=".plus(request.propertyName))),
+                mapLink("DELETE",baseUri.plus("v1/custom-attribute/".plus(request.customAttributeId)))
         )
 
-        return dto.copy(links = links)
+        return request.copy(links = links)
     }
 
-    fun buildForRecurringDebts(uri: String, dtos: List<RecurringDebtDTO>): Mono<List<RecurringDebtDTO>> {
+    fun buildForRecurringDebts(uri: String, dtos: List<RecurringDebtResponse>): Mono<List<RecurringDebtResponse>> {
         return just(dtos.stream().map { buildForRecurringDebt(uri, it) }.collect(Collectors.toList()))
     }
 
-    fun buildForRecurringDebt(uri: String, dto: RecurringDebtDTO): RecurringDebtDTO {
+    fun buildForRecurringDebt(uri: String, dto: RecurringDebtResponse): RecurringDebtResponse {
         val baseUri = uri.substringBefore("v1")
         val links = listOf(
                 mapLink("GET", baseUri.plus("v1/recurring-debt")),

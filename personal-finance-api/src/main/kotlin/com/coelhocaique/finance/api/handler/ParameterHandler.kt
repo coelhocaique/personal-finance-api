@@ -78,6 +78,4 @@ class ParameterHandler (private val service: ParameterService) {
 
     private fun findByNameAndRangeDate(it: FetchCriteria) =
             service.findByNameAndReferenceDateRange(it.accountId, it.parameterName!!, it.dateFrom!!, it.dateTo!!)
-
-
 }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.just
 import reactor.core.publisher.Mono.justOrEmpty
+import java.util.*
 
 @Component
 class DebtRepository(val repository: DynamoRepository) {
@@ -29,7 +30,7 @@ class DebtRepository(val repository: DynamoRepository) {
         return just(document)
     }
 
-    fun findByReferenceDateBetween(dateFrom: String, dateTo: String, accountId: String):
+    fun findByReferenceDateBetween(dateFrom: String, dateTo: String, accountId: UUID):
             Mono<List<Debt>> {
         return justOrEmpty(repository.scanItemsBetween(
                 TABLE_NAME,
@@ -40,26 +41,26 @@ class DebtRepository(val repository: DynamoRepository) {
                 .map { it.sortedByDescending { itt -> itt.creationDate } }
     }
 
-    fun findByReferenceDate(referenceDate: String, accountId: String):
+    fun findByReferenceDate(referenceDate: String, accountId: UUID):
             Mono<List<Debt>> {
         return scan(mapOf(REFERENCE_DATE to referenceDate, ACCOUNT_ID to accountId))
     }
 
-    fun findByReferenceCode(referenceCode: String, accountId: String):
+    fun findByReferenceCode(referenceCode: UUID, accountId: UUID):
             Mono<List<Debt>> {
         return scan(mapOf(REFERENCE_CODE to referenceCode, ACCOUNT_ID to accountId))
     }
 
-    fun findById(id: String, accountId: String): Mono<Debt> {
+    fun findById(id: UUID, accountId: UUID): Mono<Debt> {
         return scan(mapOf(ID to id, ACCOUNT_ID to accountId))
                 .flatMap { justOrEmpty(it.firstOrNull()) }
     }
 
-    fun deleteById(id: String) {
+    fun deleteById(id: UUID) {
         repository.deleteItem(TABLE_NAME, mapOf(ID to id))
     }
 
-    private fun scan(keys: Map<String, String>): Mono<List<Debt>> {
+    private fun scan(keys: Map<String, Any>): Mono<List<Debt>> {
         return justOrEmpty(repository.scanItems(TABLE_NAME, keys, Debt::class.java))
                 .map { it.sortedByDescending { itt -> itt.creationDate } }
     }

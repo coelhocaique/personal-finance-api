@@ -19,13 +19,13 @@ class RecurringDebtScheduler(
 
     @Scheduled(cron = "0 0 0 1 * *")
     fun createRecurringDebts(){
-        logger().info("m=createRecurringDebts, date=${LocalDateTime.now()}, stage=init")
+        logger().info("M=createRecurringDebts, date=${LocalDateTime.now()}, stage=init")
 
         recurringDebtRepository.findAll()
                 .map(::toDebtDTO)
                 .map { d -> debtService.create(just(d)) }
                 .forEach { pipeline -> pipeline.subscribe() }
 
-        logger().info("m=createRecurringDebts, date=${LocalDateTime.now()}, stage=success")
+        logger().info("M=createRecurringDebts, date=${LocalDateTime.now()}, stage=success")
     }
 }

@@ -1,19 +1,19 @@
 package com.coelhocaique.finance.api.handler
 
 import com.coelhocaique.finance.api.dto.DebtRequestDTO
+import com.coelhocaique.finance.api.dto.ObjectMapper.toDebtDTO
 import com.coelhocaique.finance.api.handler.FetchCriteria.SearchType.*
 import com.coelhocaique.finance.api.handler.RequestParameterHandler.extractBody
+import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrieveAccountId
 import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrieveParameters
 import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrievePath
-import com.coelhocaique.finance.api.handler.RequestParameterHandler.retrieveAccountId
 import com.coelhocaique.finance.api.helper.LinkBuilder.buildForDebt
 import com.coelhocaique.finance.api.helper.LinkBuilder.buildForDebts
 import com.coelhocaique.finance.api.helper.Messages.NO_PARAMETERS
-import com.coelhocaique.finance.api.dto.ObjectMapper.toDebtDTO
 import com.coelhocaique.finance.api.helper.RequestValidator.validate
 import com.coelhocaique.finance.api.helper.ResponseHandler.generateResponse
 import com.coelhocaique.finance.api.helper.exception.ApiException.ApiExceptionHelper.business
-import com.coelhocaique.finance.core.domain.dto.DebtDTO
+import com.coelhocaique.finance.core.domain.dto.DebtResponse
 import com.coelhocaique.finance.core.service.DebtService
 import com.coelhocaique.finance.core.util.logger
 import org.springframework.stereotype.Component
@@ -24,7 +24,7 @@ import reactor.core.publisher.Mono.error
 import reactor.core.publisher.Mono.just
 
 @Component
-class DebtHandler (private val service: DebtService) {
+class DebtHandler(private val service: DebtService) {
 
     fun create(req: ServerRequest): Mono<ServerResponse> {
         return retrieveAccountId(req)
@@ -32,7 +32,7 @@ class DebtHandler (private val service: DebtService) {
                 .flatMap { validate(it) }
                 .flatMap { service.create(toDebtDTO(it)) }
                 .flatMap { buildForDebts(req.uri().toString(), it) }
-                .let { generateResponse(it,201)  }
+                .let { generateResponse(it, 201) }
     }
 
     fun findById(req: ServerRequest): Mono<ServerResponse> {
@@ -75,16 +75,16 @@ class DebtHandler (private val service: DebtService) {
                 .let { generateResponse(it, 204) }
     }
 
-    private fun findByReferenceCode(it: FetchCriteria): Mono<List<DebtDTO>> =
+    private fun findByReferenceCode(it: FetchCriteria): Mono<List<DebtResponse>> =
             service.findByReferenceCode(it.accountId, it.referenceCode!!)
 
-    private fun findByReferenceDate(it: FetchCriteria): Mono<List<DebtDTO>> =
+    private fun findByReferenceDate(it: FetchCriteria): Mono<List<DebtResponse>> =
             service.findByReferenceDate(it.accountId, it.referenceDate!!)
 
-    private fun findByReferenceDateRange(it: FetchCriteria): Mono<List<DebtDTO>> =
+    private fun findByReferenceDateRange(it: FetchCriteria): Mono<List<DebtResponse>> =
             service.findByReferenceDateRange(it.accountId, it.dateFrom!!, it.dateTo!!)
 
-    private fun deleteByReferenceCode(it: FetchCriteria): Mono<List<DebtDTO>> =
+    private fun deleteByReferenceCode(it: FetchCriteria): Mono<List<DebtResponse>> =
             service.deleteByReferenceCode(it.accountId, it.referenceCode!!)
 
 }

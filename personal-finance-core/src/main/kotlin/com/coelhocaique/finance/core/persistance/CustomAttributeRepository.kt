@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.just
 import reactor.core.publisher.Mono.justOrEmpty
+import java.util.*
 
 @Component
 class CustomAttributeRepository(val repository: DynamoRepository) {
@@ -21,24 +22,24 @@ class CustomAttributeRepository(val repository: DynamoRepository) {
         return just(document)
     }
 
-    fun findByPropertyName(propertyName: String, accountId: String): Mono<List<CustomAttribute>> {
+    fun findByPropertyName(propertyName: String, accountId: UUID): Mono<List<CustomAttribute>> {
         return scan(mapOf(PROPERTY_NAME to propertyName, ACCOUNT_ID to accountId))
     }
 
-    fun findAll(accountId: String): Mono<List<CustomAttribute>> {
+    fun findAll(accountId: UUID): Mono<List<CustomAttribute>> {
         return scan(mapOf(ACCOUNT_ID to accountId))
     }
 
-    fun findById(id: String, accountId: String): Mono<CustomAttribute> {
+    fun findById(id: UUID, accountId: UUID): Mono<CustomAttribute> {
         return scan(mapOf(ID to id, ACCOUNT_ID to accountId))
                 .flatMap { justOrEmpty(it.firstOrNull()) }
     }
 
-    fun deleteById(id: String) {
+    fun deleteById(id: UUID) {
         repository.deleteItem(TABLE_NAME, mapOf(ID to id))
     }
 
-    private fun scan(keys: Map<String, String>): Mono<List<CustomAttribute>> {
+    private fun scan(keys: Map<String, Any>): Mono<List<CustomAttribute>> {
         return justOrEmpty(repository.scanItems(TABLE_NAME, keys, CustomAttribute::class.java))
                 .map { it.sortedByDescending { itt -> itt.creationDate } }
     }

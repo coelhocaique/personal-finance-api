@@ -4,6 +4,7 @@ import com.coelhocaique.finance.core.domain.Income
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.justOrEmpty
+import java.util.*
 
 @Component
 class IncomeRepository(val repository: DynamoRepository) {
@@ -22,7 +23,7 @@ class IncomeRepository(val repository: DynamoRepository) {
         return Mono.just(document)
     }
 
-    fun findByReferenceDateBetween(dateFrom: String, dateTo: String, accountId: String):
+    fun findByReferenceDateBetween(dateFrom: String, dateTo: String, accountId: UUID):
             Mono<List<Income>> {
         return justOrEmpty(repository.scanItemsBetween(
                 TABLE_NAME,
@@ -33,22 +34,22 @@ class IncomeRepository(val repository: DynamoRepository) {
                 .map { it.sortedByDescending { itt -> itt.creationDate } }
     }
 
-    fun findByReferenceDate(referenceDate: String, accountId: String):
+    fun findByReferenceDate(referenceDate: String, accountId: UUID):
             Mono<List<Income>> {
         return scan(mapOf(REFERENCE_DATE to referenceDate, ACCOUNT_ID to accountId))
     }
 
-    fun findById(id: String, accountId: String): Mono<Income> {
+    fun findById(id: UUID, accountId: UUID): Mono<Income> {
         return scan(mapOf(ID to id, ACCOUNT_ID to accountId))
                 .flatMap { justOrEmpty(it.firstOrNull()) }
     }
 
-    fun deleteById(id: String) {
+    fun deleteById(id: UUID) {
         repository.deleteItem(TABLE_NAME, mapOf(ID to id))
     }
 
-    private fun scan(keys: Map<String, String>): Mono<List<Income>> {
+    private fun scan(keys: Map<String, Any>): Mono<List<Income>> {
         return justOrEmpty(repository.scanItems(TABLE_NAME, keys, Income::class.java))
-                    .map { it.sortedByDescending { itt -> itt.creationDate } }
+                .map { it.sortedByDescending { itt -> itt.creationDate } }
     }
 }

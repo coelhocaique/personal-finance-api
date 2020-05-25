@@ -1,19 +1,17 @@
 package com.coelhocaique.finance.api.dto
 
 import com.coelhocaique.finance.core.domain.dto.*
-import com.coelhocaique.finance.core.util.generateReferenceDate
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.just
-import java.util.*
 import java.util.UUID.fromString
 
 object ObjectMapper {
 
-    fun toIncomeDTO(dto: IncomeRequestDTO): Mono<IncomeDTO> =
-            just( IncomeDTO(
+    fun toIncomeDTO(dto: IncomeRequestDTO): Mono<IncomeRequest> =
+            just( IncomeRequest(
                     grossAmount = dto.grossAmount!!,
                     description = dto.description!!,
-                    accountId = fromString(dto.accountId),
+                    accountId = dto.accountId!!,
                     referenceDate = dto.referenceDate!!,
                     receiptDate = dto.receiptDate!!,
                     sourceName = dto.sourceName!!,
@@ -21,8 +19,8 @@ object ObjectMapper {
                     additions = dto.additions
             ) )
 
-    fun toDebtDTO(dto: DebtRequestDTO): Mono<DebtDTO> =
-            just( DebtDTO(
+    fun toDebtDTO(dto: DebtRequestDTO): Mono<DebtRequest> =
+            just( DebtRequest(
                     amount = dto.amount!!,
                     debtDate = dto.debtDate!!,
                     tag = dto.tag!!,
@@ -30,31 +28,31 @@ object ObjectMapper {
                     installments = dto.installments!!,
                     nextMonth = dto.nextMonth,
                     description = dto.description!!,
-                    accountId = fromString(dto.accountId)
+                    accountId = dto.accountId!!
             ) )
 
-    fun toRecurringDebtDTO(dto: RecurringDebtRequestDTO): Mono<RecurringDebtDTO> =
-            just( RecurringDebtDTO(
+    fun toRecurringDebtDTO(dto: RecurringDebtRequestDTO): Mono<RecurringDebtRequest> =
+            just( RecurringDebtRequest(
                     amount = dto.amount!!,
                     tag = dto.tag!!,
                     type = dto.type!!,
                     description = dto.description!!,
-                    accountId = fromString(dto.accountId)
+                    accountId = dto.accountId!!
             ) )
 
-    fun toParameterDTO(dto: ParameterRequestDTO): Mono<ParameterDTO> =
-            just( ParameterDTO(
+    fun toParameterDTO(dto: ParameterRequestDTO): Mono<ParameterRequest> =
+            just( ParameterRequest(
                     name = dto.name!!,
                     value = dto.value!!,
-                    referenceDate = generateReferenceDate(dto.referenceDate!!),
-                    accountId = fromString(dto.accountId)
+                    referenceDate = dto.referenceDate!!,
+                    accountId = dto.accountId!!
             ) )
 
 
-    fun toCustomAttributeDTO(dto: CustomAttributeRequestDTO): Mono<CustomAttributeDTO> =
-            just( CustomAttributeDTO(
+    fun toCustomAttributeDTO(dto: CustomAttributeRequestDTO): Mono<CustomAttributeRequest> =
+            just( CustomAttributeRequest(
                     propertyName = dto.propertyName!!,
                     value = dto.value!!,
-                    accountId = fromString(dto.accountId)
+                    accountId = dto.accountId!!
             ) )
 }

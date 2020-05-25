@@ -14,7 +14,8 @@ import com.coelhocaique.finance.api.helper.Messages.NO_PARAMETERS
 import com.coelhocaique.finance.api.helper.RequestValidator.validate
 import com.coelhocaique.finance.api.helper.ResponseHandler.generateResponse
 import com.coelhocaique.finance.api.helper.exception.ApiException.ApiExceptionHelper.business
-import com.coelhocaique.finance.core.domain.dto.IncomeDTO
+import com.coelhocaique.finance.core.domain.dto.IncomeRequest
+import com.coelhocaique.finance.core.domain.dto.IncomeResponse
 import com.coelhocaique.finance.core.service.IncomeService
 import com.coelhocaique.finance.core.util.logger
 import org.springframework.stereotype.Component
@@ -63,10 +64,10 @@ class IncomeHandler (private val service: IncomeService) {
                 .let { generateResponse(it, 204) }
     }
 
-    private fun findByReferenceDate(it: FetchCriteria): Mono<List<IncomeDTO>> =
+    private fun findByReferenceDate(it: FetchCriteria): Mono<List<IncomeResponse>> =
             service.findByReferenceDate(it.accountId, it.referenceDate!!)
 
 
-    private fun findByReferenceDateRange(it: FetchCriteria): Mono<List<IncomeDTO>> =
+    private fun findByReferenceDateRange(it: FetchCriteria): Mono<List<IncomeResponse>> =
             service.findByReferenceDateRange(it.accountId, it.dateFrom!!, it.dateTo!!)
 }

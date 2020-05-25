@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.just
 import reactor.core.publisher.Mono.justOrEmpty
+import java.util.*
 
 @Component
 class RecurringDebtRepository(val repository: DynamoRepository) {
@@ -20,7 +21,7 @@ class RecurringDebtRepository(val repository: DynamoRepository) {
         return just(document)
     }
 
-    fun findAll(accountId: String): Mono<List<RecurringDebt>> {
+    fun findAll(accountId: UUID): Mono<List<RecurringDebt>> {
         return scan(mapOf(ACCOUNT_ID to accountId))
     }
 
@@ -28,16 +29,16 @@ class RecurringDebtRepository(val repository: DynamoRepository) {
         return repository.scanAll(TABLE_NAME, RecurringDebt::class.java)
     }
 
-    fun findById(id: String, accountId: String): Mono<RecurringDebt> {
+    fun findById(id: UUID, accountId: UUID): Mono<RecurringDebt> {
         return scan(mapOf(ID to id, ACCOUNT_ID to accountId))
                 .flatMap { justOrEmpty(it.firstOrNull()) }
     }
 
-    fun deleteById(id: String) {
+    fun deleteById(id: UUID) {
         repository.deleteItem(TABLE_NAME, mapOf(ID to id))
     }
 
-    private fun scan(keys: Map<String, String>): Mono<List<RecurringDebt>> {
+    private fun scan(keys: Map<String, Any>): Mono<List<RecurringDebt>> {
         return justOrEmpty(repository.scanItems(TABLE_NAME, keys, RecurringDebt::class.java))
                 .map { it.sortedByDescending { itt -> itt.creationDate } }
     }

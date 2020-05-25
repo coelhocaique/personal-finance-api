@@ -1,14 +1,16 @@
 package com.coelhocaique.finance.api.handler
 
+import java.util.*
+
 data class FetchCriteria (
-        val referenceCode: String? = null,
+        val referenceCode: UUID? = null,
         val referenceDate: String? = null,
         val dateFrom: String? = null,
         val dateTo: String? = null,
-        val id: String? = null,
+        val id: UUID? = null,
         val parameterName: String? = null,
         val propertyName: String? = null,
-        val accountId: String
+        val accountId: UUID
 ){
     enum class SearchType {
         BY_ID,

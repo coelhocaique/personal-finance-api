@@ -19,6 +19,7 @@ import org.springframework.web.reactive.function.server.ServerRequest
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.error
 import reactor.core.publisher.Mono.just
+import java.util.*
 
 object RequestParameterHandler {
 
@@ -38,10 +39,10 @@ object RequestParameterHandler {
                 .map { FetchCriteria(accountId = it, id = retrieveId(req)) }
     }
 
-    fun retrieveAccountId(req: ServerRequest): Mono<String> {
+    fun retrieveAccountId(req: ServerRequest): Mono<UUID> {
         val account = req.headers().header(AUTHORIZATION)
         return try {
-            just(formatToUUID(account[0]).toString())
+            just(formatToUUID(account[0]))
         }catch (e: Exception){
             error { unauthorized(MISSING_HEADERS) }
         }
@@ -52,18 +53,18 @@ object RequestParameterHandler {
                 .onErrorMap { business(INVALID_REQUEST, it) }
     }
 
-    private fun retrieveId(req: ServerRequest): String {
+    private fun retrieveId(req: ServerRequest): UUID {
         return try {
-            formatToUUID(req.pathVariable(ID)).toString()
+            formatToUUID(req.pathVariable(ID))
         }catch (e: Exception){
             throw business(INVALID_ID)
         }
     }
 
-    private fun retrieveReferenceCode(req: ServerRequest): String? {
+    private fun retrieveReferenceCode(req: ServerRequest): UUID? {
         return try {
             req.queryParam(REF_CODE)
-                    .map { formatToUUID(it).toString() }
+                    .map { formatToUUID(it)}
                     .orElse(null)
         }catch (e: Exception){
             throw business(INVALID_REF_CODE)

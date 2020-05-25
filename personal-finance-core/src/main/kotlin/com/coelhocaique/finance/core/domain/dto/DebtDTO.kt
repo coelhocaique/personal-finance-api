@@ -5,20 +5,29 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 
-data class DebtDTO (
-        val debtId: UUID? = null,
+data class DebtRequest (
         val amount: BigDecimal,
         val description: String,
         val debtDate: LocalDate,
         val installments: Int,
         val type: String,
         val tag: String,
-        val referenceCode: UUID? = null,
-        val installmentNumber: Int? = null,
-        val referenceDate: String? = null,
-        val nextMonth: Boolean? = null,
-        val totalAmount: BigDecimal? = null,
-        val accountId: UUID? = null,
-        val creationDate: LocalDateTime? = null,
+        val accountId: UUID,
+        val nextMonth: Boolean = false
+)
+
+data class DebtResponse (
+        val debtId: UUID,
+        val amount: BigDecimal,
+        val description: String,
+        val debtDate: LocalDate,
+        val installments: Int,
+        val type: String,
+        val tag: String,
+        val referenceCode: UUID,
+        val installmentNumber: Int,
+        val referenceDate: String,
+        val totalAmount: BigDecimal,
+        val creationDate: LocalDateTime,
         val links: List<Map<String, String>>? = null
 )

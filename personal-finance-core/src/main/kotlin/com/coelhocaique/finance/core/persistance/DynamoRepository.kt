@@ -23,8 +23,8 @@ class DynamoRepository(val db: AmazonDynamoDB,
 
     fun <T> scanItemsBetween(tableName: String,
                              fieldBetween: String,
-                             betweenKey: Map<String, String>,
-                             otherKeys: Map<String, String>,
+                             betweenKey: Map<String, Any>,
+                             otherKeys: Map<String, Any>,
                              clazz: Class<T>): List<T>? {
         val filterExpression =
                 buildFilterExpression(otherKeys)
@@ -36,7 +36,7 @@ class DynamoRepository(val db: AmazonDynamoDB,
         return scan(tableName, betweenKey + otherKeys, filterExpression, clazz)
     }
 
-    fun <T> scanItems(tableName: String, key: Map<String, String>, clazz: Class<T>): List<T>? {
+    fun <T> scanItems(tableName: String, key: Map<String, Any>, clazz: Class<T>): List<T>? {
         return scan(tableName, key, buildFilterExpression(key), clazz)
     }
 
@@ -49,12 +49,12 @@ class DynamoRepository(val db: AmazonDynamoDB,
         db.putItem(tableName, convertToDb(writeKeys(o)))
     }
 
-    fun deleteItem(tableName: String, key: Map<String, String>){
+    fun deleteItem(tableName: String, key: Map<String, Any>){
         val request = DeleteItemRequest().withTableName(tableName).withKey(convertToDb(key))
         db.deleteItem(request)
     }
 
-    private fun <T> scan(tableName: String, key: Map<String, String>, filterExpression: String, clazz: Class<T>): List<T>? {
+    private fun <T> scan(tableName: String, key: Map<String, Any>, filterExpression: String, clazz: Class<T>): List<T>? {
         val request = ScanRequest(tableName)
                 .withFilterExpression(filterExpression)
                 .withExpressionAttributeValues(buildExpressionAttributeValues(key))
@@ -92,15 +92,15 @@ class DynamoRepository(val db: AmazonDynamoDB,
         }.toMap()
     }
 
-    private fun buildFilterExpression(filter: Map<String, String>, expression: String = "="): String {
+    private fun buildFilterExpression(filter: Map<String, Any>, expression: String = "="): String {
         return if (expression.isNotEmpty())
             filter.keys.joinToString(" AND ") { it.plus(expression).plus(":").plus(it) }
         else
             filter.keys.joinToString(" AND ") { ":".plus(it) }
     }
 
-    private fun buildExpressionAttributeValues(filter: Map<String, String>): Map<String, AttributeValue> {
-        return filter.map { ":".plus(it.key) to AttributeValue(it.value) }.toMap()
+    private fun buildExpressionAttributeValues(filter: Map<String, Any>): Map<String, AttributeValue> {
+        return filter.map { ":".plus(it.key) to AttributeValue(it.value.toString()) }.toMap()
     }
 
     private fun <T> writeKeys(o: T) =
