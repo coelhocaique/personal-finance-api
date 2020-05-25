@@ -126,6 +126,37 @@ class DebtServiceTest {
     }
 
     @Test
+    fun testFindByReferenceCode() {
+        val repository = mockk<DebtRepository>()
+        val service = DebtService(repository)
+        val mock = mockDocument()
+        val referenceCode = mock[0].referenceCode
+
+        every { repository.findByReferenceCode(any(), any()) } answers { Mono.just(mock) }
+
+        StepVerifier.create(service.findByReferenceCode(accountId, referenceCode))
+                .assertNext {
+                    assertEquals(1, it.size)
+                    assertEquals(mock[0].debtId, it[0].debtId)
+                    assertEquals(mock[0].creationDate, it[0].creationDate)
+                    assertEquals(mock[0].referenceCode, it[0].referenceCode)
+                    assertEquals(mock[0].amount, it[0].totalAmount)
+                    assertEquals(mock[0].amount, it[0].amount)
+                    assertEquals(mock[0].description, it[0].description)
+                    assertEquals(mock[0].debtDate, it[0].debtDate)
+                    assertEquals(mock[0].installments, it[0].installments)
+                    assertEquals(1, it[0].installmentNumber)
+                    assertEquals("202005", it[0].referenceDate)
+                    assertEquals(mock[0].tag, it[0].tag)
+                    assertEquals(mock[0].type, it[0].type)
+                    assertNull(it[0].links)
+                }
+                .verifyComplete()
+
+        verify(exactly = 1) { repository.findByReferenceCode(eq(referenceCode), eq(accountId)) }
+    }
+
+    @Test
     fun testFindByReferenceDateRange() {
         val repository = mockk<DebtRepository>()
         val service = DebtService(repository)
@@ -185,6 +216,39 @@ class DebtServiceTest {
                 .verifyComplete()
 
         verify(exactly = 1) { repository.findById(eq(debtId), eq(accountId)) }
+        verify(exactly = 1) { repository.deleteById(eq(debtId)) }
+    }
+
+    @Test
+    fun testDeleteByReferenceCode() {
+        val repository = mockk<DebtRepository>(relaxUnitFun = true)
+        val service = DebtService(repository)
+        val mock = mockDocument()
+        val referenceCode = mock[0].referenceCode
+        val debtId = mock[0].debtId
+
+        every { repository.findByReferenceCode(any(), any()) } answers { Mono.just(mock) }
+
+        StepVerifier.create(service.deleteByReferenceCode(accountId, referenceCode))
+                .assertNext {
+                    assertEquals(1, it.size)
+                    assertEquals(mock[0].debtId, it[0].debtId)
+                    assertEquals(mock[0].creationDate, it[0].creationDate)
+                    assertEquals(mock[0].referenceCode, it[0].referenceCode)
+                    assertEquals(mock[0].amount, it[0].totalAmount)
+                    assertEquals(mock[0].amount, it[0].amount)
+                    assertEquals(mock[0].description, it[0].description)
+                    assertEquals(mock[0].debtDate, it[0].debtDate)
+                    assertEquals(mock[0].installments, it[0].installments)
+                    assertEquals(1, it[0].installmentNumber)
+                    assertEquals("202005", it[0].referenceDate)
+                    assertEquals(mock[0].tag, it[0].tag)
+                    assertEquals(mock[0].type, it[0].type)
+                    assertNull(it[0].links)
+                }
+                .verifyComplete()
+
+        verify(exactly = 1) { repository.findByReferenceCode(eq(referenceCode), eq(accountId)) }
         verify(exactly = 1) { repository.deleteById(eq(debtId)) }
     }
 

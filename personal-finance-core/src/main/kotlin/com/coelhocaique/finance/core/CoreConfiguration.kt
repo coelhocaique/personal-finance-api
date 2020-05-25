@@ -5,6 +5,6 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.PropertySource
 
 @Configuration
-@ComponentScan(basePackageClasses = [PersonalFinanceCore::class])
+@ComponentScan(basePackageClasses = [CoreConfiguration::class])
 @PropertySource(value=["classpath:core-application.properties"])
-class PersonalFinanceCore
+class CoreConfiguration

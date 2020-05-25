@@ -1,6 +1,6 @@
 package com.coelhocaique.finance.api
 
-import com.coelhocaique.finance.core.PersonalFinanceCore
+import com.coelhocaique.finance.core.CoreConfiguration
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.ComponentScan
@@ -8,11 +8,11 @@ import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.PropertySource
 
 @SpringBootApplication
-@ComponentScan(basePackageClasses = [PersonalFinanceApiApplication::class])
-@Import(PersonalFinanceCore::class)
+@ComponentScan(basePackageClasses = [ApiStarter::class])
+@Import(CoreConfiguration::class)
 @PropertySource(value=["classpath:api-application.properties"])
-class PersonalFinanceApiApplication
+class ApiStarter
 
 fun main(args: Array<String>) {
-	runApplication<PersonalFinanceApiApplication>(*args)
+	runApplication<ApiStarter>(*args)
 }

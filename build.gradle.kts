@@ -65,10 +65,14 @@ subprojects{
     }
 
     val excludedClassesFromCoverageAnalysis = listOf(
-            "**/config/**",
-            "**/domain/**",
-            "**/scheduler/**"
-    )
+            "CoreConfiguration",
+            "Starter",
+            "Config",
+            "Scheduler",
+            "Repository",
+            "Exception",
+            "Constants"
+    ).map { "**/*${it}**" }
 
     tasks.test {
         useJUnitPlatform()
@@ -90,7 +94,9 @@ subprojects{
     afterEvaluate {
         tasks.jacocoTestReport {
             classDirectories.setFrom(files(classDirectories.files.map {
-                fileTree("dir" to it, "exclude" to excludedClassesFromCoverageAnalysis)
+                fileTree("dir" to it,
+                        "excludes" to excludedClassesFromCoverageAnalysis
+                )
             }))
         }
     }

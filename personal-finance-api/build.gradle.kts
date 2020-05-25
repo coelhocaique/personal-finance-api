@@ -12,12 +12,12 @@ apply(plugin = "org.springframework.boot")
 apply(plugin = "application")
 
 tasks.getByName<BootRun>("bootRun") {
-    main = "com.coelhocaique.finance.api.PersonalFinanceApiApplicationKt"
+    main = "com.coelhocaique.finance.api.ApiStarterKt"
     systemProperties(System.getProperties().mapKeys { it.key as String })
 }
 
 application{
-    mainClassName = "com.coelhocaique.finance.api.PersonalFinanceApiApplicationKt"
+    mainClassName = "com.coelhocaique.finance.api.ApiStarterKt"
 }
 
 tasks.getByName<Zip>("distZip").enabled = false
