@@ -14,7 +14,6 @@ import com.coelhocaique.finance.api.helper.Messages.NO_PARAMETERS
 import com.coelhocaique.finance.api.helper.RequestValidator.validate
 import com.coelhocaique.finance.api.helper.ResponseHandler.generateResponse
 import com.coelhocaique.finance.api.helper.exception.ApiException.ApiExceptionHelper.business
-import com.coelhocaique.finance.core.domain.dto.IncomeRequest
 import com.coelhocaique.finance.core.domain.dto.IncomeResponse
 import com.coelhocaique.finance.core.service.IncomeService
 import com.coelhocaique.finance.core.util.logger

@@ -1,13 +1,12 @@
 package com.coelhocaique.finance.api.helper.exception
 
-import java.lang.RuntimeException
+data class ApiException(
+        val type: ExceptionType,
+        val messages: List<String> = listOf(),
+        val ex: Throwable? = null
+) : RuntimeException(ex) {
 
-data class ApiException(val type: ExceptionType,
-                        val messages: List<String> = listOf(),
-                        val ex: Throwable? = null
-): RuntimeException(ex) {
-
-    enum class ExceptionType(val status: Int){
+    enum class ExceptionType(val status: Int) {
         BUSINESS_EXCEPTION(400),
         UNAUTHORIZED_EXCEPTION(401)
     }

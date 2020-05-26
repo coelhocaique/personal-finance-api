@@ -30,7 +30,7 @@ class ApiRouting {
         POST("/v1/recurring-debt", handler::create)
         GET("/v1/recurring-debt", handler::fetchAll)
         GET("/v1/recurring-debt/{id}", handler::findById)
-        DELETE("/v1/recurring-debt/{id}", handler::delete)
+        DELETE("/v1/recurring-debt/{id}", handler::deleteById)
     }
 
     @Bean

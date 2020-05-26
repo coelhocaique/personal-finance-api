@@ -8,9 +8,9 @@ data class DebtRequestDTO (
         val amount: BigDecimal?,
         val description: String?,
         val debtDate: LocalDate?,
-        val installments: Int?,
         val type: String?,
         val tag: String?,
+        val installments: Int? = 1,
         val nextMonth: Boolean = false,
         val accountId: UUID?
 )

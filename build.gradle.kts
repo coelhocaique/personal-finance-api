@@ -71,7 +71,9 @@ subprojects{
             "Scheduler",
             "Repository",
             "Exception",
-            "Constants"
+            "Constants",
+            "Routing",
+            "Filter"
     ).map { "**/*${it}**" }
 
     tasks.test {

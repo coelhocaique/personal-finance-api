@@ -43,7 +43,7 @@ class RecurringDebtHandler (private val service: RecurringDebtService) {
                 .let { generateResponse(it, onEmptyStatus = 204) }
     }
 
-    fun delete(req: ServerRequest): Mono<ServerResponse> {
+    fun deleteById(req: ServerRequest): Mono<ServerResponse> {
         return retrievePath(req)
                 .flatMap { service.deleteById(it.accountId, it.id!!) }
                 .let { generateResponse(it, 204) }

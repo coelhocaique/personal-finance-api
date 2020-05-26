@@ -25,13 +25,16 @@ object RequestParameterHandler {
 
     fun retrieveParameters(req: ServerRequest): Mono<FetchCriteria> {
         return retrieveAccountId(req)
-                    .map { FetchCriteria(accountId = it,
-                             referenceCode = retrieveReferenceCode(req),
-                             referenceDate = retrieveReferenceDate(req),
-                             dateFrom = retrieveDateFrom(req),
-                             dateTo = retrieveDateTo(req),
-                             parameterName = retrieveParameterName(req),
-                             propertyName = retrievePropertyName(req)) }
+                .map {
+                    FetchCriteria(
+                            accountId = it,
+                            referenceCode = retrieveReferenceCode(req),
+                            referenceDate = retrieveReferenceDate(req),
+                            dateFrom = retrieveDateFrom(req),
+                            dateTo = retrieveDateTo(req),
+                            parameterName = retrieveParameterName(req),
+                            propertyName = retrievePropertyName(req))
+                }
     }
 
     fun retrievePath(req: ServerRequest): Mono<FetchCriteria> {
@@ -43,7 +46,7 @@ object RequestParameterHandler {
         val account = req.headers().header(AUTHORIZATION)
         return try {
             just(formatToUUID(account[0]))
-        }catch (e: Exception){
+        } catch (e: Exception) {
             error { unauthorized(MISSING_HEADERS) }
         }
     }
@@ -56,7 +59,7 @@ object RequestParameterHandler {
     private fun retrieveId(req: ServerRequest): UUID {
         return try {
             formatToUUID(req.pathVariable(ID))
-        }catch (e: Exception){
+        } catch (e: Exception) {
             throw business(INVALID_ID)
         }
     }
@@ -64,9 +67,9 @@ object RequestParameterHandler {
     private fun retrieveReferenceCode(req: ServerRequest): UUID? {
         return try {
             req.queryParam(REF_CODE)
-                    .map { formatToUUID(it)}
+                    .map { formatToUUID(it) }
                     .orElse(null)
-        }catch (e: Exception){
+        } catch (e: Exception) {
             throw business(INVALID_REF_CODE)
         }
     }
