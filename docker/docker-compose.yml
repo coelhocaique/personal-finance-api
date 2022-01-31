@@ -1,6 +1,28 @@
+account-api:
+  image: coelhocaique/account-api
+  container_name: pf-account
+  env_file: pf-environment.list
+  ports:
+    - 8082:8082
+
 personal-finance-api:
   image: coelhocaique/personal-finance-api
   container_name: pf-api
   env_file: pf-environment.list
   ports:
     - 8081:8081
+
+personal-finance-gateway:
+  image: coelhocaique/personal-finance-gateway
+  container_name: pf-gateway
+  env_file: pf-environment.list
+  ports:
+    - 8083:8083
+
+personal-finance-app:
+  image: coelhocaique/personal-finance-app
+  container_name: pf-web
+  ports:
+    - 80:80
+    - 8080:80
+    - 443:80
