@@ -54,13 +54,33 @@ class DynamoRepository(val db: AmazonDynamoDB,
         db.deleteItem(request)
     }
 
-    private fun <T> scan(tableName: String, key: Map<String, Any>, filterExpression: String, clazz: Class<T>): List<T>? {
+    private fun <T> scan(
+        tableName: String,
+        key: Map<String, Any>,
+        filterExpression: String,
+        clazz: Class<T>,
+        lastEvaluatedKey: Map<String, AttributeValue>? = null
+    ): List<T>? {
         val request = ScanRequest(tableName)
                 .withFilterExpression(filterExpression)
                 .withExpressionAttributeValues(buildExpressionAttributeValues(key))
-        val result = convertToMap(db.scan(request).items, clazz)
+            .withExclusiveStartKey(lastEvaluatedKey)
 
-        return if (result.isNotEmpty()) result else null
+        val dbResult = db.scan(request)
+
+        val result = convertToMap(dbResult.items, clazz)
+
+        return if (result.isNotEmpty()) {
+
+            if (dbResult.lastEvaluatedKey != null) {
+                val paginatedResult = scan(tableName, key, filterExpression, clazz, dbResult.lastEvaluatedKey)
+
+                if(paginatedResult != null) {
+                    return result.plus(paginatedResult)
+                }
+            }
+            result
+        } else null
     }
 
     private fun convertToDb(map: Map<String, Any>): Map<String, AttributeValue> {
